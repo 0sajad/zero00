@@ -15,7 +15,8 @@ import {
   Menu,
   X,
   Globe,
-  FileText
+  FileText,
+  Cable
 } from 'lucide-react';
 import Dashboard from './Dashboard';
 import NewDashboard from './NewDashboard';
@@ -23,6 +24,7 @@ import AIAssistant from './AIAssistant';
 import NetworkScanner from './NetworkScanner';
 import Simulation from './Simulation';
 import Tools from './Tools';
+import FiberOpticTools from './FiberOpticTools';
 import License from './License';
 import SettingsPage from './Settings';
 import HelpCenter from './HelpCenter';
@@ -33,25 +35,42 @@ const Layout = () => {
 
   const navigationItems = [
     { id: 'dashboard', name: 'Dashboard', icon: <Activity className="h-5 w-5" />, badge: null },
-    { id: 'ai-assistant', name: 'AI Assistant', icon: <Bot className="h-5 w-5" />, badge: 'AI' },
-    { id: 'network-scanner', name: 'Network Scanner', icon: <Scan className="h-5 w-5" />, badge: null },
-    { id: 'tools', name: 'Tools', icon: <Zap className="h-5 w-5" />, badge: null },
-    { id: 'simulation', name: 'Simulation', icon: <Globe className="h-5 w-5" />, badge: 'Beta' },
-    { id: 'security', name: 'Security', icon: <Shield className="h-5 w-5" />, badge: '94%' },
-    { id: 'license', name: 'License', icon: <FileText className="h-5 w-5" />, badge: null },
-    { id: 'settings', name: 'Settings', icon: <Settings className="h-5 w-5" />, badge: null },
-    { id: 'help', name: 'Help Center', icon: <HelpCircle className="h-5 w-5" />, badge: null },
+    { id: 'tools', name: 'أدوات الفحص', icon: <Zap className="h-5 w-5" />, badge: null },
+    { id: 'fiber-tools', name: 'فحص الكابل الضوئي', icon: <Cable className="h-5 w-5" />, badge: 'جديد' },
+    { id: 'network-scanner', name: 'ماسح الشبكة', icon: <Scan className="h-5 w-5" />, badge: null },
+    { id: 'simulation', name: 'المحاكاة', icon: <Globe className="h-5 w-5" />, badge: 'Beta' },
+    { id: 'ai-assistant', name: 'مساعد ذكي', icon: <Bot className="h-5 w-5" />, badge: 'AI' },
+    { id: 'security', name: 'الأمان', icon: <Shield className="h-5 w-5" />, badge: '94%' },
+    { id: 'settings', name: 'الإعدادات', icon: <Settings className="h-5 w-5" />, badge: null },
+    { id: 'help', name: 'مركز المساعدة', icon: <HelpCircle className="h-5 w-5" />, badge: null },
+    { id: 'license', name: 'الترخيص', icon: <FileText className="h-5 w-5" />, badge: null },
   ];
 
+  const handleTabChange = (tabId: string) => {
+    console.log('Changing tab to:', tabId);
+    setActiveTab(tabId);
+    setSidebarOpen(false);
+  };
+
   const renderContent = () => {
+    console.log('Rendering content for tab:', activeTab);
+    
     switch (activeTab) {
       case 'dashboard':
         return <NewDashboard />;
-      case 'ai-assistant':
+      case 'tools':
         return (
-          <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6">
-            <div className="h-full max-w-4xl mx-auto">
-              <AIAssistant />
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-6xl mx-auto">
+              <Tools />
+            </div>
+          </div>
+        );
+      case 'fiber-tools':
+        return (
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-6xl mx-auto">
+              <FiberOpticTools />
             </div>
           </div>
         );
@@ -63,14 +82,6 @@ const Layout = () => {
             </div>
           </div>
         );
-      case 'tools':
-        return (
-          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-            <div className="max-w-4xl mx-auto">
-              <Tools />
-            </div>
-          </div>
-        );
       case 'simulation':
         return (
           <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
@@ -79,11 +90,11 @@ const Layout = () => {
             </div>
           </div>
         );
-      case 'license':
+      case 'ai-assistant':
         return (
-          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-            <div className="max-w-4xl mx-auto">
-              <License />
+          <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6">
+            <div className="h-full max-w-4xl mx-auto">
+              <AIAssistant />
             </div>
           </div>
         );
@@ -103,39 +114,48 @@ const Layout = () => {
             </div>
           </div>
         );
-      default:
+      case 'license':
         return (
-          <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
-            <Card className="glass-card p-6 sm:p-8 text-center max-w-md w-full">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-octa-blue-500/20 to-octa-purple-600/20 flex items-center justify-center">
-                <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-octa-blue-400" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
-                {navigationItems.find(item => item.id === activeTab)?.name}
-              </h3>
-              <p className="text-sm sm:text-base text-muted-foreground mb-4">
-                This feature is under development. Stay tuned for advanced network monitoring capabilities!
-              </p>
-              <Button 
-                onClick={() => setActiveTab('dashboard')}
-                className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
-              >
-                Back to Dashboard
-              </Button>
-            </Card>
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto">
+              <License />
+            </div>
           </div>
         );
+      case 'security':
+        return (
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto">
+              <Card className="p-8 text-center">
+                <Shield className="h-16 w-16 mx-auto mb-4 text-green-600" />
+                <h2 className="text-2xl font-bold mb-4">أمان الشبكة</h2>
+                <p className="text-gray-600 mb-6">نظام الأمان يعمل بكفاءة 94%</p>
+                <div className="space-y-4">
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <p className="text-green-800">✓ جدار الحماية نشط</p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <p className="text-green-800">✓ فحص الفيروسات نشط</p>
+                  </div>
+                  <div className="bg-yellow-50 p-4 rounded-lg">
+                    <p className="text-yellow-800">⚠️ يُنصح بتحديث كلمات المرور</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+        );
+      default:
+        return <NewDashboard />;
     }
   };
 
-  // If dashboard is selected, render the new dashboard without sidebar
   if (activeTab === 'dashboard') {
     return <NewDashboard />;
   }
 
   return (
     <div className="flex h-screen bg-gray-900">
-      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -143,24 +163,21 @@ const Layout = () => {
         />
       )}
 
-      {/* Sidebar */}
       <div className={`${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       } lg:translate-x-0 fixed lg:relative inset-y-0 left-0 z-50 w-64 transition-transform duration-300 bg-card/30 backdrop-blur-sm border-r border-border/50 flex flex-col`}>
-        {/* Logo */}
         <div className="p-4 border-b border-border/50">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-octa-blue-500 to-octa-purple-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                 <Activity className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h1 className="text-lg font-bold text-foreground">OCTA GRAM</h1>
-                <p className="text-xs text-muted-foreground">Network Monitor</p>
+                <p className="text-xs text-muted-foreground">مراقب الشبكة</p>
               </div>
             </div>
             
-            {/* Mobile close button */}
             <Button
               variant="ghost"
               size="sm"
@@ -172,20 +189,16 @@ const Layout = () => {
           </div>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {navigationItems.map((item) => (
             <Button
               key={item.id}
               variant={activeTab === item.id ? 'default' : 'ghost'}
-              className="w-full justify-start h-12 px-4"
-              onClick={() => {
-                setActiveTab(item.id);
-                setSidebarOpen(false); // Close mobile sidebar on item click
-              }}
+              className="w-full justify-start h-12 px-4 text-right"
+              onClick={() => handleTabChange(item.id)}
             >
               {item.icon}
-              <span className="ml-3 flex-1 text-left">{item.name}</span>
+              <span className="ml-3 flex-1 text-right">{item.name}</span>
               {item.badge && (
                 <Badge variant="secondary" className="ml-auto text-xs">
                   {item.badge}
@@ -196,9 +209,7 @@ const Layout = () => {
         </nav>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 overflow-hidden relative">
-        {/* Mobile menu trigger */}
         <Button
           variant="outline"
           size="sm"
