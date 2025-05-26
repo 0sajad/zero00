@@ -14,11 +14,18 @@ import {
   Zap,
   Menu,
   X,
-  Globe
+  Globe,
+  FileText
 } from 'lucide-react';
 import Dashboard from './Dashboard';
 import NewDashboard from './NewDashboard';
 import AIAssistant from './AIAssistant';
+import NetworkScanner from './NetworkScanner';
+import Simulation from './Simulation';
+import Tools from './Tools';
+import License from './License';
+import Settings as SettingsPage from './Settings';
+import HelpCenter from './HelpCenter';
 
 const Layout = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -28,9 +35,12 @@ const Layout = () => {
     { id: 'dashboard', name: 'Dashboard', icon: <Activity className="h-5 w-5" />, badge: null },
     { id: 'ai-assistant', name: 'AI Assistant', icon: <Bot className="h-5 w-5" />, badge: 'AI' },
     { id: 'network-scanner', name: 'Network Scanner', icon: <Scan className="h-5 w-5" />, badge: null },
-    { id: 'security', name: 'Security', icon: <Shield className="h-5 w-5" />, badge: '94%' },
     { id: 'tools', name: 'Tools', icon: <Zap className="h-5 w-5" />, badge: null },
     { id: 'simulation', name: 'Simulation', icon: <Globe className="h-5 w-5" />, badge: 'Beta' },
+    { id: 'security', name: 'Security', icon: <Shield className="h-5 w-5" />, badge: '94%' },
+    { id: 'license', name: 'License', icon: <FileText className="h-5 w-5" />, badge: null },
+    { id: 'settings', name: 'Settings', icon: <Settings className="h-5 w-5" />, badge: null },
+    { id: 'help', name: 'Help Center', icon: <HelpCircle className="h-5 w-5" />, badge: null },
   ];
 
   const renderContent = () => {
@@ -42,6 +52,54 @@ const Layout = () => {
           <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6">
             <div className="h-full max-w-4xl mx-auto">
               <AIAssistant />
+            </div>
+          </div>
+        );
+      case 'network-scanner':
+        return (
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto">
+              <NetworkScanner />
+            </div>
+          </div>
+        );
+      case 'tools':
+        return (
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto">
+              <Tools />
+            </div>
+          </div>
+        );
+      case 'simulation':
+        return (
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto">
+              <Simulation />
+            </div>
+          </div>
+        );
+      case 'license':
+        return (
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto">
+              <License />
+            </div>
+          </div>
+        );
+      case 'settings':
+        return (
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto">
+              <SettingsPage />
+            </div>
+          </div>
+        );
+      case 'help':
+        return (
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto">
+              <HelpCenter />
             </div>
           </div>
         );
@@ -115,7 +173,7 @@ const Layout = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {navigationItems.map((item) => (
             <Button
               key={item.id}
@@ -136,26 +194,6 @@ const Layout = () => {
             </Button>
           ))}
         </nav>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-border/50">
-          <div className="space-y-2">
-            <Button
-              variant="ghost"
-              className="w-full justify-start h-12 px-4"
-            >
-              <Settings className="h-5 w-5" />
-              <span className="ml-3">Settings</span>
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start h-12 px-4"
-            >
-              <HelpCircle className="h-5 w-5" />
-              <span className="ml-3">Help</span>
-            </Button>
-          </div>
-        </div>
       </div>
 
       {/* Main Content */}
