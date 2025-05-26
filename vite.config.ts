@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "./", // Important for GitHub Pages compatibility
+  base: "/octa-gram-insight-hub-75/", // GitHub Pages repository name
   server: {
     host: "::",
     port: 8080,
