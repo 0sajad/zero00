@@ -28,6 +28,7 @@ import FiberOpticTools from './FiberOpticTools';
 import License from './License';
 import SettingsPage from './Settings';
 import HelpCenter from './HelpCenter';
+import Header from './Header';
 
 const Layout = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -195,92 +196,101 @@ const Layout = () => {
   };
 
   if (activeTab === 'dashboard') {
-    return <NewDashboard />;
+    return (
+      <div className="min-h-screen bg-background">
+        <Header onNavigate={handleTabChange} />
+        <NewDashboard />
+      </div>
+    );
   }
 
   return (
-    <div className="flex h-screen bg-gray-900">
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+    <div className="min-h-screen bg-background">
+      <Header onNavigate={handleTabChange} />
+      
+      <div className="flex h-screen bg-gray-900">
+        {sidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
-      <div className={`${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 fixed lg:relative inset-y-0 left-0 z-50 w-64 transition-transform duration-300 bg-white border-r border-gray-200 flex flex-col shadow-lg`}>
-        
-        <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-purple-600">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 rtl:space-x-reverse">
-              <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
-                <Activity className="h-6 w-6 text-blue-600" />
+        <div className={`${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 fixed lg:relative inset-y-0 left-0 z-50 w-64 transition-transform duration-300 bg-white border-r border-gray-200 flex flex-col shadow-lg`}>
+          
+          <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-purple-600">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                  <Activity className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-white">OCTA GRAM</h1>
+                  <p className="text-xs text-blue-100">مراقب الشبكة المتقدم</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-white">OCTA GRAM</h1>
-                <p className="text-xs text-blue-100">مراقب الشبكة المتقدم</p>
-              </div>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden text-white hover:bg-white/10"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden text-white hover:bg-white/10"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
+          </div>
+
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto bg-gray-50">
+            {navigationItems.map((item) => (
+              <Button
+                key={item.id}
+                variant={activeTab === item.id ? 'default' : 'ghost'}
+                className={`w-full justify-start h-12 px-4 text-right transition-all ${
+                  activeTab === item.id 
+                    ? 'bg-blue-600 text-white shadow-md' 
+                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
+                }`}
+                onClick={() => handleTabChange(item.id)}
+              >
+                <div className="flex items-center w-full">
+                  {item.icon}
+                  <span className="mr-3 flex-1 text-right font-medium">{item.name}</span>
+                  {item.badge && (
+                    <Badge 
+                      variant={activeTab === item.id ? 'secondary' : 'outline'} 
+                      className="mr-auto text-xs"
+                    >
+                      {item.badge}
+                    </Badge>
+                  )}
+                </div>
+              </Button>
+            ))}
+          </nav>
+
+          <div className="p-4 border-t border-gray-200 bg-white">
+            <div className="text-center">
+              <p className="text-xs text-gray-500">الإصدار 2.0</p>
+              <p className="text-xs text-gray-400">جميع الحقوق محفوظة</p>
+            </div>
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto bg-gray-50">
-          {navigationItems.map((item) => (
-            <Button
-              key={item.id}
-              variant={activeTab === item.id ? 'default' : 'ghost'}
-              className={`w-full justify-start h-12 px-4 text-right transition-all ${
-                activeTab === item.id 
-                  ? 'bg-blue-600 text-white shadow-md' 
-                  : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
-              }`}
-              onClick={() => handleTabChange(item.id)}
-            >
-              <div className="flex items-center w-full">
-                {item.icon}
-                <span className="mr-3 flex-1 text-right font-medium">{item.name}</span>
-                {item.badge && (
-                  <Badge 
-                    variant={activeTab === item.id ? 'secondary' : 'outline'} 
-                    className="mr-auto text-xs"
-                  >
-                    {item.badge}
-                  </Badge>
-                )}
-              </div>
-            </Button>
-          ))}
-        </nav>
-
-        <div className="p-4 border-t border-gray-200 bg-white">
-          <div className="text-center">
-            <p className="text-xs text-gray-500">الإصدار 2.0</p>
-            <p className="text-xs text-gray-400">جميع الحقوق محفوظة</p>
-          </div>
+        <div className="flex-1 overflow-hidden relative bg-white">
+          <Button
+            variant="outline"
+            size="sm"
+            className="fixed top-4 left-4 z-30 lg:hidden bg-white shadow-lg border-blue-600 text-blue-600 hover:bg-blue-50"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+          
+          {renderContent()}
         </div>
-      </div>
-
-      <div className="flex-1 overflow-hidden relative bg-white">
-        <Button
-          variant="outline"
-          size="sm"
-          className="fixed top-4 left-4 z-30 lg:hidden bg-white shadow-lg border-blue-600 text-blue-600 hover:bg-blue-50"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-        >
-          <Menu className="h-4 w-4" />
-        </Button>
-        
-        {renderContent()}
       </div>
     </div>
   );
