@@ -13,23 +13,23 @@ const NewDashboard = () => {
       <Header />
       
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Top Row - Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <SystemStatusCard />
           <QuickActionsCard />
           <LatestUpdatesCard />
         </div>
 
         {/* Bottom Row - Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-8">
           {/* Network Quality Indicator */}
-          <div className="lg:col-span-1">
+          <div className="xl:col-span-1">
             <NetworkQualityIndicator />
           </div>
           
           {/* Network Monitoring */}
-          <div className="lg:col-span-2">
+          <div className="xl:col-span-2">
             <NetworkMonitoringCard />
           </div>
         </div>

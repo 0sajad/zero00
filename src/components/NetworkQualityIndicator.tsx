@@ -11,15 +11,15 @@ const NetworkQualityIndicator = () => {
   return (
     <Card className="border-l-4 border-l-green-500">
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold flex items-center">
-          <Activity className="h-5 w-5 mr-2 text-blue-600" />
+        <CardTitle className="text-base sm:text-lg font-semibold flex items-center">
+          <Activity className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-blue-600" />
           مؤشر جودة الشبكة
         </CardTitle>
-        <p className="text-sm text-gray-600">تحليل مفصل لحالة وأداء الشبكة الحالية</p>
+        <p className="text-xs sm:text-sm text-gray-600">تحليل مفصل لحالة وأداء الشبكة الحالية</p>
       </CardHeader>
-      <CardContent className="flex flex-col items-center py-8">
-        <div className="relative w-32 h-32 mb-4">
-          <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 100 100">
+      <CardContent className="flex flex-col items-center py-6 sm:py-8">
+        <div className="relative w-24 h-24 sm:w-32 sm:h-32 mb-4">
+          <svg className="w-24 h-24 sm:w-32 sm:h-32 transform -rotate-90" viewBox="0 0 100 100">
             {/* Background circle */}
             <circle
               cx="50"
@@ -44,12 +44,12 @@ const NetworkQualityIndicator = () => {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-3xl font-bold text-gray-800">{qualityScore}</span>
+            <span className="text-2xl sm:text-3xl font-bold text-gray-800">{qualityScore}</span>
           </div>
         </div>
         <div className="text-center">
-          <p className="text-green-600 font-semibold">ممتاز</p>
-          <p className="text-sm text-gray-500">الجودة:</p>
+          <p className="text-green-600 font-semibold text-sm sm:text-base">ممتاز</p>
+          <p className="text-xs sm:text-sm text-gray-500">الجودة:</p>
         </div>
       </CardContent>
     </Card>
