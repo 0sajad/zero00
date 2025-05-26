@@ -1,79 +1,46 @@
 
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
 
-const container = document.getElementById("root");
+// Hide loading screen function
+const hideLoading = () => {
+  const loadingElement = document.getElementById('loading');
+  if (loadingElement) {
+    loadingElement.style.display = 'none';
+  }
+};
 
-if (!container) {
-  throw new Error("Root element not found");
-}
-
-// Error boundary wrapper
-class ErrorBoundary extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ErrorBoundary';
+// Make it available globally
+declare global {
+  interface Window {
+    hideLoading: () => void;
   }
 }
 
-// Global error handler
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
-  event.preventDefault();
-});
+window.hideLoading = hideLoading;
 
-window.addEventListener('error', (event) => {
-  console.error('Global error:', event.error);
-});
+const root = createRoot(document.getElementById("root")!);
 
 try {
-  const root = createRoot(container);
-  root.render(<App />);
+  root.render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  );
   
-  // Hide loading screen once React app is rendered
+  // Hide loading screen after successful render
   setTimeout(() => {
-    if (window.hideLoading) {
-      window.hideLoading();
-    }
-  }, 100);
-  
+    hideLoading();
+  }, 1000);
 } catch (error) {
-  console.error('Failed to render app:', error);
+  console.error('Error rendering app:', error);
   
-  // Show error in the container instead of loading screen
-  container.innerHTML = `
-    <div style="
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      color: #ef4444;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    ">
-      <h2>Application Error</h2>
-      <p>Failed to initialize OCTA GRAM. Please refresh the page.</p>
-      <button onclick="window.location.reload()" style="
-        margin-top: 20px;
-        padding: 10px 20px;
-        background: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-      ">
-        Refresh Page
-      </button>
-    </div>
-  `;
-  
-  // Hide loading screen
-  if (window.hideLoading) {
-    window.hideLoading();
+  // Show error screen
+  const errorElement = document.getElementById('error');
+  if (errorElement) {
+    errorElement.style.display = 'flex';
   }
+  hideLoading();
 }

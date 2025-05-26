@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,7 @@ const Simulation = () => {
   const [running, setRunning] = useState(false);
   const [scenario, setScenario] = useState('');
   const [progress, setProgress] = useState(0);
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState<any>(null);
 
   const scenarios = [
     { 
@@ -77,7 +76,6 @@ const Simulation = () => {
       description: `جاري تشغيل: ${selectedScenario?.name}`,
     });
 
-    // Simulate the scenario with real progress
     const duration = selectedScenario?.duration || 5000;
     const interval = setInterval(() => {
       setProgress(prev => {
@@ -85,7 +83,6 @@ const Simulation = () => {
           clearInterval(interval);
           setRunning(false);
           
-          // Generate realistic results based on scenario
           const simulationResults = generateResults(scenario);
           setResults(simulationResults);
           
@@ -277,7 +274,7 @@ const Simulation = () => {
                        key === 'redundancyStatus' ? 'حالة الاحتياط' :
                        key === 'recommendation' ? 'التوصية' : key}
                     </div>
-                    <div className="font-medium">{value}</div>
+                    <div className="font-medium">{String(value)}</div>
                   </div>
                 ))}
               </div>
