@@ -24,7 +24,7 @@ import NetworkScanner from './NetworkScanner';
 import Simulation from './Simulation';
 import Tools from './Tools';
 import License from './License';
-import Settings as SettingsPage from './Settings';
+import SettingsPage from './Settings';
 import HelpCenter from './HelpCenter';
 
 const Layout = () => {
