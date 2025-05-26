@@ -6,22 +6,25 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Bot, User, Zap, Brain, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const AIAssistant = () => {
+  const { t } = useTranslation();
+  
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'Hello! I\'m your OCTA GRAM AI Assistant. I can help you with network diagnostics, security analysis, and predictive insights. How can I assist you today?',
+      content: t('aiGreeting'),
       timestamp: new Date().toLocaleTimeString()
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
 
   const quickActions = [
-    { text: 'Analyze network performance', icon: <Zap className="h-4 w-4" /> },
-    { text: 'Check security status', icon: <Brain className="h-4 w-4" /> },
-    { text: 'Predict network issues', icon: <Globe className="h-4 w-4" /> },
-    { text: 'Optimize connection', icon: <Bot className="h-4 w-4" /> }
+    { text: t('analyzePerformance'), icon: <Zap className="h-4 w-4" /> },
+    { text: t('checkSecurity'), icon: <Brain className="h-4 w-4" /> },
+    { text: t('predictIssues'), icon: <Globe className="h-4 w-4" /> },
+    { text: t('optimizeConnection'), icon: <Bot className="h-4 w-4" /> }
   ];
 
   const handleSendMessage = () => {
@@ -53,9 +56,9 @@ const AIAssistant = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-octa-purple-500 to-octa-blue-600 flex items-center justify-center mr-3">
               <Bot className="h-5 w-5 text-white" />
             </div>
-            AI Assistant
+            {t('aiAssistant')}
             <Badge className="ml-auto bg-green-500/20 text-green-400 border-green-500/30">
-              Online
+              {t('online')}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -123,7 +126,7 @@ const AIAssistant = () => {
           <div className="p-4 border-t border-border/50">
             <div className="flex space-x-2">
               <Input
-                placeholder="Ask me anything about your network..."
+                placeholder={t('askAnything')}
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}

@@ -12,10 +12,15 @@ import {
   Link,
   ChevronDown
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import ThemeToggle from './ThemeToggle';
+import LanguageToggle from './LanguageToggle';
 
 const Header = () => {
+  const { t } = useTranslation();
+
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-3">
+    <header className="bg-background border-b border-border px-6 py-3">
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-3">
@@ -23,35 +28,35 @@ const Header = () => {
             <span className="text-white font-bold text-sm">OCTA</span>
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-gray-800">OCTA</h1>
-            <p className="text-xs text-gray-500">NETWORK</p>
+            <h1 className="text-lg font-semibold text-foreground">OCTA</h1>
+            <p className="text-xs text-muted-foreground">NETWORK</p>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          <Button variant="ghost" className="text-foreground hover:text-primary">
             <Activity className="h-4 w-4 mr-2" />
-            Dashboard
+            {t('dashboard')}
           </Button>
-          <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          <Button variant="ghost" className="text-foreground hover:text-primary">
             <Settings className="h-4 w-4 mr-2" />
-            Tools
+            {t('tools')}
             <ChevronDown className="h-3 w-3 ml-1" />
           </Button>
-          <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          <Button variant="ghost" className="text-foreground hover:text-primary">
             <Activity className="h-4 w-4 mr-2" />
-            AI Assistant
+            {t('aiAssistant')}
           </Button>
-          <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          <Button variant="ghost" className="text-foreground hover:text-primary">
             <Settings className="h-4 w-4 mr-2" />
-            Settings
+            {t('settings')}
           </Button>
-          <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          <Button variant="ghost" className="text-foreground hover:text-primary">
             <HelpCircle className="h-4 w-4 mr-2" />
-            Help Center
+            {t('help')} Center
           </Button>
-          <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          <Button variant="ghost" className="text-foreground hover:text-primary">
             <Link className="h-4 w-4 mr-2" />
             License
           </Button>
@@ -59,6 +64,9 @@ const Header = () => {
 
         {/* Right side actions */}
         <div className="flex items-center space-x-3">
+          <ThemeToggle />
+          <LanguageToggle />
+          
           <Button variant="ghost" size="sm" className="relative">
             <Bell className="h-4 w-4" />
             <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-blue-500 text-white text-xs p-0 flex items-center justify-center">
