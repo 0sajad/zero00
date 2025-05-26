@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -60,14 +59,12 @@ const FiberOpticTools = () => {
       description: "جاري تحليل الكابل الضوئي...",
     });
 
-    // محاكاة فحص OTDR متقدم
     const interval = setInterval(() => {
       setTestProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsTestingOTDR(false);
           
-          // نتائج فحص OTDR محاكاة
           const testResults = [
             {
               distance: '0.0 km',
@@ -132,11 +129,11 @@ const FiberOpticTools = () => {
     setTimeout(() => {
       const powerResults = {
         wavelength: testWavelength,
-        power: (Math.random() * -5 - 10).toFixed(2), // من -10 إلى -15 dBm
-        snr: (Math.random() * 10 + 20).toFixed(1), // من 20 إلى 30 dB
-        ber: (Math.random() * 9 + 1).toExponential(2), // من 1e-12 إلى 1e-9
-        q_factor: (Math.random() * 5 + 15).toFixed(1), // من 15 إلى 20
-        temperature: (Math.random() * 10 + 20).toFixed(1), // من 20 إلى 30 درجة
+        power: (Math.random() * -5 - 10).toFixed(2),
+        snr: (Math.random() * 10 + 20).toFixed(1),
+        ber: (Math.random() * 9 + 1).toExponential(2),
+        q_factor: (Math.random() * 5 + 15).toFixed(1),
+        temperature: (Math.random() * 10 + 20).toFixed(1),
         status: parseFloat((Math.random() * -5 - 10).toFixed(2)) > -13 ? 'ممتاز' : 'جيد'
       };
 
@@ -511,7 +508,7 @@ const FiberOpticTools = () => {
                       <Zap className="h-6 w-6 mx-auto mb-2 text-orange-600" />
                       <div className="text-sm font-medium">التوهين</div>
                       <div className="text-xs text-muted-foreground">Attenuation</div>
-                    </CardContent>
+                    </Card>
                   </Card>
                 </div>
               </div>

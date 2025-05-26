@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -309,7 +308,7 @@ const NetworkScanner = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* معلومات الشبكة */}
+          {/* Network Info */}
           {networkInfo && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border">
               <div className="text-center">
@@ -362,6 +361,7 @@ const NetworkScanner = () => {
             )}
           </div>
           
+          {/* Devices Display */}
           {devices.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
