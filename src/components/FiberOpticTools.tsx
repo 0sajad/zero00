@@ -508,7 +508,7 @@ const FiberOpticTools = () => {
                       <Zap className="h-6 w-6 mx-auto mb-2 text-orange-600" />
                       <div className="text-sm font-medium">التوهين</div>
                       <div className="text-xs text-muted-foreground">Attenuation</div>
-                    </Card>
+                    </CardContent>
                   </Card>
                 </div>
               </div>
