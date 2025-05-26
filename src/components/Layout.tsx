@@ -17,6 +17,7 @@ import {
   Globe
 } from 'lucide-react';
 import Dashboard from './Dashboard';
+import NewDashboard from './NewDashboard';
 import AIAssistant from './AIAssistant';
 
 const Layout = () => {
@@ -35,7 +36,7 @@ const Layout = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard />;
+        return <NewDashboard />;
       case 'ai-assistant':
         return (
           <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6">
@@ -68,6 +69,11 @@ const Layout = () => {
         );
     }
   };
+
+  // If dashboard is selected, render the new dashboard without sidebar
+  if (activeTab === 'dashboard') {
+    return <NewDashboard />;
+  }
 
   return (
     <div className="flex h-screen bg-gray-900">
