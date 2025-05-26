@@ -33,6 +33,18 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Create .nojekyll file
+        run: touch ./dist/.nojekyll
+
+      - name: List build files (debug)
+        run: |
+          echo "Build directory contents:"
+          ls -la ./dist/
+          echo "Assets directory contents:"
+          ls -la ./dist/assets/ || echo "No assets directory found"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
