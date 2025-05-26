@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Scan, Wifi, Shield, Globe, Zap, Activity, Router, Smartphone, Printer, Monitor, Laptop, RefreshCw } from 'lucide-react';
+import { Scan, Wifi, Shield, Globe, Zap, Activity, Router, Smartphone, Printer, Monitor, Laptop, RefreshCw, AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
 
