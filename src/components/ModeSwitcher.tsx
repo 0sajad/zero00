@@ -1,21 +1,15 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import PasswordModal from './PasswordModal';
+import ModeCard from './ModeCard';
 import { 
-  User, 
-  Code, 
-  Shield, 
-  Key,
-  AlertTriangle,
-  CheckCircle,
-  Sparkles,
-  Lock,
-  Crown,
-  Zap,
+  Shield,
   Globe,
-  Server
+  Server,
+  Zap
 } from 'lucide-react';
 
 interface ModeSwitcherProps {
@@ -24,21 +18,13 @@ interface ModeSwitcherProps {
 
 const ModeSwitcher = ({ onModeSelect }: ModeSwitcherProps) => {
   const [showPasswordInput, setShowPasswordInput] = useState(false);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
 
-  const handleDeveloperMode = () => {
+  const handleDeveloperMode = (password: string) => {
     if (password === '1996') {
       onModeSelect('developer');
-    } else {
-      setError('كلمة السر غير صحيحة');
-      setTimeout(() => setError(''), 3000);
+      return true;
     }
-  };
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleDeveloperMode();
+    return false;
   };
 
   return (
@@ -81,149 +67,20 @@ const ModeSwitcher = ({ onModeSelect }: ModeSwitcherProps) => {
           <CardContent className="space-y-8 px-8 pb-8">
             {!showPasswordInput ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Client Mode */}
-                <Card className="border-2 border-blue-400/30 hover:border-blue-400 transition-all duration-500 cursor-pointer group bg-gradient-to-br from-blue-900/40 to-blue-800/40 backdrop-blur-lg hover:shadow-2xl hover:shadow-blue-500/25 hover:scale-105">
-                  <CardContent className="p-8 text-center space-y-6">
-                    <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 group-hover:from-blue-300 group-hover:to-blue-500 rounded-3xl flex items-center justify-center transition-all duration-500 shadow-xl group-hover:shadow-2xl">
-                      <User className="h-12 w-12 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-3xl font-bold text-white mb-4">وضع العميل</h3>
-                      <p className="text-blue-200 text-lg mb-6 leading-relaxed">
-                        الوصول الكامل لجميع أدوات المراقبة والتحليل المتطورة مع واجهة سهلة الاستخدام
-                      </p>
-                      <div className="flex justify-center flex-wrap gap-2 mb-6">
-                        <Badge className="bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                          <Crown className="h-3 w-3 mr-1" />
-                          Client Mode
-                        </Badge>
-                        <Badge className="bg-green-500/20 text-green-300 border border-green-400/30">
-                          <Sparkles className="h-3 w-3 mr-1" />
-                          Premium Access
-                        </Badge>
-                        <Badge className="bg-purple-500/20 text-purple-300 border border-purple-400/30">
-                          <Shield className="h-3 w-3 mr-1" />
-                          Secure
-                        </Badge>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={() => onModeSelect('client')}
-                      className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white py-4 text-xl font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 border-0 group-hover:scale-105"
-                    >
-                      <User className="h-6 w-6 mr-3" />
-                      دخول كعميل
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                {/* Developer Mode */}
-                <Card className="border-2 border-red-400/30 hover:border-red-400 transition-all duration-500 cursor-pointer group bg-gradient-to-br from-red-900/40 to-orange-800/40 backdrop-blur-lg hover:shadow-2xl hover:shadow-red-500/25 hover:scale-105">
-                  <CardContent className="p-8 text-center space-y-6">
-                    <div className="mx-auto w-24 h-24 bg-gradient-to-br from-red-400 to-orange-500 group-hover:from-red-300 group-hover:to-orange-400 rounded-3xl flex items-center justify-center transition-all duration-500 shadow-xl group-hover:shadow-2xl">
-                      <Code className="h-12 w-12 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-3xl font-bold text-white mb-4">وضع المطور</h3>
-                      <p className="text-red-200 text-lg mb-6 leading-relaxed">
-                        صلاحيات كاملة لإدارة النظام والتحكم المتقدم والتطوير مع أدوات احترافية
-                      </p>
-                      <div className="flex justify-center flex-wrap gap-2 mb-6">
-                        <Badge className="bg-red-500/20 text-red-300 border border-red-400/30">
-                          <Code className="h-3 w-3 mr-1" />
-                          Developer
-                        </Badge>
-                        <Badge className="bg-yellow-500/20 text-yellow-300 border border-yellow-400/30">
-                          <Lock className="h-3 w-3 mr-1" />
-                          Admin Access
-                        </Badge>
-                        <Badge className="bg-orange-500/20 text-orange-300 border border-orange-400/30">
-                          <Zap className="h-3 w-3 mr-1" />
-                          Full Control
-                        </Badge>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={() => setShowPasswordInput(true)}
-                      className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white py-4 text-xl font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 border-0 group-hover:scale-105"
-                    >
-                      <Zap className="h-6 w-6 mr-3" />
-                      دخول كمطور
-                    </Button>
-                  </CardContent>
-                </Card>
+                <ModeCard 
+                  mode="client"
+                  onSelect={() => onModeSelect('client')}
+                />
+                <ModeCard 
+                  mode="developer"
+                  onSelect={() => setShowPasswordInput(true)}
+                />
               </div>
             ) : (
-              <Card className="border-2 border-red-500/50 bg-gradient-to-br from-red-900/30 to-orange-900/30 backdrop-blur-xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-red-300 text-xl">
-                    <Key className="h-6 w-6 mr-3" />
-                    تسجيل دخول المطور
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="bg-red-500/20 border border-red-400/40 rounded-xl p-4 backdrop-blur-sm">
-                    <div className="flex items-center">
-                      <AlertTriangle className="h-5 w-5 text-red-400 mr-3" />
-                      <span className="text-red-300 font-medium">
-                        وضع المطور يتطلب كلمة سر للوصول
-                      </span>
-                    </div>
-                  </div>
-
-                  <form onSubmit={handlePasswordSubmit} className="space-y-6">
-                    <div className="space-y-3">
-                      <label className="text-base font-semibold text-white">
-                        كلمة السر
-                      </label>
-                      <Input
-                        type="password"
-                        placeholder="أدخل كلمة السر"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="text-center font-mono bg-white/10 border-white/20 text-white placeholder-gray-400 py-3 text-lg rounded-xl backdrop-blur-sm"
-                      />
-                    </div>
-
-                    {error && (
-                      <div className="bg-red-500/20 border border-red-400/40 rounded-xl p-4">
-                        <div className="flex items-center">
-                          <AlertTriangle className="h-5 w-5 text-red-400 mr-3" />
-                          <span className="text-red-300 font-medium">{error}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="flex space-x-4">
-                      <Button 
-                        type="submit" 
-                        className="flex-1 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white py-3 text-lg font-semibold rounded-xl"
-                      >
-                        <CheckCircle className="h-5 w-5 mr-2" />
-                        تأكيد
-                      </Button>
-                      <Button 
-                        type="button"
-                        variant="outline"
-                        onClick={() => {
-                          setShowPasswordInput(false);
-                          setPassword('');
-                          setError('');
-                        }}
-                        className="flex-1 border-white/30 text-white hover:bg-white/10 py-3 text-lg font-semibold rounded-xl"
-                      >
-                        إلغاء
-                      </Button>
-                    </div>
-                  </form>
-
-                  <div className="bg-yellow-500/20 border border-yellow-400/40 rounded-xl p-4 backdrop-blur-sm">
-                    <p className="text-yellow-300 text-center font-medium">
-                      💡 كلمة السر الافتراضية للتجربة: <strong className="text-yellow-200">1996</strong>
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <PasswordModal
+                onSubmit={handleDeveloperMode}
+                onCancel={() => setShowPasswordInput(false)}
+              />
             )}
 
             <div className="text-center pt-6 border-t border-white/20">

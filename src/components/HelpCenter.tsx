@@ -1,108 +1,84 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { HelpCircle, Search, Book, MessageCircle, Mail } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { 
+  HelpCircle, 
+  Search, 
+  BookOpen,
+  ArrowLeft
+} from 'lucide-react';
 
-const HelpCenter = () => {
-  const faqs = [
-    {
-      question: 'كيف أبدأ فحص الشبكة؟',
-      answer: 'يمكنك بدء فحص الشبكة من خلال الانتقال إلى قسم "فاحص الشبكة" والنقر على زر "بدء فحص الشبكة". سيقوم النظام بفحص جميع الأجهزة المتصلة تلقائياً.'
-    },
-    {
-      question: 'ما هي ميزة المساعد الذكي؟',
-      answer: 'المساعد الذكي هو نظام ذكاء اصطناعي يساعدك في تشخيص مشاكل الشبكة وتقديم الاقتراحات والحلول. يمكنك التفاعل معه بشكل طبيعي باللغة العربية.'
-    },
-    {
-      question: 'كيف أغير لغة الواجهة؟',
-      answer: 'يمكنك تغيير اللغة من خلال النقر على أيقونة الكرة الأرضية في الشريط العلوي أو من خلال إعدادات النظام.'
-    },
-    {
-      question: 'هل يعمل النظام بدون إنترنت؟',
-      answer: 'النظام يعمل كموقع ويب ثابت ولا يحتاج إلى خادم، لكن بعض الميزات مثل اختبار السرعة تحتاج إلى اتصال بالإنترنت.'
-    },
-    {
-      question: 'كيف أفعل وضع المطور؟',
-      answer: 'يمكنك تفعيل وضع المطور من خلال الذهاب إلى الإعدادات > وضع المطور وتفعيل الخيار. هذا سيتيح لك الوصول إلى أدوات متقدمة.'
-    }
+interface HelpCenterProps {
+  onBack?: () => void;
+}
+
+const HelpCenter = ({ onBack }: HelpCenterProps = {}) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const helpTopics = [
+    { title: 'كيفية استخدام اختبار السرعة', category: 'أساسيات', difficulty: 'مبتدئ' },
+    { title: 'فهم نتائج فحص المنافذ', category: 'أمان', difficulty: 'متوسط' },
+    { title: 'مراقبة أداء الشبكة', category: 'مراقبة', difficulty: 'متقدم' },
+    { title: 'حل مشاكل الاتصال', category: 'استكشاف الأخطاء', difficulty: 'متوسط' }
   ];
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <HelpCircle className="h-5 w-5 mr-2" />
-            مركز المساعدة
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center">
+              <HelpCircle className="h-6 w-6 mr-3" />
+              مركز المساعدة
+              <Badge className="ml-3 bg-blue-600 text-white">دليل شامل</Badge>
+            </CardTitle>
+            {onBack && (
+              <Button variant="ghost" onClick={onBack}>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                العودة
+              </Button>
+            )}
+          </div>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Search */}
+      </Card>
+
+      {/* Search */}
+      <Card>
+        <CardContent className="p-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="ابحث عن موضوع..."
+              placeholder="ابحث في المساعدة..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Book className="h-8 w-8 mx-auto mb-3 text-blue-600" />
-                <h3 className="font-semibold mb-2">دليل المستخدم</h3>
-                <p className="text-sm text-muted-foreground mb-3">دليل شامل لاستخدام جميع الميزات</p>
-                <Button variant="outline" size="sm">
-                  عرض الدليل
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6 text-center">
-                <MessageCircle className="h-8 w-8 mx-auto mb-3 text-green-600" />
-                <h3 className="font-semibold mb-2">الدردشة المباشرة</h3>
-                <p className="text-sm text-muted-foreground mb-3">تحدث مع فريق الدعم مباشرة</p>
-                <Button variant="outline" size="sm">
-                  بدء المحادثة
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Mail className="h-8 w-8 mx-auto mb-3 text-purple-600" />
-                <h3 className="font-semibold mb-2">البريد الإلكتروني</h3>
-                <p className="text-sm text-muted-foreground mb-3">أرسل استفسارك عبر البريد</p>
-                <Button variant="outline" size="sm">
-                  إرسال رسالة
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* FAQ */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">الأسئلة الشائعة</h3>
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-right">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
         </CardContent>
       </Card>
+
+      {/* Help Topics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {helpTopics.map((topic, index) => (
+          <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-3">
+                <BookOpen className="h-5 w-5 text-blue-600 mt-1" />
+                <Badge variant="outline">{topic.difficulty}</Badge>
+              </div>
+              <h3 className="font-medium text-lg mb-2">{topic.title}</h3>
+              <p className="text-sm text-gray-600 mb-3">{topic.category}</p>
+              <Button size="sm" className="w-full">
+                قراءة الدليل
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
