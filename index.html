@@ -141,6 +141,9 @@
     
     <div id="root"></div>
     
+    <!-- Essential Lovable script for new features -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    
     <script>
       // Enhanced error handling and loading management
       let hasLoaded = false;
@@ -223,7 +226,6 @@
       // Make functions globally available
       window.hideLoading = hideLoading;
       window.showError = showError;
-      window.hasLoaded = () => hasLoaded;
       
       // Check if DOM is ready
       const initializeApp = () => {
@@ -245,7 +247,7 @@
       }
     </script>
     
-    <!-- Essential scripts -->
+    <!-- Main application script -->
     <script type="module">
       try {
         console.log('تحميل الوحدات الأساسية...');
