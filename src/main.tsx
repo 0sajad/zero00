@@ -31,9 +31,16 @@ const initializeApp = async () => {
 
   } catch (error) {
     console.error('❌ خطأ في تهيئة التطبيق:', error);
-    // استخدام الدالة العامة لعرض الخطأ
-    if (window.showError) {
+    
+    // استخدام الدالة العامة لعرض الخطأ إذا كانت متاحة
+    if (typeof window !== 'undefined' && window.showError) {
       window.showError('حدث خطأ في تحميل التطبيق. يرجى إعادة تحديث الصفحة.');
+    } else {
+      // عرض رسالة خطأ بديلة
+      const errorElement = document.getElementById('error');
+      if (errorElement) {
+        errorElement.style.display = 'flex';
+      }
     }
   }
 };
