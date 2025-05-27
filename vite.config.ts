@@ -10,6 +10,9 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    fs: {
+      strict: false
+    }
   },
   build: {
     outDir: "dist",
@@ -25,7 +28,9 @@ export default defineConfig(({ mode }) => ({
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]'
       }
-    }
+    },
+    target: 'esnext',
+    minify: 'esbuild'
   },
   plugins: [
     react(),
@@ -37,4 +42,10 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  esbuild: {
+    target: 'esnext'
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom']
+  }
 }));

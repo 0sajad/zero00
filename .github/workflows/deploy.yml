@@ -39,12 +39,25 @@ jobs:
       - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
 
+      - name: Create CNAME file (if needed)
+        run: |
+          if [ ! -z "${{ vars.CUSTOM_DOMAIN }}" ]; then
+            echo "${{ vars.CUSTOM_DOMAIN }}" > ./dist/CNAME
+          fi
+
+      - name: Fix file permissions and MIME types
+        run: |
+          find ./dist -type f -name "*.js" -exec file {} \;
+          find ./dist -type f -name "*.css" -exec file {} \;
+          
       - name: List build files (debug)
         run: |
           echo "Build directory contents:"
           ls -la ./dist/
           echo "Assets directory contents:"
           ls -la ./dist/assets/ || echo "No assets directory found"
+          echo "Checking for main files:"
+          find ./dist -name "*.js" -o -name "*.css" | head -10
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
