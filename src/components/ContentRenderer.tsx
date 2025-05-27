@@ -20,6 +20,7 @@ import SettingsPage from './Settings';
 import EnhancedHelpCenter from './EnhancedHelpCenter';
 import DeveloperMode from './DeveloperMode';
 import CMD from './CMD';
+import ComprehensiveSystemTest from './ComprehensiveSystemTest';
 
 interface ContentRendererProps {
   activeTab: string;
@@ -35,6 +36,14 @@ const ContentRenderer = ({ activeTab, userMode, onTabChange }: ContentRendererPr
       switch (activeTab) {
         case 'dashboard':
           return <NewDashboard />;
+        case 'system-test':
+          return (
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
+              <div className="max-w-7xl mx-auto">
+                <ComprehensiveSystemTest />
+              </div>
+            </div>
+          );
         case 'tools':
           return (
             <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
