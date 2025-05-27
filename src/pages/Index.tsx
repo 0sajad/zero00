@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import ModeSwitcher from '@/components/ModeSwitcher';
 import EnhancedClientMode from '@/components/EnhancedClientMode';
 import EnhancedDeveloperMode from '@/components/EnhancedDeveloperMode';
-import HelpCenter from '@/components/HelpCenter';
+import ComprehensiveHelpCenter from '@/components/ComprehensiveHelpCenter';
 import LanguageToggle from '@/components/LanguageToggle';
 import { Button } from '@/components/ui/button';
 import { LogOut, HelpCircle, Moon, Sun } from 'lucide-react';
@@ -21,6 +22,7 @@ const Index = () => {
 
   const handleLogout = () => {
     setCurrentMode(null);
+    setShowHelp(false);
   };
 
   useEffect(() => {
@@ -38,7 +40,9 @@ const Index = () => {
                 OCTA NETWORK
               </h1>
               <span className="text-sm text-gray-500 dark:text-gray-400">
-                {currentMode === 'client' ? t('clientMode') : t('developerMode')}
+                {showHelp ? 'مركز المساعدة الشامل' : 
+                 currentMode === 'client' ? t('clientMode') : 
+                 currentMode === 'developer' ? t('developerMode') : 'اختيار الوضع'}
               </span>
             </div>
             <div className="flex items-center space-x-4">
@@ -54,23 +58,25 @@ const Index = () => {
                 <span className="sr-only">Toggle theme</span>
               </Button>
               <Button 
-                onClick={() => setShowHelp(true)}
-                variant="outline"
+                onClick={() => setShowHelp(!showHelp)}
+                variant={showHelp ? "default" : "outline"}
                 size="sm"
                 className="flex items-center space-x-2"
               >
                 <HelpCircle className="h-4 w-4" />
-                <span>{t('help')}</span>
+                <span>{showHelp ? 'إغلاق المساعدة' : 'مركز المساعدة'}</span>
               </Button>
-              <Button 
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>{t('logout')}</span>
-              </Button>
+              {(currentMode || showHelp) && (
+                <Button 
+                  onClick={handleLogout}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center space-x-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>العودة للبداية</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -79,7 +85,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {showHelp ? (
-          <HelpCenter onBack={() => setShowHelp(false)} />
+          <ComprehensiveHelpCenter />
         ) : !currentMode ? (
           <ModeSwitcher onModeSelect={handleModeSelect} />
         ) : currentMode === 'client' ? (
