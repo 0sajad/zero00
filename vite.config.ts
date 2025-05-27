@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => ({
     outDir: "dist",
     assetsDir: "assets",
     sourcemap: false,
-    target: 'es2015',
+    target: 'es2020',
     minify: 'esbuild',
     assetsInlineLimit: 4096,
     rollupOptions: {
@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   esbuild: {
-    target: 'es2015'
+    target: 'es2020'
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],

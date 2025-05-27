@@ -6,12 +6,12 @@ import "./index.css";
 
 console.log('🚀 OCTA NETWORK - بدء تحميل التطبيق الرئيسي...');
 
-// تهيئة التطبيق مع معالجة محسنة للأخطاء
+// Enhanced application initialization
 const initializeApp = async () => {
   try {
     console.log('🔧 تهيئة تطبيق OCTA NETWORK...');
     
-    // التأكد من وجود العنصر الجذر
+    // Ensure root element exists
     const rootElement = document.getElementById("root");
     if (!rootElement) {
       throw new Error("Root element not found");
@@ -19,7 +19,7 @@ const initializeApp = async () => {
 
     console.log('📦 بدء عرض تطبيق React...');
     
-    // إنشاء الجذر وعرض التطبيق
+    // Create root and render app
     const root = createRoot(rootElement);
     root.render(
       <StrictMode>
@@ -29,15 +29,20 @@ const initializeApp = async () => {
 
     console.log('✅ تم عرض تطبيق React بنجاح');
 
+    // Hide loading screen if function exists
+    if (typeof window !== 'undefined' && typeof window.hideLoading === 'function') {
+      window.hideLoading();
+    }
+
   } catch (error) {
     console.error('❌ خطأ في تهيئة التطبيق:', error);
     
-    // معالجة آمنة للأخطاء
+    // Safe error handling
     try {
       if (typeof window !== 'undefined' && typeof window.showError === 'function') {
         window.showError('حدث خطأ في تحميل التطبيق. يرجى إعادة تحديث الصفحة.');
       } else {
-        // عرض رسالة خطأ بديلة
+        // Fallback error display
         const errorElement = document.getElementById('error');
         if (errorElement) {
           errorElement.style.display = 'flex';
@@ -45,7 +50,7 @@ const initializeApp = async () => {
       }
     } catch (displayError) {
       console.error('❌ خطأ في عرض رسالة الخطأ:', displayError);
-      // إظهار تنبيه بسيط كبديل أخير
+      // Final fallback
       if (typeof alert === 'function') {
         alert('حدث خطأ في تحميل التطبيق. يرجى إعادة تحديث الصفحة.');
       }
@@ -53,7 +58,7 @@ const initializeApp = async () => {
   }
 };
 
-// بدء التطبيق
+// Initialize the application
 initializeApp();
 
 console.log('📝 تم تحميل main.tsx بنجاح');

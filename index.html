@@ -14,8 +14,15 @@
     
     <meta name="twitter:card" content="summary_large_image" />
     
+    <!-- Favicon fixed -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌐%3C/text%3E%3C/svg%3E" />
+    
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="./src/styles/loading.css" as="style" />
     <link rel="stylesheet" href="./src/styles/loading.css" />
+    
+    <!-- GPT Engineer script - Required for Lovable functionality -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
   </head>
 
   <body>
@@ -26,7 +33,7 @@
     
     <div id="error" class="error-screen">
       <h2>خطأ في التحميل</h2>
-      <p>فشل في تحميل التطبيق. يرجى إعادة تحديث الصفحة أو التحقق من اتصال الإنترنت.</p>
+      <p>فشل في تحميل التطبيق الرئيسي</p>
       <button onclick="window.location.reload()">
         تحديث الصفحة
       </button>
@@ -34,120 +41,95 @@
     
     <div id="root"></div>
     
-    <script>
-      // إعداد مدير التحميل المحسن
-      console.log('🚀 OCTA NETWORK - بدء التهيئة المحسنة...');
+    <script type="module">
+      console.log('🚀 OCTA NETWORK - بدء التهيئة...');
       
-      class EnhancedLoadingManager {
+      // Enhanced Loading Manager
+      class LoadingManager {
         constructor() {
           this.hasLoaded = false;
-          this.loadingTimeout = null;
+          this.setupTimeout();
           this.setupErrorHandlers();
-          this.setLoadingTimeout();
+        }
+
+        setupTimeout() {
+          setTimeout(() => {
+            if (!this.hasLoaded) {
+              this.showError('انتهت مهلة التحميل');
+            }
+          }, 10000);
         }
 
         setupErrorHandlers() {
           window.addEventListener('error', (event) => {
-            console.error('خطأ في النافذة:', event.error || event.message);
+            console.error('خطأ في النافذة:', event.error);
             if (!this.hasLoaded) {
               this.showError('حدث خطأ في تحميل التطبيق');
             }
           });
-
-          window.addEventListener('unhandledrejection', (event) => {
-            console.error('Promise مرفوض:', event.reason);
-            if (!this.hasLoaded) {
-              this.showError('حدث خطأ في تحميل التطبيق');
-            }
-          });
-        }
-
-        setLoadingTimeout() {
-          this.loadingTimeout = setTimeout(() => {
-            if (!this.hasLoaded) {
-              console.warn('انتهت مهلة التحميل');
-              this.showError('انتهت مهلة التحميل. يرجى إعادة تحديث الصفحة.');
-            }
-          }, 15000);
         }
 
         hideLoading() {
-          try {
-            this.hasLoaded = true;
-            if (this.loadingTimeout) clearTimeout(this.loadingTimeout);
-            
-            const loadingElement = document.getElementById('loading');
-            const rootElement = document.getElementById('root');
-            
-            if (loadingElement) {
-              loadingElement.style.display = 'none';
-            }
-            
-            if (rootElement) {
-              rootElement.classList.add('loaded');
-              rootElement.style.display = 'block';
-            }
-            
-            document.body.style.overflow = 'auto';
-            console.log('✅ تم إخفاء شاشة التحميل بنجاح');
-          } catch (error) {
-            console.error('خطأ في إخفاء شاشة التحميل:', error);
+          this.hasLoaded = true;
+          const loading = document.getElementById('loading');
+          const root = document.getElementById('root');
+          
+          if (loading) loading.style.display = 'none';
+          if (root) {
+            root.style.display = 'block';
+            root.classList.add('loaded');
           }
+          
+          console.log('✅ تم إخفاء شاشة التحميل');
         }
 
-        showError(errorMessage) {
-          try {
-            const loadingElement = document.getElementById('loading');
-            const errorElement = document.getElementById('error');
-            const errorText = errorElement?.querySelector('p');
-            
-            if (loadingElement) {
-              loadingElement.style.display = 'none';
+        showError(message) {
+          const loading = document.getElementById('loading');
+          const error = document.getElementById('error');
+          const errorText = error?.querySelector('p');
+          
+          if (loading) loading.style.display = 'none';
+          if (error) {
+            error.style.display = 'flex';
+            if (errorText && message) {
+              errorText.textContent = message;
             }
-            
-            if (errorElement) {
-              errorElement.style.display = 'flex';
-              if (errorText && errorMessage) {
-                errorText.textContent = errorMessage;
-              }
-            }
-            
-            console.log('تم عرض شاشة الخطأ');
-          } catch (error) {
-            console.error('خطأ في عرض شاشة الخطأ:', error);
           }
+          
+          console.error('تم عرض شاشة الخطأ:', message);
         }
       }
 
-      const loadingManager = new EnhancedLoadingManager();
-      window.hideLoading = () => loadingManager.hideLoading();
-      window.showError = (message) => loadingManager.showError(message);
+      const manager = new LoadingManager();
+      window.hideLoading = () => manager.hideLoading();
+      window.showError = (msg) => manager.showError(msg);
 
-      // تحميل التطبيق الرئيسي
-      const initializeApp = async () => {
+      // Load main application
+      async function initApp() {
         try {
-          console.log('🔧 بدء تهيئة التطبيق...');
+          console.log('🔧 بدء تحميل التطبيق...');
           
-          // تحميل الوحدة الرئيسية
+          // Import main module with proper error handling
           const mainModule = await import('./src/main.tsx');
-          console.log('✅ تم تحميل الوحدة الرئيسية بنجاح');
           
-          // إخفاء شاشة التحميل
+          console.log('✅ تم تحميل التطبيق بنجاح');
+          
+          // Hide loading after successful import
           setTimeout(() => {
-            loadingManager.hideLoading();
+            manager.hideLoading();
           }, 500);
           
         } catch (error) {
           console.error('❌ خطأ في تحميل التطبيق:', error);
-          loadingManager.showError('فشل في تحميل التطبيق الرئيسي');
+          manager.showError('فشل في تحميل التطبيق الرئيسي');
         }
-      };
+      }
 
-      // بدء التطبيق
+      // Start application
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeApp);
+        document.addEventListener('DOMContentLoaded', initApp);
       } else {
-        initializeApp();
+        initApp();
       }
     </script>
   </body>
