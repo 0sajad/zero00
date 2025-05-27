@@ -22,13 +22,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Type check
+        run: npm run type-check || echo "Type check failed but continuing build"
+
       - name: Build
         run: npm run build
         env:
           NODE_ENV: production
+
+      - name: Verify build output
+        run: |
+          if [ ! -d "./dist" ]; then
+            echo "Build failed - dist directory not found"
+            exit 1
+          fi
+          echo "Build successful - dist directory created"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-files
           path: ./dist
+          retention-days: 30

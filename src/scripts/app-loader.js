@@ -1,5 +1,5 @@
 
-import { LoadingManager } from '../utils/loadingManager.js';
+import { LoadingManager } from '../utils/loadingManager.ts';
 
 console.log('OCTA NETWORK - تهيئة التطبيق...');
 
