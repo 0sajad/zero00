@@ -1,0 +1,74 @@
+
+name: Generate Server Configurations
+
+on:
+  workflow_run:
+    workflows: ["Build Application"]
+    types:
+      - completed
+
+jobs:
+  generate-configs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+          path: ./dist
+
+      - name: Generate Apache config
+        run: |
+          cat > ./dist/.htaccess << 'EOF'
+          RewriteEngine On
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteCond %{REQUEST_URI} !^/(api|assets|favicon\.ico)/
+          RewriteRule . /index.html [L]
+          
+          <IfModule mod_mime.c>
+              AddType application/javascript .js
+              AddType application/javascript .mjs
+              AddType text/css .css
+          </IfModule>
+          
+          <IfModule mod_headers.c>
+              Header always set X-Content-Type-Options nosniff
+              Header always set X-Frame-Options SAMEORIGIN
+              Header always set X-XSS-Protection "1; mode=block"
+          </IfModule>
+          EOF
+
+      - name: Generate IIS config
+        run: |
+          cat > ./dist/web.config << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <configuration>
+              <system.webServer>
+                  <staticContent>
+                      <mimeMap fileExtension=".js" mimeType="application/javascript; charset=utf-8" />
+                      <mimeMap fileExtension=".mjs" mimeType="application/javascript; charset=utf-8" />
+                      <mimeMap fileExtension=".css" mimeType="text/css; charset=utf-8" />
+                  </staticContent>
+                  <rewrite>
+                      <rules>
+                          <rule name="SPA Routes" stopProcessing="true">
+                              <match url=".*" />
+                              <conditions logicalGrouping="MatchAll">
+                                  <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+                                  <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+                              </conditions>
+                              <action type="Rewrite" url="/index.html" />
+                          </rule>
+                      </rules>
+                  </rewrite>
+              </system.webServer>
+          </configuration>
+          EOF
+
+      - name: Upload updated build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: ./dist
+          overwrite: true
