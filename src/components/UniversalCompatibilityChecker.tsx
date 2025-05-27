@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -327,7 +326,7 @@ const UniversalCompatibilityChecker = () => {
                 {results.devices.map((device: any, index: number) => (
                   <div key={index} className="text-center p-3 border rounded-lg">
                     <div className="font-medium mb-1">{device.type}</div>
-                    <Badge className={getScoreColor(device.compatibility)} size="sm">
+                    <Badge className={getScoreColor(device.compatibility)}>
                       {device.compatibility}%
                     </Badge>
                     {device.responsive && (
