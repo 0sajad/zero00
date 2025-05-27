@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 export interface DiagnosticResult {
   component: string;
   status: 'success' | 'warning' | 'error';

@@ -94,16 +94,12 @@ const initializeApp = () => {
     // Add global error listeners
     window.addEventListener('error', (event) => {
       console.error('خطأ عام:', event.error);
-      if (!window.hasLoaded?.()) {
-        showError('حدث خطأ أثناء التحميل');
-      }
+      showError('حدث خطأ أثناء التحميل');
     });
 
     window.addEventListener('unhandledrejection', (event) => {
       console.error('خطأ في Promise:', event.reason);
-      if (!window.hasLoaded?.()) {
-        showError('خطأ في التحميل');
-      }
+      showError('خطأ في التحميل');
     });
 
     renderApp();
