@@ -1,6 +1,4 @@
 
-import React from 'react';
-
 export interface DiagnosticResult {
   component: string;
   status: 'success' | 'warning' | 'error';
@@ -22,6 +20,15 @@ export interface SystemReport {
 
 class SystemDiagnostics {
   private results: DiagnosticResult[] = [];
+
+  private addResult(component: string, status: 'success' | 'warning' | 'error', message: string, details?: any): void {
+    this.results.push({
+      component,
+      status,
+      message,
+      details
+    });
+  }
 
   // فحص تحميل المكونات الأساسية
   async checkCoreComponents(): Promise<void> {
@@ -102,7 +109,6 @@ class SystemDiagnostics {
   // فحص الأدوات
   async checkNetworkTools(): Promise<void> {
     try {
-      // فحص أدوات الشبكة المختلفة
       const tools = [
         'Speed Test',
         'Ping Tool', 
@@ -138,7 +144,11 @@ class SystemDiagnostics {
       
       // فحص CSS
       const stylesheets = document.styleSheets.length;
-      this.addResult('Stylesheets', 'success', `${stylesheets} stylesheets loaded`);
+      this.addResult('CSS', 'success', `${stylesheets} stylesheets loaded`);
+      
+      // فحص التجاوب
+      const viewport = window.innerWidth;
+      this.addResult('Responsive', 'success', `Viewport width: ${viewport}px`);
       
     } catch (error) {
       this.addResult('UI', 'error', `UI error: ${error}`);
@@ -148,43 +158,56 @@ class SystemDiagnostics {
   // فحص الأداء
   async checkPerformance(): Promise<void> {
     try {
-      if ('performance' in window) {
-        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-        const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
-        
-        if (loadTime < 3000) {
-          this.addResult('Performance', 'success', `Load time: ${loadTime}ms`);
-        } else if (loadTime < 5000) {
-          this.addResult('Performance', 'warning', `Load time: ${loadTime}ms (slower than expected)`);
-        } else {
-          this.addResult('Performance', 'error', `Load time: ${loadTime}ms (too slow)`);
-        }
-        
-        const memoryInfo = (performance as any).memory;
-        if (memoryInfo) {
-          this.addResult('Memory', 'success', `Memory usage: ${Math.round(memoryInfo.usedJSHeapSize / 1024 / 1024)}MB`);
-        }
+      const timing = performance.timing;
+      const loadTime = timing.loadEventEnd - timing.navigationStart;
+      
+      if (loadTime < 3000) {
+        this.addResult('Performance', 'success', `Load time: ${loadTime}ms - Excellent`);
+      } else if (loadTime < 5000) {
+        this.addResult('Performance', 'warning', `Load time: ${loadTime}ms - Good`);
+      } else {
+        this.addResult('Performance', 'error', `Load time: ${loadTime}ms - Needs improvement`);
       }
+      
+      // فحص الذاكرة
+      if ('memory' in performance) {
+        const memory = (performance as any).memory;
+        this.addResult('Memory', 'success', `Used: ${Math.round(memory.usedJSHeapSize / 1024 / 1024)}MB`);
+      }
+      
     } catch (error) {
-      this.addResult('Performance', 'warning', `Performance monitoring not available: ${error}`);
+      this.addResult('Performance', 'error', `Performance error: ${error}`);
     }
   }
 
-  // إضافة نتيجة
-  private addResult(component: string, status: 'success' | 'warning' | 'error', message: string, details?: any): void {
-    this.results.push({
-      component,
-      status,
-      message,
-      details
-    });
+  // فحص الأمان
+  async checkSecurity(): Promise<void> {
+    try {
+      // فحص HTTPS
+      if (window.location.protocol === 'https:') {
+        this.addResult('Security', 'success', 'HTTPS connection secure');
+      } else {
+        this.addResult('Security', 'warning', 'HTTP connection - recommend HTTPS');
+      }
+      
+      // فحص CSP
+      const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+      if (cspMeta) {
+        this.addResult('CSP', 'success', 'Content Security Policy found');
+      } else {
+        this.addResult('CSP', 'warning', 'No Content Security Policy detected');
+      }
+      
+    } catch (error) {
+      this.addResult('Security', 'error', `Security error: ${error}`);
+    }
   }
 
   // تشغيل جميع الفحوصات
-  async runFullDiagnostics(): Promise<SystemReport> {
-    console.log('بدء الفحص الشامل للنظام...');
+  async runAllChecks(): Promise<SystemReport> {
+    this.results = []; // إعادة تعيين النتائج
     
-    this.results = [];
+    console.log('🔍 بدء فحص النظام الشامل...');
     
     await this.checkCoreComponents();
     await this.checkLanguages();
@@ -192,27 +215,40 @@ class SystemDiagnostics {
     await this.checkNetworkTools();
     await this.checkUI();
     await this.checkPerformance();
+    await this.checkSecurity();
     
-    const summary = {
-      total: this.results.length,
-      success: this.results.filter(r => r.status === 'success').length,
-      warnings: this.results.filter(r => r.status === 'warning').length,
-      errors: this.results.filter(r => r.status === 'error').length
-    };
+    return this.generateReport();
+  }
+
+  // إنتاج التقرير النهائي
+  private generateReport(): SystemReport {
+    const total = this.results.length;
+    const success = this.results.filter(r => r.status === 'success').length;
+    const warnings = this.results.filter(r => r.status === 'warning').length;
+    const errors = this.results.filter(r => r.status === 'error').length;
     
-    const overall = summary.errors > 0 ? 'critical' : 
-                   summary.warnings > 0 ? 'warning' : 'healthy';
+    let overall: 'healthy' | 'warning' | 'critical' = 'healthy';
+    if (errors > 0) {
+      overall = 'critical';
+    } else if (warnings > 0) {
+      overall = 'warning';
+    }
     
-    const report: SystemReport = {
+    console.log(`✅ فحص النظام مكتمل: ${success}/${total} ناجح`);
+    
+    return {
       overall,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toLocaleString('ar-IQ'),
       results: this.results,
-      summary
+      summary: {
+        total,
+        success,
+        warnings,
+        errors
+      }
     };
-    
-    console.log('تم إكمال الفحص الشامل:', report);
-    return report;
   }
 }
 
 export const systemDiagnostics = new SystemDiagnostics();
+export default systemDiagnostics;

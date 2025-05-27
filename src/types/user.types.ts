@@ -4,7 +4,7 @@ export interface User {
   name: string;
   email?: string;
   key: string;
-  mode: 'client' | 'developer' | 'admin' | 'super-admin';
+  mode: UserMode;
   permissions: Permission[];
   createdAt: Date;
   lastLogin: Date;
@@ -34,4 +34,24 @@ export interface AuthState {
   session: UserSession | null;
   permissions: Permission[];
   loading: boolean;
+}
+
+// إضافة أنواع جديدة لضمان الاستقرار
+export interface SystemInfo {
+  version: string;
+  build: string;
+  environment: 'development' | 'production';
+  features: string[];
+}
+
+export interface NetworkConfig {
+  timeout: number;
+  retries: number;
+  endpoints: Record<string, string>;
+}
+
+export interface SecuritySettings {
+  enforceHttps: boolean;
+  sessionTimeout: number;
+  maxLoginAttempts: number;
 }
