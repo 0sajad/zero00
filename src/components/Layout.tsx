@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +15,10 @@ import {
   X,
   Globe,
   FileText,
-  Cable
+  Cable,
+  Terminal,
+  Code,
+  Key
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import NewDashboard from './NewDashboard';
@@ -28,20 +31,79 @@ import License from './License';
 import SettingsPage from './Settings';
 import EnhancedHelpCenter from './EnhancedHelpCenter';
 import Header from './Header';
+import ModeSwitcher from './ModeSwitcher';
+import LicenseValidation from './LicenseValidation';
+import DeveloperMode from './DeveloperMode';
+import CMD from './CMD';
 
 const Layout = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userMode, setUserMode] = useState<'client' | 'developer' | null>(null);
+  const [isLicenseValid, setIsLicenseValid] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{name: string, key: string} | null>(null);
   const isMobile = useIsMobile();
+
+  // Check if user has valid session
+  useEffect(() => {
+    const savedMode = localStorage.getItem('octaUserMode');
+    const savedLicense = localStorage.getItem('octaLicense');
+    
+    if (savedMode && savedLicense) {
+      setUserMode(savedMode as 'client' | 'developer');
+      setIsLicenseValid(true);
+      setCurrentUser(JSON.parse(savedLicense));
+    }
+  }, []);
+
+  const handleModeSelect = (mode: 'client' | 'developer') => {
+    setUserMode(mode);
+    localStorage.setItem('octaUserMode', mode);
+    
+    if (mode === 'developer') {
+      // Developer mode doesn't require license validation
+      setIsLicenseValid(true);
+      setCurrentUser({ name: 'Developer', key: 'DEV-ACCESS' });
+    }
+  };
+
+  const handleLicenseValidation = (name: string, key: string) => {
+    setIsLicenseValid(true);
+    setCurrentUser({ name, key });
+    localStorage.setItem('octaLicense', JSON.stringify({ name, key }));
+  };
+
+  const handleLogout = () => {
+    setUserMode(null);
+    setIsLicenseValid(false);
+    setCurrentUser(null);
+    localStorage.removeItem('octaUserMode');
+    localStorage.removeItem('octaLicense');
+    setActiveTab('dashboard');
+  };
+
+  // If no mode selected, show mode switcher
+  if (!userMode) {
+    return <ModeSwitcher onModeSelect={handleModeSelect} />;
+  }
+
+  // If client mode and no valid license, show license validation
+  if (userMode === 'client' && !isLicenseValid) {
+    return <LicenseValidation onValidLicense={handleLicenseValidation} />;
+  }
 
   const navigationItems = [
     { id: 'dashboard', name: 'لوحة التحكم', icon: <Activity className="h-5 w-5" />, badge: null },
     { id: 'tools', name: 'أدوات الفحص المتطورة', icon: <Zap className="h-5 w-5" />, badge: 'جديد' },
     { id: 'fiber-tools', name: 'فحص الكابل الضوئي', icon: <Cable className="h-5 w-5" />, badge: 'Pro' },
     { id: 'network-scanner', name: 'ماسح الشبكة', icon: <Scan className="h-5 w-5" />, badge: null },
+    { id: 'cmd', name: 'وحدة التحكم CMD', icon: <Terminal className="h-5 w-5" />, badge: 'Terminal' },
     { id: 'simulation', name: 'المحاكاة', icon: <Globe className="h-5 w-5" />, badge: 'Beta' },
     { id: 'ai-assistant', name: 'مساعد ذكي', icon: <Bot className="h-5 w-5" />, badge: 'AI' },
     { id: 'security', name: 'الأمان المتقدم', icon: <Shield className="h-5 w-5" />, badge: '94%' },
+    ...(userMode === 'developer' ? [
+      { id: 'developer', name: 'وضع المطور', icon: <Code className="h-5 w-5" />, badge: 'DEV' }
+    ] : []),
     { id: 'settings', name: 'الإعدادات', icon: <Settings className="h-5 w-5" />, badge: null },
     { id: 'help', name: 'مركز المساعدة', icon: <HelpCircle className="h-5 w-5" />, badge: 'عراقي' },
     { id: 'license', name: 'الترخيص', icon: <FileText className="h-5 w-5" />, badge: null },
@@ -84,6 +146,14 @@ const Layout = () => {
               </div>
             </div>
           );
+        case 'cmd':
+          return (
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
+              <div className="max-w-5xl mx-auto">
+                <CMD isDeveloper={userMode === 'developer'} />
+              </div>
+            </div>
+          );
         case 'simulation':
           return (
             <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
@@ -100,6 +170,17 @@ const Layout = () => {
               </div>
             </div>
           );
+        case 'developer':
+          if (userMode === 'developer') {
+            return (
+              <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
+                <div className="max-w-7xl mx-auto">
+                  <DeveloperMode />
+                </div>
+              </div>
+            );
+          }
+          return null;
         case 'settings':
           return (
             <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
@@ -229,11 +310,17 @@ const Layout = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
-                  <Activity className="h-6 w-6 text-blue-600" />
+                  {userMode === 'developer' ? (
+                    <Code className="h-6 w-6 text-red-600" />
+                  ) : (
+                    <Activity className="h-6 w-6 text-blue-600" />
+                  )}
                 </div>
                 <div className="min-w-0">
                   <h1 className="text-lg font-bold text-white truncate">OCTA NETWORK</h1>
-                  <p className="text-xs text-blue-100 truncate">الجيل الجديد من مراقبة الشبكات</p>
+                  <p className="text-xs text-blue-100 truncate">
+                    {userMode === 'developer' ? 'Developer Mode' : 'Client Mode'}
+                  </p>
                 </div>
               </div>
               
@@ -246,6 +333,26 @@ const Layout = () => {
                 <X className="h-4 w-4" />
               </Button>
             </div>
+            
+            {/* User Info */}
+            {currentUser && (
+              <div className="mt-3 p-2 bg-white/10 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0">
+                    <p className="text-xs text-white font-medium truncate">{currentUser.name}</p>
+                    <p className="text-xs text-blue-200 font-mono truncate">{currentUser.key}</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={handleLogout}
+                    className="text-white hover:bg-white/20 text-xs px-2 py-1"
+                  >
+                    خروج
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Navigation */}
@@ -256,7 +363,9 @@ const Layout = () => {
                 variant={activeTab === item.id ? 'default' : 'ghost'}
                 className={`w-full justify-start h-12 px-4 text-right transition-all ${
                   activeTab === item.id 
-                    ? 'bg-blue-600 text-white shadow-md' 
+                    ? userMode === 'developer' 
+                      ? 'bg-red-600 text-white shadow-md' 
+                      : 'bg-blue-600 text-white shadow-md'
                     : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
                 }`}
                 onClick={() => handleTabChange(item.id)}
@@ -280,7 +389,9 @@ const Layout = () => {
           {/* Sidebar Footer */}
           <div className="p-4 border-t border-gray-200 bg-white">
             <div className="text-center">
-              <p className="text-xs text-gray-500">الإصدار 3.0 - متطور</p>
+              <p className="text-xs text-gray-500">
+                الإصدار 3.0 - {userMode === 'developer' ? 'Developer' : 'Professional'}
+              </p>
               <p className="text-xs text-gray-400">جميع الحقوق محفوظة © 2024</p>
             </div>
           </div>
