@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound";
+import ComprehensiveAuditPage from "./pages/ComprehensiveAuditPage";
 import './locales/i18n';
 
 const queryClient = new QueryClient({
@@ -20,7 +21,7 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  console.log('OCTA NETWORK App - التهيئة النهائية...');
+  console.log('OCTA NETWORK App - التهيئة النهائية المحدثة...');
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -37,6 +38,7 @@ const App = () => {
               <Sonner />
               <Routes>
                 <Route path="/" element={<Layout />} />
+                <Route path="/comprehensive-audit" element={<ComprehensiveAuditPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
