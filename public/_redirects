@@ -1,2 +1,13 @@
 
+# Netlify redirects for OCTA NETWORK
+/*    /index.html   200
+
+# Handle API routes if any
+/api/*  /api/:splat  200
+
+# Handle assets
+/assets/*  /assets/:splat  200
+/src/*  /src/:splat  200
+
+# Fallback for all other routes
 /*    /index.html   200

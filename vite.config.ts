@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "./", // استخدام مسار نسبي للتوافق مع جميع الدومينات
+  base: "./", // مسار نسبي للتوافق مع جميع الدومينات
   server: {
     host: "::",
     port: 8080,
@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
     sourcemap: false,
     target: 'esnext',
     minify: 'esbuild',
-    assetsInlineLimit: 4096, // تحسين حجم الملفات
+    assetsInlineLimit: 4096,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -29,8 +29,8 @@ export default defineConfig(({ mode }) => ({
           router: ['react-router-dom'],
           query: ['@tanstack/react-query']
         },
-        entryFileNames: 'assets/[name]-[hash].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        chunkFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
           if (!assetInfo.name) return 'assets/[name]-[hash][extname]';
           
@@ -42,7 +42,7 @@ export default defineConfig(({ mode }) => ({
           if (/css/i.test(ext)) {
             return `assets/css/[name]-[hash][extname]`;
           }
-          if (/js|mjs/i.test(ext)) {
+          if (/js|mjs|tsx?|jsx?/i.test(ext)) {
             return `assets/js/[name]-[hash][extname]`;
           }
           return `assets/[name]-[hash][extname]`;

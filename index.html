@@ -14,7 +14,7 @@
     
     <meta name="twitter:card" content="summary_large_image" />
     
-    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌐%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./src/styles/loading.css" />
   </head>
 
@@ -34,7 +34,123 @@
     
     <div id="root"></div>
     
+    <script type="module">
+      // إعداد مدير التحميل المحسن
+      console.log('🚀 OCTA NETWORK - بدء التهيئة المحسنة...');
+      
+      class EnhancedLoadingManager {
+        constructor() {
+          this.hasLoaded = false;
+          this.loadingTimeout = null;
+          this.setupErrorHandlers();
+          this.setLoadingTimeout();
+        }
+
+        setupErrorHandlers() {
+          window.addEventListener('error', (event) => {
+            console.error('خطأ في النافذة:', event.error || event.message);
+            if (!this.hasLoaded) {
+              this.showError('حدث خطأ في تحميل التطبيق');
+            }
+          });
+
+          window.addEventListener('unhandledrejection', (event) => {
+            console.error('Promise مرفوض:', event.reason);
+            if (!this.hasLoaded) {
+              this.showError('حدث خطأ في تحميل التطبيق');
+            }
+          });
+        }
+
+        setLoadingTimeout() {
+          this.loadingTimeout = setTimeout(() => {
+            if (!this.hasLoaded) {
+              console.warn('انتهت مهلة التحميل');
+              this.showError('انتهت مهلة التحميل. يرجى إعادة تحديث الصفحة.');
+            }
+          }, 15000);
+        }
+
+        hideLoading() {
+          try {
+            this.hasLoaded = true;
+            if (this.loadingTimeout) clearTimeout(this.loadingTimeout);
+            
+            const loadingElement = document.getElementById('loading');
+            const rootElement = document.getElementById('root');
+            
+            if (loadingElement) {
+              loadingElement.style.display = 'none';
+            }
+            
+            if (rootElement) {
+              rootElement.classList.add('loaded');
+              rootElement.style.display = 'block';
+            }
+            
+            document.body.style.overflow = 'auto';
+            console.log('✅ تم إخفاء شاشة التحميل بنجاح');
+          } catch (error) {
+            console.error('خطأ في إخفاء شاشة التحميل:', error);
+          }
+        }
+
+        showError(errorMessage) {
+          try {
+            const loadingElement = document.getElementById('loading');
+            const errorElement = document.getElementById('error');
+            const errorText = errorElement?.querySelector('p');
+            
+            if (loadingElement) {
+              loadingElement.style.display = 'none';
+            }
+            
+            if (errorElement) {
+              errorElement.style.display = 'flex';
+              if (errorText && errorMessage) {
+                errorText.textContent = errorMessage;
+              }
+            }
+            
+            console.log('تم عرض شاشة الخطأ');
+          } catch (error) {
+            console.error('خطأ في عرض شاشة الخطأ:', error);
+          }
+        }
+      }
+
+      const loadingManager = new EnhancedLoadingManager();
+      window.hideLoading = () => loadingManager.hideLoading();
+      window.showError = (message) => loadingManager.showError(message);
+
+      // تحميل التطبيق الرئيسي
+      const initializeApp = async () => {
+        try {
+          console.log('🔧 بدء تهيئة التطبيق...');
+          
+          // تحميل الوحدة الرئيسية
+          const mainModule = await import('./src/main.tsx');
+          console.log('✅ تم تحميل الوحدة الرئيسية بنجاح');
+          
+          // إخفاء شاشة التحميل
+          setTimeout(() => {
+            loadingManager.hideLoading();
+          }, 500);
+          
+        } catch (error) {
+          console.error('❌ خطأ في تحميل التطبيق:', error);
+          loadingManager.showError('فشل في تحميل التطبيق الرئيسي');
+        }
+      };
+
+      // بدء التطبيق
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeApp);
+      } else {
+        initializeApp();
+      }
+    </script>
+    
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script src="./src/scripts/app-loader.js" type="module"></script>
   </body>
 </html>

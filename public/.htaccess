@@ -1,22 +1,17 @@
 
-# Apache configuration for OCTA NETWORK - Enhanced for all domains
+# Apache configuration for OCTA NETWORK - Enhanced
 
 # Enable rewrite engine
 RewriteEngine On
 
 # Security headers
 <IfModule mod_headers.c>
-    # Prevent MIME type sniffing
     Header always set X-Content-Type-Options nosniff
-    
-    # Frame options
     Header always set X-Frame-Options SAMEORIGIN
-    
-    # XSS Protection
     Header always set X-XSS-Protection "1; mode=block"
     
-    # Proper Content-Type for JavaScript files
-    <FilesMatch "\.(js|mjs)$">
+    # Proper Content-Type for all file types
+    <FilesMatch "\.(js|mjs|tsx?|jsx?)$">
         Header set Content-Type "application/javascript; charset=utf-8"
     </FilesMatch>
     
@@ -33,10 +28,13 @@ RewriteEngine On
     </FilesMatch>
 </IfModule>
 
-# Set proper MIME types
+# Set proper MIME types for all files
 <IfModule mod_mime.c>
     AddType application/javascript .js
     AddType application/javascript .mjs
+    AddType application/javascript .ts
+    AddType application/javascript .tsx
+    AddType application/javascript .jsx
     AddType text/css .css
     AddType text/html .html
     AddType application/json .json
@@ -47,11 +45,11 @@ RewriteEngine On
     AddType image/svg+xml .svg
 </IfModule>
 
-# Handle client-side routing (SPA)
+# Handle client-side routing (SPA) - improved
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/(api|assets|favicon\.ico)/
-RewriteRule . /index.html [L]
+RewriteCond %{REQUEST_URI} !^/(api|assets|src|favicon\.ico|manifest\.json)/
+RewriteRule ^(.*)$ /index.html [L,QSA]
 
 # Enable compression
 <IfModule mod_deflate.c>
@@ -80,17 +78,6 @@ RewriteRule . /index.html [L]
     ExpiresByType font/woff "access plus 1 year"
     ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
-
-# Prevent access to source files
-<Files "*.tsx">
-    Order allow,deny
-    Deny from all
-</Files>
-
-<Files "*.ts">
-    Order allow,deny
-    Deny from all
-</Files>
 
 # Custom 404 handling
 ErrorDocument 404 /index.html
