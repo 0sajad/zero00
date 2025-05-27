@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Activity, 
-  Wifi, 
   Shield, 
   Settings, 
   HelpCircle, 
@@ -19,7 +18,6 @@ import {
   Cable
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import Dashboard from './Dashboard';
 import NewDashboard from './NewDashboard';
 import AIAssistant from './AIAssistant';
 import NetworkScanner from './NetworkScanner';
@@ -64,7 +62,7 @@ const Layout = () => {
           return <NewDashboard />;
         case 'tools':
           return (
-            <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
               <div className="max-w-7xl mx-auto">
                 <Tools />
               </div>
@@ -72,7 +70,7 @@ const Layout = () => {
           );
         case 'fiber-tools':
           return (
-            <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
               <div className="max-w-7xl mx-auto">
                 <FiberOpticTools />
               </div>
@@ -80,7 +78,7 @@ const Layout = () => {
           );
         case 'network-scanner':
           return (
-            <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
               <div className="max-w-5xl mx-auto">
                 <NetworkScanner />
               </div>
@@ -88,7 +86,7 @@ const Layout = () => {
           );
         case 'simulation':
           return (
-            <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
               <div className="max-w-5xl mx-auto">
                 <Simulation />
               </div>
@@ -96,7 +94,7 @@ const Layout = () => {
           );
         case 'ai-assistant':
           return (
-            <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-2 sm:p-4 lg:p-6">
+            <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-3 sm:p-4 lg:p-6">
               <div className="h-full max-w-5xl mx-auto">
                 <AIAssistant />
               </div>
@@ -104,7 +102,7 @@ const Layout = () => {
           );
         case 'settings':
           return (
-            <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
               <div className="max-w-5xl mx-auto">
                 <SettingsPage />
               </div>
@@ -112,7 +110,7 @@ const Layout = () => {
           );
         case 'help':
           return (
-            <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
               <div className="max-w-5xl mx-auto">
                 <HelpCenter />
               </div>
@@ -120,7 +118,7 @@ const Layout = () => {
           );
         case 'license':
           return (
-            <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
               <div className="max-w-5xl mx-auto">
                 <License />
               </div>
@@ -128,7 +126,7 @@ const Layout = () => {
           );
         case 'security':
           return (
-            <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-6">
+            <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
               <div className="max-w-5xl mx-auto">
                 <Card className="p-4 sm:p-6 lg:p-8 text-center shadow-lg">
                   <Shield className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-green-600" />
@@ -138,7 +136,7 @@ const Layout = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
                     <div className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
                       <div className="flex items-center justify-center mb-2">
-                        <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 mr-2" />
+                        <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 ml-2" />
                         <span className="text-green-800 font-medium text-sm sm:text-base">جدار الحماية</span>
                       </div>
                       <p className="text-green-700 text-xs sm:text-sm">✅ نشط ومحدث</p>
@@ -146,7 +144,7 @@ const Layout = () => {
                     
                     <div className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
                       <div className="flex items-center justify-center mb-2">
-                        <Scan className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 mr-2" />
+                        <Scan className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 ml-2" />
                         <span className="text-green-800 font-medium text-sm sm:text-base">فحص الفيروسات</span>
                       </div>
                       <p className="text-green-700 text-xs sm:text-sm">✅ فحص مستمر</p>
@@ -154,7 +152,7 @@ const Layout = () => {
                     
                     <div className="bg-blue-50 p-3 sm:p-4 rounded-lg border border-blue-200">
                       <div className="flex items-center justify-center mb-2">
-                        <Wifi className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 mr-2" />
+                        <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 ml-2" />
                         <span className="text-blue-800 font-medium text-sm sm:text-base">تشفير الشبكة</span>
                       </div>
                       <p className="text-blue-700 text-xs sm:text-sm">🔒 WPA3 محدث</p>
@@ -162,7 +160,7 @@ const Layout = () => {
                     
                     <div className="bg-yellow-50 p-3 sm:p-4 rounded-lg border border-yellow-200">
                       <div className="flex items-center justify-center mb-2">
-                        <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-600 mr-2" />
+                        <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-600 ml-2" />
                         <span className="text-yellow-800 font-medium text-sm sm:text-base">كلمات المرور</span>
                       </div>
                       <p className="text-yellow-700 text-xs sm:text-sm">⚠️ يُنصح بالتحديث</p>
@@ -223,17 +221,17 @@ const Layout = () => {
         {/* Sidebar */}
         <div className={`${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } xl:translate-x-0 fixed xl:relative inset-y-0 left-0 z-50 w-64 xl:w-72 transition-transform duration-300 bg-white border-r border-gray-200 flex flex-col shadow-lg`}>
+        } xl:translate-x-0 fixed xl:relative inset-y-0 right-0 z-50 w-64 xl:w-72 transition-transform duration-300 bg-white border-l border-gray-200 flex flex-col shadow-lg`}>
           
           {/* Sidebar Header */}
           <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-purple-600">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3 rtl:space-x-reverse">
+              <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
                   <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                 </div>
                 <div className="min-w-0">
-                  <h1 className="text-base sm:text-lg font-bold text-white truncate">OCTA GRAM</h1>
+                  <h1 className="text-base sm:text-lg font-bold text-white truncate">OCTA NETWORK</h1>
                   <p className="text-xs text-blue-100 truncate">مراقب الشبكة المتقدم</p>
                 </div>
               </div>
@@ -264,7 +262,7 @@ const Layout = () => {
               >
                 <div className="flex items-center w-full min-w-0">
                   <div className="flex-shrink-0">{item.icon}</div>
-                  <span className="mr-2 sm:mr-3 flex-1 text-right font-medium text-sm sm:text-base truncate">{item.name}</span>
+                  <span className="ml-2 sm:ml-3 flex-1 text-right font-medium text-sm sm:text-base truncate">{item.name}</span>
                   {item.badge && (
                     <Badge 
                       variant={activeTab === item.id ? 'secondary' : 'outline'} 
@@ -293,7 +291,7 @@ const Layout = () => {
           <Button
             variant="outline"
             size="sm"
-            className="fixed top-16 left-3 z-30 xl:hidden bg-white shadow-lg border-blue-600 text-blue-600 hover:bg-blue-50 p-2"
+            className="fixed top-20 right-3 z-30 xl:hidden bg-white shadow-lg border-blue-600 text-blue-600 hover:bg-blue-50 p-2"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
             <Menu className="h-4 w-4" />
