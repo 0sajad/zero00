@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? './' : '/',
+  base: "./", // استخدام مسار نسبي للتوافق مع جميع الدومينات
   server: {
     host: "::",
     port: 8080,
@@ -20,12 +20,14 @@ export default defineConfig(({ mode }) => ({
     sourcemap: false,
     target: 'esnext',
     minify: 'esbuild',
-    assetsInlineLimit: 0,
+    assetsInlineLimit: 4096, // تحسين حجم الملفات
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+          router: ['react-router-dom'],
+          query: ['@tanstack/react-query']
         },
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
@@ -40,6 +42,9 @@ export default defineConfig(({ mode }) => ({
           if (/css/i.test(ext)) {
             return `assets/css/[name]-[hash][extname]`;
           }
+          if (/js|mjs/i.test(ext)) {
+            return `assets/js/[name]-[hash][extname]`;
+          }
           return `assets/[name]-[hash][extname]`;
         }
       }
@@ -47,8 +52,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -59,7 +63,7 @@ export default defineConfig(({ mode }) => ({
     target: 'esnext'
   },
   optimizeDeps: {
-    include: ['react', 'react-dom'],
+    include: ['react', 'react-dom', 'react-router-dom'],
     exclude: []
   }
 }));

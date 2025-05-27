@@ -4,22 +4,42 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-// Enhanced loading management with better error handling
+console.log('OCTA NETWORK - بدء تحميل التطبيق الرئيسي...');
+
+// Enhanced loading management
 const hideLoading = () => {
   try {
     const loadingElement = document.getElementById('loading');
+    const rootElement = document.getElementById('root');
+    
     if (loadingElement) {
       loadingElement.style.display = 'none';
     }
-    console.log('Loading screen hidden successfully');
+    
+    if (rootElement) {
+      rootElement.classList.add('loaded');
+      rootElement.style.display = 'block';
+    }
+    
+    if (document.body) {
+      document.body.style.overflow = 'auto';
+    }
+    
+    console.log('تم إخفاء شاشة التحميل بنجاح');
   } catch (error) {
-    console.error('Error hiding loading screen:', error);
+    console.error('خطأ في إخفاء شاشة التحميل:', error);
   }
 };
 
 const showError = (errorMessage?: string) => {
   try {
     const errorElement = document.getElementById('error');
+    const loadingElement = document.getElementById('loading');
+    
+    if (loadingElement) {
+      loadingElement.style.display = 'none';
+    }
+    
     if (errorElement) {
       errorElement.style.display = 'flex';
       if (errorMessage) {
@@ -29,35 +49,23 @@ const showError = (errorMessage?: string) => {
         }
       }
     }
-    hideLoading();
-    console.log('Error screen displayed');
+    console.log('تم عرض شاشة الخطأ');
   } catch (error) {
-    console.error('Error showing error screen:', error);
+    console.error('خطأ في عرض شاشة الخطأ:', error);
   }
 };
-
-// Make functions globally available
-declare global {
-  interface Window {
-    hideLoading: () => void;
-    showError: (message?: string) => void;
-  }
-}
-
-window.hideLoading = hideLoading;
-window.showError = showError;
 
 // Enhanced error handling for React rendering
 const renderApp = async () => {
   try {
     const rootElement = document.getElementById("root");
     if (!rootElement) {
-      throw new Error("Root element not found");
+      throw new Error("عنصر الجذر غير موجود");
     }
 
-    const root = createRoot(rootElement);
+    console.log('بدء عرض تطبيق React...');
     
-    console.log('Starting React application render...');
+    const root = createRoot(rootElement);
     
     root.render(
       <StrictMode>
@@ -65,7 +73,7 @@ const renderApp = async () => {
       </StrictMode>
     );
     
-    console.log('React application rendered successfully');
+    console.log('تم عرض تطبيق React بنجاح');
     
     // Hide loading screen after successful render
     setTimeout(() => {
@@ -73,36 +81,37 @@ const renderApp = async () => {
     }, 500);
     
   } catch (error) {
-    console.error('Error rendering React application:', error);
+    console.error('خطأ في عرض تطبيق React:', error);
     showError('فشل في تحميل التطبيق. يرجى إعادة تحديث الصفحة.');
   }
 };
 
-// Enhanced initialization with better error handling
+// Enhanced initialization
 const initializeApp = () => {
-  console.log('Initializing OCTA NETWORK application...');
+  console.log('تهيئة تطبيق OCTA NETWORK...');
   
-  // Add error listeners
-  window.addEventListener('error', (event) => {
-    console.error('Global error:', event.error);
-    if (event.error?.message?.includes('Loading chunk') || event.error?.message?.includes('Loading CSS chunk')) {
-      showError('خطأ في تحميل الموارد. يرجى إعادة تحديث الصفحة.');
-    }
-  });
+  try {
+    // Add global error listeners
+    window.addEventListener('error', (event) => {
+      console.error('خطأ عام:', event.error);
+      if (!window.hasLoaded?.()) {
+        showError('حدث خطأ أثناء التحميل');
+      }
+    });
 
-  window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection:', event.reason);
-    if (event.reason?.message?.includes('Loading') || event.reason?.message?.includes('fetch')) {
-      showError('خطأ في التحميل. يرجى المحاولة مرة أخرى.');
-    }
-  });
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('خطأ في Promise:', event.reason);
+      if (!window.hasLoaded?.()) {
+        showError('خطأ في التحميل');
+      }
+    });
 
-  renderApp();
+    renderApp();
+  } catch (error) {
+    console.error('خطأ في تهيئة التطبيق:', error);
+    showError('فشل في تهيئة التطبيق');
+  }
 };
 
-// Initialize app with proper timing
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
-} else {
-  initializeApp();
-}
+// Start initialization
+initializeApp();

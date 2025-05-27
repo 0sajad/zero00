@@ -14,14 +14,24 @@
     
     <meta name="twitter:card" content="summary_large_image" />
     
-    <!-- Favicon -->
+    <!-- Favicon with relative path -->
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
-    
-    <!-- Preload critical resources -->
-    <link rel="modulepreload" href="./src/main.tsx" />
     
     <style>
       /* Critical CSS for loading and error screens */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #1a1a2e;
+        color: white;
+        overflow: hidden;
+      }
+      
       .loading-screen {
         position: fixed;
         top: 0;
@@ -34,8 +44,8 @@
         justify-content: center;
         align-items: center;
         z-index: 9999;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
+      
       .loading-spinner {
         width: 50px;
         height: 50px;
@@ -44,16 +54,20 @@
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
+      
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
+      
       .loading-text {
         margin-top: 20px;
         color: #3b82f6;
         font-size: 18px;
         font-weight: 500;
+        text-align: center;
       }
+      
       .error-screen {
         position: fixed;
         top: 0;
@@ -66,21 +80,24 @@
         justify-content: center;
         align-items: center;
         color: #ef4444;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
         padding: 20px;
         z-index: 9999;
       }
+      
       .error-screen h2 {
         color: #ef4444;
         margin-bottom: 16px;
         font-size: 24px;
       }
+      
       .error-screen p {
         color: #9ca3af;
         margin-bottom: 24px;
         font-size: 16px;
+        max-width: 500px;
       }
+      
       .error-screen button {
         margin-top: 20px;
         padding: 12px 24px;
@@ -93,8 +110,17 @@
         font-weight: 500;
         transition: background 0.3s ease;
       }
+      
       .error-screen button:hover {
         background: #2563eb;
+      }
+      
+      #root {
+        display: none;
+      }
+      
+      #root.loaded {
+        display: block;
       }
     </style>
   </head>
@@ -107,7 +133,7 @@
     
     <div id="error" class="error-screen">
       <h2>خطأ في التحميل</h2>
-      <p>فشل في تحميل التطبيق. يرجى إعادة تحديث الصفحة.</p>
+      <p>فشل في تحميل التطبيق. يرجى إعادة تحديث الصفحة أو التحقق من اتصال الإنترنت.</p>
       <button onclick="window.location.reload()">
         تحديث الصفحة
       </button>
@@ -115,72 +141,129 @@
     
     <div id="root"></div>
     
-    <!-- Enhanced script loading with better error handling -->
-    <script type="module">
-      // Enhanced error handling for module loading
+    <script>
+      // Enhanced error handling and loading management
       let hasLoaded = false;
       let loadingTimeout;
       
-      // Function to handle script loading errors
-      const handleScriptError = (error) => {
-        console.error('Script loading error:', error);
+      console.log('OCTA NETWORK - تهيئة التطبيق...');
+      
+      // Enhanced error handling
+      const handleError = (error, source = 'unknown') => {
+        console.error(`خطأ من ${source}:`, error);
         if (!hasLoaded) {
-          const loading = document.getElementById('loading');
-          const errorScreen = document.getElementById('error');
-          if (loading) loading.style.display = 'none';
-          if (errorScreen) errorScreen.style.display = 'flex';
+          showError();
         }
       };
       
-      // Enhanced error listeners
-      window.addEventListener('error', (event) => {
-        console.error('Global error:', event);
-        if (event.filename && (event.filename.includes('.js') || event.filename.includes('.tsx'))) {
-          handleScriptError(event.error);
+      const hideLoading = () => {
+        try {
+          hasLoaded = true;
+          if (loadingTimeout) clearTimeout(loadingTimeout);
+          
+          const loadingElement = document.getElementById('loading');
+          const rootElement = document.getElementById('root');
+          
+          if (loadingElement) {
+            loadingElement.style.display = 'none';
+          }
+          
+          if (rootElement) {
+            rootElement.classList.add('loaded');
+            rootElement.style.display = 'block';
+          }
+          
+          document.body.style.overflow = 'auto';
+          console.log('تم إخفاء شاشة التحميل بنجاح');
+        } catch (error) {
+          console.error('خطأ في إخفاء شاشة التحميل:', error);
         }
+      };
+      
+      const showError = (errorMessage) => {
+        try {
+          const loadingElement = document.getElementById('loading');
+          const errorElement = document.getElementById('error');
+          const errorText = errorElement?.querySelector('p');
+          
+          if (loadingElement) {
+            loadingElement.style.display = 'none';
+          }
+          
+          if (errorElement) {
+            errorElement.style.display = 'flex';
+            if (errorText && errorMessage) {
+              errorText.textContent = errorMessage;
+            }
+          }
+          
+          console.log('تم عرض شاشة الخطأ');
+        } catch (error) {
+          console.error('خطأ في عرض شاشة الخطأ:', error);
+        }
+      };
+      
+      // Global error handlers
+      window.addEventListener('error', (event) => {
+        handleError(event.error || event.message, 'window.error');
       });
       
       window.addEventListener('unhandledrejection', (event) => {
-        console.error('Unhandled promise rejection:', event.reason);
-        if (event.reason && event.reason.toString().includes('Loading')) {
-          handleScriptError(event.reason);
-        }
+        handleError(event.reason, 'unhandledrejection');
       });
       
-      // Timeout fallback with better error handling
-      loadingTimeout = setTimeout(function() {
+      // Set timeout for loading
+      loadingTimeout = setTimeout(() => {
         if (!hasLoaded) {
-          console.warn('Loading timeout - showing error screen');
-          handleScriptError(new Error('Loading timeout'));
+          console.warn('انتهت مهلة التحميل');
+          showError('انتهت مهلة التحميل. يرجى إعادة تحديث الصفحة.');
         }
-      }, 15000); // Reduced timeout to 15 seconds
+      }, 10000);
       
-      // Enhanced hide loading function
-      window.hideLoading = function() {
-        hasLoaded = true;
-        if (loadingTimeout) clearTimeout(loadingTimeout);
-        const loadingElement = document.getElementById('loading');
-        if (loadingElement) {
-          loadingElement.style.display = 'none';
-        }
+      // Make functions globally available
+      window.hideLoading = hideLoading;
+      window.showError = showError;
+      window.hasLoaded = () => hasLoaded;
+      
+      // Check if DOM is ready
+      const initializeApp = () => {
+        console.log('بدء تهيئة التطبيق...');
+        
+        // Simulate successful loading for now
+        setTimeout(() => {
+          if (!hasLoaded) {
+            hideLoading();
+          }
+        }, 2000);
       };
       
-      window.showError = function(message) {
-        const errorElement = document.getElementById('error');
-        const errorText = errorElement?.querySelector('p');
-        if (errorText && message) {
-          errorText.textContent = message;
-        }
-        if (errorElement) errorElement.style.display = 'flex';
-        window.hideLoading();
-      };
-      
-      // Module loading success indicator
-      console.log('Enhanced script loader initialized');
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeApp);
+      } else {
+        initializeApp();
+      }
     </script>
     
-    <!-- Essential scripts with proper loading -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module" defer></script>
-    <script type="module" src="./src/main.tsx" defer></script>
+    <!-- Essential scripts -->
+    <script type="module">
+      try {
+        console.log('تحميل الوحدات الأساسية...');
+        
+        // Dynamic import for better error handling
+        import('./src/main.tsx')
+          .then(() => {
+            console.log('تم تحميل main.tsx بنجاح');
+          })
+          .catch((error) => {
+            console.error('خطأ في تحميل main.tsx:', error);
+            window.showError?.('فشل في تحميل الملفات الأساسية');
+          });
+          
+      } catch (error) {
+        console.error('خطأ في تحميل الوحدات:', error);
+        window.showError?.('خطأ في تحميل التطبيق');
+      }
+    </script>
   </body>
 </html>

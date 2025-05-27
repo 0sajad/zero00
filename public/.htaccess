@@ -1,33 +1,57 @@
 
-# Apache configuration for proper MIME types and SPA routing
+# Apache configuration for OCTA NETWORK - Enhanced for all domains
 
 # Enable rewrite engine
 RewriteEngine On
 
+# Security headers
+<IfModule mod_headers.c>
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options nosniff
+    
+    # Frame options
+    Header always set X-Frame-Options SAMEORIGIN
+    
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Proper Content-Type for JavaScript files
+    <FilesMatch "\.(js|mjs)$">
+        Header set Content-Type "application/javascript; charset=utf-8"
+    </FilesMatch>
+    
+    <FilesMatch "\.css$">
+        Header set Content-Type "text/css; charset=utf-8"
+    </FilesMatch>
+    
+    <FilesMatch "\.html$">
+        Header set Content-Type "text/html; charset=utf-8"
+    </FilesMatch>
+    
+    <FilesMatch "\.json$">
+        Header set Content-Type "application/json; charset=utf-8"
+    </FilesMatch>
+</IfModule>
+
+# Set proper MIME types
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType application/javascript .mjs
+    AddType text/css .css
+    AddType text/html .html
+    AddType application/json .json
+    AddType font/woff .woff
+    AddType font/woff2 .woff2
+    AddType font/ttf .ttf
+    AddType application/vnd.ms-fontobject .eot
+    AddType image/svg+xml .svg
+</IfModule>
+
 # Handle client-side routing (SPA)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/(api|assets|favicon\.ico)/
 RewriteRule . /index.html [L]
-
-# Set proper MIME types for JavaScript modules
-<FilesMatch "\.(js|mjs)$">
-    Header set Content-Type "application/javascript; charset=utf-8"
-</FilesMatch>
-
-<FilesMatch "\.css$">
-    Header set Content-Type "text/css; charset=utf-8"
-</FilesMatch>
-
-<FilesMatch "\.html$">
-    Header set Content-Type "text/html; charset=utf-8"
-</FilesMatch>
-
-# Alternative MIME type setting
-AddType application/javascript .js
-AddType application/javascript .mjs
-AddType text/css .css
-AddType text/html .html
-AddType application/json .json
 
 # Enable compression
 <IfModule mod_deflate.c>
@@ -40,6 +64,7 @@ AddType application/json .json
     AddOutputFilterByType DEFLATE application/rss+xml
     AddOutputFilterByType DEFLATE application/javascript
     AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
 </IfModule>
 
 # Cache static assets
@@ -52,6 +77,8 @@ AddType application/json .json
     ExpiresByType image/jpeg "access plus 1 year"
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
 
 # Prevent access to source files
@@ -64,3 +91,6 @@ AddType application/json .json
     Order allow,deny
     Deny from all
 </Files>
+
+# Custom 404 handling
+ErrorDocument 404 /index.html

@@ -12,7 +12,7 @@ import './locales/i18n';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: 2,
       staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
     },
@@ -20,24 +20,26 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  console.log('OCTA NETWORK App initializing...');
+  console.log('OCTA NETWORK App - التهيئة النهائية...');
   
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
         attribute="class"
-        defaultTheme="system"
+        defaultTheme="dark"
         enableSystem
         disableTransitionOnChange
       >
         <HashRouter>
           <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<Layout />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <div className="min-h-screen bg-background">
+              <Toaster />
+              <Sonner />
+              <Routes>
+                <Route path="/" element={<Layout />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
           </TooltipProvider>
         </HashRouter>
       </ThemeProvider>
