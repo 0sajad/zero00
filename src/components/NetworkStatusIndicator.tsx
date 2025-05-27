@@ -3,9 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Wifi, Signal, Globe, Activity, AlertTriangle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Wifi, Signal, Globe, Activity, AlertTriangle, CheckCircle } from 'lucide-react';
 
 const NetworkStatusIndicator = () => {
+  const { t } = useTranslation();
   const [networkStatus, setNetworkStatus] = useState({
     isOnline: navigator.onLine,
     quality: 95,
@@ -24,7 +26,7 @@ const NetworkStatusIndicator = () => {
         });
         const latency = Math.round(performance.now() - start);
         
-        // Simulate bandwidth test with connection API
+        // Simulate realistic bandwidth
         const connection = (navigator as any).connection;
         const bandwidth = connection?.downlink ? connection.downlink * 1000 : Math.random() * 100 + 50;
         
@@ -57,12 +59,10 @@ const NetworkStatusIndicator = () => {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Initial check
     if (networkStatus.isOnline) {
       checkNetworkQuality();
     }
 
-    // Periodic checks every 30 seconds
     const interval = setInterval(checkNetworkQuality, 30000);
 
     return () => {
@@ -72,73 +72,69 @@ const NetworkStatusIndicator = () => {
     };
   }, []);
 
-  const getQualityColor = (quality: number) => {
-    if (quality >= 90) return 'text-green-600 bg-green-100 border-green-300';
-    if (quality >= 70) return 'text-yellow-600 bg-yellow-100 border-yellow-300';
-    return 'text-red-600 bg-red-100 border-red-300';
-  };
-
   const getQualityText = (quality: number) => {
-    if (quality >= 90) return 'ممتاز';
-    if (quality >= 70) return 'جيد';
-    if (quality >= 50) return 'متوسط';
-    return 'ضعيف';
+    if (quality >= 90) return t('excellent');
+    if (quality >= 70) return t('good');
+    if (quality >= 50) return t('average');
+    return t('poor');
   };
 
   return (
     <Card className="border-2 border-blue-200 shadow-md">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center text-lg">
-          <Activity className="h-5 w-5 mr-2 text-blue-600" />
-          حالة الشبكة المباشرة
-          <Badge className="ml-2 bg-blue-100 text-blue-700">
-            Real-time by Sajad Kadhim
+        <CardTitle className="flex items-center justify-between text-lg">
+          <div className="flex items-center">
+            <Activity className="h-5 w-5 mr-2 text-blue-600" />
+            {t('networkStatus')}
+          </div>
+          <Badge className="bg-blue-100 text-blue-700 text-xs">
+            Real-time
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <CardContent>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          
           {/* Connection Status */}
-          <div className="text-center p-3 rounded-lg border">
+          <div className="text-center p-3 rounded-lg border bg-white">
             <div className="flex items-center justify-center mb-2">
               {networkStatus.isOnline ? (
-                <Wifi className="h-6 w-6 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-green-500" />
               ) : (
-                <AlertTriangle className="h-6 w-6 text-red-500" />
+                <AlertTriangle className="h-5 w-5 text-red-500" />
               )}
             </div>
             <div className="text-sm font-medium">
-              {networkStatus.isOnline ? 'متصل' : 'غير متصل'}
+              {networkStatus.isOnline ? t('online') : t('offline')}
             </div>
             <div className="text-xs text-gray-500">حالة الاتصال</div>
           </div>
 
           {/* Network Quality */}
-          <div className="text-center p-3 rounded-lg border">
-            <Signal className="h-6 w-6 mx-auto mb-2 text-blue-500" />
+          <div className="text-center p-3 rounded-lg border bg-white">
+            <Signal className="h-5 w-5 mx-auto mb-2 text-blue-500" />
             <div className="text-sm font-medium">{getQualityText(networkStatus.quality)}</div>
             <div className="text-xs text-gray-500">جودة الشبكة</div>
-            <Progress value={networkStatus.quality} className="mt-2 h-2" />
+            <Progress value={networkStatus.quality} className="mt-2 h-1" />
           </div>
 
           {/* Latency */}
-          <div className="text-center p-3 rounded-lg border">
-            <Globe className="h-6 w-6 mx-auto mb-2 text-purple-500" />
+          <div className="text-center p-3 rounded-lg border bg-white">
+            <Globe className="h-5 w-5 mx-auto mb-2 text-purple-500" />
             <div className="text-sm font-medium">{networkStatus.latency}ms</div>
             <div className="text-xs text-gray-500">زمن الاستجابة</div>
           </div>
 
           {/* Bandwidth */}
-          <div className="text-center p-3 rounded-lg border">
-            <Activity className="h-6 w-6 mx-auto mb-2 text-green-500" />
+          <div className="text-center p-3 rounded-lg border bg-white">
+            <Activity className="h-5 w-5 mx-auto mb-2 text-green-500" />
             <div className="text-sm font-medium">{networkStatus.bandwidth} Kbps</div>
             <div className="text-xs text-gray-500">عرض النطاق</div>
           </div>
         </div>
 
-        <div className="text-xs text-gray-500 text-center">
-          آخر فحص: {networkStatus.lastChecked.toLocaleTimeString('ar-IQ')} | 
-          مطور بواسطة Sajad Kadhim
+        <div className="text-xs text-gray-500 text-center mt-3">
+          آخر فحص: {networkStatus.lastChecked.toLocaleTimeString('ar-IQ')}
         </div>
       </CardContent>
     </Card>
