@@ -14,8 +14,10 @@ import {
   HelpCircle,
   Globe,
   BarChart3,
-  Crown,
-  Star
+  Shield,
+  Star,
+  Wifi,
+  Activity
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ThemeToggle from './ThemeToggle';
@@ -39,76 +41,86 @@ const Header = ({ onNavigate }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 border-b border-blue-300 px-4 py-3 sticky top-0 z-50 shadow-lg">
+    <header className="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 border-b border-slate-700 px-4 py-3 sticky top-0 z-50 shadow-2xl backdrop-blur-md">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         
-        {/* Logo */}
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
-            <Crown className="h-6 w-6 text-yellow-400" />
+        {/* Logo Section - New Design */}
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3 bg-gradient-to-r from-blue-600 to-purple-600 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-white/20 shadow-lg">
+            <div className="relative">
+              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
+                <Wifi className="h-5 w-5 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+            </div>
             <div className="text-right">
-              <div className="text-white font-bold text-lg">OCTA NETWORK</div>
-              <div className="text-blue-100 text-xs">{t('developedBy')}</div>
+              <div className="text-white font-bold text-xl tracking-wide">OCTA NETWORK</div>
+              <div className="text-blue-200 text-xs font-medium">{t('developedBy')}</div>
             </div>
           </div>
         </div>
 
-        {/* Center - Premium Status */}
-        <div className="hidden lg:block">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2 text-center">
-            <div className="flex items-center justify-center space-x-2">
-              <Star className="h-4 w-4 text-yellow-400" />
-              <span className="text-white font-medium">Professional License</span>
-              <Badge className="bg-yellow-400 text-black text-xs">Premium</Badge>
+        {/* Center Status - New Design */}
+        <div className="hidden lg:flex items-center space-x-4">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-6 py-3 flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <Activity className="h-5 w-5 text-green-400 animate-pulse" />
+              <span className="text-white font-semibold">Professional System</span>
             </div>
+            <div className="w-px h-6 bg-white/30"></div>
+            <Badge className="bg-gradient-to-r from-green-400 to-emerald-500 text-black font-bold px-3 py-1 rounded-full">
+              <Star className="h-3 w-3 mr-1" />
+              PREMIUM
+            </Badge>
           </div>
         </div>
 
-        {/* Right side - Navigation */}
-        <div className="flex items-center space-x-2">
+        {/* Right Navigation - Enhanced */}
+        <div className="flex items-center space-x-3">
           
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-2">
             <Button 
               variant="ghost"
-              className="text-white hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm font-medium"
+              className="text-white hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent hover:border-white/30"
               onClick={() => handleNavigation('dashboard')}
             >
-              <BarChart3 className="h-4 w-4 ml-1" />
+              <BarChart3 className="h-4 w-4 ml-2" />
               {t('dashboard')}
             </Button>
 
             <Button 
               variant="ghost"
-              className="text-white hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm font-medium"
+              className="text-white hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent hover:border-white/30"
               onClick={() => handleNavigation('tools')}
             >
-              <Zap className="h-4 w-4 ml-1" />
+              <Zap className="h-4 w-4 ml-2" />
               {t('tools')}
             </Button>
 
             <Button 
               variant="ghost"
-              className="text-white hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm font-medium"
-              onClick={() => handleNavigation('ai-assistant')}
+              className="text-white hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent hover:border-white/30"
+              onClick={() => handleNavigation('security')}
             >
-              <Bot className="h-4 w-4 ml-1" />
-              {t('aiAssistant')}
+              <Shield className="h-4 w-4 ml-2" />
+              {t('security')}
             </Button>
 
             <Button 
               variant="ghost"
-              className="text-white hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm font-medium"
+              className="text-white hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent hover:border-white/30"
               onClick={() => handleNavigation('help')}
             >
-              <HelpCircle className="h-4 w-4 ml-1" />
+              <HelpCircle className="h-4 w-4 ml-2" />
               {t('help')}
             </Button>
           </div>
 
-          {/* Language and Theme */}
-          <div className="flex items-center space-x-1">
+          {/* Controls Section */}
+          <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-md rounded-xl px-3 py-2 border border-white/20">
             <LanguageToggle />
+            <div className="w-px h-6 bg-white/30"></div>
             <ThemeToggle />
           </div>
 
@@ -116,22 +128,25 @@ const Header = ({ onNavigate }: HeaderProps) => {
           {isMobile && (
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="p-2 text-white hover:bg-white/20">
-                  <Menu className="h-4 w-4" />
+                <Button variant="ghost" size="sm" className="p-3 text-white hover:bg-white/20 rounded-xl border border-white/20">
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80 bg-gradient-to-b from-blue-600 to-purple-600 text-white">
+              <SheetContent side="right" className="w-80 bg-gradient-to-b from-slate-900 to-blue-900 text-white border-l border-white/20">
                 <SheetHeader>
-                  <SheetTitle className="text-right text-lg text-white flex items-center justify-end space-x-2">
-                    <span>قائمة التنقل</span>
-                    <Crown className="h-5 w-5 text-yellow-400" />
+                  <SheetTitle className="text-right text-xl text-white flex items-center justify-end space-x-3">
+                    <span>قائمة التنقل المتطورة</span>
+                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                      <Wifi className="h-5 w-5 text-white" />
+                    </div>
                   </SheetTitle>
                 </SheetHeader>
                 
-                <div className="flex flex-col space-y-4 mt-6">
+                <div className="flex flex-col space-y-3 mt-8">
                   {[
                     { id: 'dashboard', name: t('dashboard'), icon: BarChart3 },
                     { id: 'tools', name: t('tools'), icon: Zap },
+                    { id: 'security', name: t('security'), icon: Shield },
                     { id: 'ai-assistant', name: t('aiAssistant'), icon: Bot },
                     { id: 'help', name: t('help'), icon: HelpCircle },
                     { id: 'settings', name: t('settings'), icon: Settings }
@@ -139,13 +154,20 @@ const Header = ({ onNavigate }: HeaderProps) => {
                     <Button 
                       key={item.id}
                       variant="ghost" 
-                      className="w-full justify-start text-right h-12 px-4 text-white hover:bg-white/20"
+                      className="w-full justify-start text-right h-14 px-4 text-white hover:bg-white/20 rounded-xl border border-transparent hover:border-white/30 transition-all duration-200"
                       onClick={() => handleNavigation(item.id)}
                     >
-                      <item.icon className="h-4 w-4" />
-                      <span className="mr-3 flex-1 text-right font-medium">{item.name}</span>
+                      <item.icon className="h-5 w-5" />
+                      <span className="mr-4 flex-1 text-right font-medium text-lg">{item.name}</span>
                     </Button>
                   ))}
+                </div>
+
+                <div className="absolute bottom-6 left-4 right-4">
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center">
+                    <div className="text-white font-semibold">OCTA NETWORK</div>
+                    <div className="text-blue-200 text-sm">Professional Edition</div>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
