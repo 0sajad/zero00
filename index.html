@@ -17,6 +17,9 @@
     <meta name="twitter:site" content="@octagram_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     
+    <!-- Preload critical resources -->
+    <link rel="preload" href="./src/main.tsx" as="script" type="module" />
+    
     <style>
       /* Loading screen styles */
       .loading-screen {
@@ -102,36 +105,33 @@
     
     <div id="root"></div>
     
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module" defer></script>
-    <script type="module">
+    <!-- Critical: Lovable script with proper MIME type handling -->
+    <script type="module" defer>
       // Enhanced error handling for module loading
       let hasLoaded = false;
       
-      window.addEventListener('error', function(e) {
-        console.error('Script loading error:', e);
+      // Function to handle script loading errors
+      const handleScriptError = (error) => {
+        console.error('Script loading error:', error);
         if (!hasLoaded) {
           document.getElementById('loading').style.display = 'none';
           document.getElementById('error').style.display = 'flex';
         }
-      });
+      };
       
-      window.addEventListener('unhandledrejection', function(e) {
+      window.addEventListener('error', handleScriptError);
+      window.addEventListener('unhandledrejection', (e) => {
         console.error('Unhandled promise rejection:', e);
-        if (!hasLoaded) {
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('error').style.display = 'flex';
-        }
+        handleScriptError(e);
       });
       
       // Timeout fallback with better error handling
       const loadingTimeout = setTimeout(function() {
         if (!hasLoaded && document.getElementById('loading').style.display !== 'none') {
           console.warn('Loading timeout - showing error screen');
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('error').style.display = 'flex';
+          handleScriptError(new Error('Loading timeout'));
         }
-      }, 15000);
+      }, 20000);
       
       // Enhanced hide loading function
       window.hideLoading = function() {
@@ -143,11 +143,19 @@
         }
       };
       
+      window.showError = function() {
+        document.getElementById('error').style.display = 'flex';
+        window.hideLoading();
+      };
+      
       // Module loading success indicator
       window.addEventListener('DOMContentLoaded', function() {
         console.log('DOM loaded, initializing application...');
       });
     </script>
+    
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module" defer></script>
     <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>

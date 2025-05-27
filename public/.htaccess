@@ -9,11 +9,25 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.html [L]
 
-# Set proper MIME types
+# Set proper MIME types for JavaScript modules
+<FilesMatch "\.(js|mjs)$">
+    Header set Content-Type "application/javascript; charset=utf-8"
+</FilesMatch>
+
+<FilesMatch "\.css$">
+    Header set Content-Type "text/css; charset=utf-8"
+</FilesMatch>
+
+<FilesMatch "\.html$">
+    Header set Content-Type "text/html; charset=utf-8"
+</FilesMatch>
+
+# Alternative MIME type setting
 AddType application/javascript .js
 AddType application/javascript .mjs
 AddType text/css .css
 AddType text/html .html
+AddType application/json .json
 
 # Enable compression
 <IfModule mod_deflate.c>
@@ -39,3 +53,14 @@ AddType text/html .html
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
 </IfModule>
+
+# Prevent access to source files
+<Files "*.tsx">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.ts">
+    Order allow,deny
+    Deny from all
+</Files>

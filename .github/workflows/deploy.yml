@@ -45,11 +45,46 @@ jobs:
             echo "${{ vars.CUSTOM_DOMAIN }}" > ./dist/CNAME
           fi
 
-      - name: Fix file permissions and MIME types
+      - name: Fix MIME types and file extensions
         run: |
-          find ./dist -type f -name "*.js" -exec file {} \;
-          find ./dist -type f -name "*.css" -exec file {} \;
+          echo "Fixing MIME types for JavaScript and CSS files..."
+          find ./dist -name "*.js" -type f -exec file {} \;
+          find ./dist -name "*.css" -type f -exec file {} \;
           
+          # Ensure proper file extensions
+          find ./dist -name "*.js" -exec sh -c 'echo "application/javascript" > "${1%.js}.js.mime"' _ {} \;
+          find ./dist -name "*.css" -exec sh -c 'echo "text/css" > "${1%.css}.css.mime"' _ {} \;
+
+      - name: Create web.config for IIS
+        run: |
+          cat > ./dist/web.config << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <configuration>
+              <system.webServer>
+                  <staticContent>
+                      <mimeMap fileExtension=".js" mimeType="application/javascript" />
+                      <mimeMap fileExtension=".mjs" mimeType="application/javascript" />
+                      <mimeMap fileExtension=".css" mimeType="text/css" />
+                      <mimeMap fileExtension=".json" mimeType="application/json" />
+                      <mimeMap fileExtension=".woff" mimeType="font/woff" />
+                      <mimeMap fileExtension=".woff2" mimeType="font/woff2" />
+                  </staticContent>
+                  <rewrite>
+                      <rules>
+                          <rule name="SPA Routes" stopProcessing="true">
+                              <match url=".*" />
+                              <conditions logicalGrouping="MatchAll">
+                                  <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+                                  <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+                              </conditions>
+                              <action type="Rewrite" url="/index.html" />
+                          </rule>
+                      </rules>
+                  </rewrite>
+              </system.webServer>
+          </configuration>
+          EOF
+
       - name: List build files (debug)
         run: |
           echo "Build directory contents:"
