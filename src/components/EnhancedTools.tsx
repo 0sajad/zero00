@@ -347,18 +347,21 @@ const EnhancedTools = () => {
   const runSystemPerformance = async () => {
     setActiveTests(prev => ({ ...prev, performance: true }));
     
-    // Real browser performance metrics
-    const performance = window.performance;
-    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    const memory = (performance as any).memory;
+    // Real browser performance metrics - Fixed the navigationStart issue
+    const performanceObj = window.performance;
+    const navigation = performanceObj.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    const memory = (performanceObj as any).memory;
+
+    // Calculate page load metrics safely
+    const pageLoadMetrics = {
+      domContentLoaded: navigation ? Math.round(navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart) : 0,
+      firstPaint: Math.round(performanceObj.getEntriesByType('paint')[0]?.startTime || 0),
+      networkLatency: navigation ? Math.round(navigation.responseStart - navigation.requestStart) : 0,
+      serverResponse: navigation ? Math.round(navigation.responseEnd - navigation.responseStart) : 0
+    };
 
     const results = {
-      pageLoad: {
-        domContentLoaded: Math.round(navigation.domContentLoadedEventEnd - navigation.navigationStart),
-        firstPaint: Math.round(performance.getEntriesByType('paint')[0]?.startTime || 0),
-        networkLatency: Math.round(navigation.responseStart - navigation.requestStart),
-        serverResponse: Math.round(navigation.responseEnd - navigation.responseStart)
-      },
+      pageLoad: pageLoadMetrics,
       memory: memory ? {
         used: Math.round(memory.usedJSHeapSize / 1024 / 1024),
         total: Math.round(memory.totalJSHeapSize / 1024 / 1024),
