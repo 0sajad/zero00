@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-// Enhanced loading management
+// Enhanced loading management with better error handling
 const hideLoading = () => {
   try {
     const loadingElement = document.getElementById('loading');
@@ -17,11 +17,17 @@ const hideLoading = () => {
   }
 };
 
-const showError = () => {
+const showError = (errorMessage?: string) => {
   try {
     const errorElement = document.getElementById('error');
     if (errorElement) {
       errorElement.style.display = 'flex';
+      if (errorMessage) {
+        const errorText = errorElement.querySelector('p');
+        if (errorText) {
+          errorText.textContent = errorMessage;
+        }
+      }
     }
     hideLoading();
     console.log('Error screen displayed');
@@ -34,7 +40,7 @@ const showError = () => {
 declare global {
   interface Window {
     hideLoading: () => void;
-    showError: () => void;
+    showError: (message?: string) => void;
   }
 }
 
@@ -61,26 +67,42 @@ const renderApp = async () => {
     
     console.log('React application rendered successfully');
     
-    // Hide loading screen after successful render with delay
+    // Hide loading screen after successful render
     setTimeout(() => {
       hideLoading();
     }, 1000);
     
   } catch (error) {
     console.error('Error rendering React application:', error);
-    showError();
+    showError('فشل في تحميل التطبيق. يرجى إعادة تحديث الصفحة.');
   }
 };
 
-// Initialize app with proper error handling
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM ready, starting application...');
-  renderApp();
-});
+// Enhanced initialization with better error handling
+const initializeApp = () => {
+  console.log('Initializing OCTA NETWORK application...');
+  
+  // Add error listeners
+  window.addEventListener('error', (event) => {
+    console.error('Global error:', event.error);
+    if (event.error?.message?.includes('Loading chunk')) {
+      showError('خطأ في تحميل الموارد. يرجى إعادة تحديث الصفحة.');
+    }
+  });
 
-// Fallback initialization
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', renderApp);
-} else {
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+    if (event.reason?.message?.includes('Loading')) {
+      showError('خطأ في التحميل. يرجى المحاولة مرة أخرى.');
+    }
+  });
+
   renderApp();
+};
+
+// Initialize app with proper timing
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
 }

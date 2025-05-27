@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound";
 import './locales/i18n';
 
@@ -14,30 +14,35 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
     },
   },
 });
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <HashRouter>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </TooltipProvider>
-      </HashRouter>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  console.log('OCTA NETWORK App initializing...');
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <HashRouter>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<Layout />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </TooltipProvider>
+        </HashRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

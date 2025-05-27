@@ -1,16 +1,14 @@
 
-# Headers for Netlify - Enhanced Configuration
+# Enhanced Netlify Headers for OCTA NETWORK
 /*
-  Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co https://*.lovableproject.com; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https: wss: ws:; media-src 'self' https: blob:; object-src 'none'; frame-src 'self' https:
-  X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co https://*.lovableproject.com https://*.github.io; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https: wss: ws:; media-src 'self' https: blob:; object-src 'none'; frame-src 'self' https:
+  X-Frame-Options: SAMEORIGIN
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), magnetometer=(), gyroscope=(), accelerometer=()
-  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-  Cache-Control: public, max-age=31536000, immutable
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()
 
-# Specific headers for JavaScript files
+# JavaScript files
 /*.js
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
@@ -19,14 +17,22 @@
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
 
+# CSS files
 /*.css
   Content-Type: text/css; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
 
+# HTML files
+/*.html
+  Content-Type: text/html; charset=utf-8
+  Cache-Control: no-cache
+
+# JSON files
 /*.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=86400
 
+# Font files
 /*.woff
   Content-Type: font/woff
   Cache-Control: public, max-age=31536000, immutable
@@ -43,8 +49,9 @@
   Content-Type: application/vnd.ms-fontobject
   Cache-Control: public, max-age=31536000, immutable
 
+# Image files
 /*.svg
-  Content-Type: image/svg+xml
+  Content-Type: image/svg+xml; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
 
 /*.ico
@@ -70,10 +77,6 @@
 /*.webp
   Content-Type: image/webp
   Cache-Control: public, max-age=31536000, immutable
-
-# SPA routing - serve index.html for all non-asset requests
-/*
-  X-Robots-Tag: index, follow
 
 # API endpoints (if any)
 /api/*

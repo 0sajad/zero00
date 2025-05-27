@@ -36,39 +36,57 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Create .nojekyll file
-        run: touch ./dist/.nojekyll
-
-      - name: Create CNAME file (if needed)
+      - name: Create deployment files
         run: |
+          # Create .nojekyll file
+          touch ./dist/.nojekyll
+          
+          # Create CNAME file if custom domain is set
           if [ ! -z "${{ vars.CUSTOM_DOMAIN }}" ]; then
             echo "${{ vars.CUSTOM_DOMAIN }}" > ./dist/CNAME
           fi
 
-      - name: Fix MIME types and file extensions
+      - name: Fix file permissions and MIME types
         run: |
-          echo "Fixing MIME types for JavaScript and CSS files..."
-          find ./dist -name "*.js" -type f -exec file {} \;
-          find ./dist -name "*.css" -type f -exec file {} \;
+          echo "Setting proper file permissions..."
+          find ./dist -type f -name "*.js" -exec chmod 644 {} \;
+          find ./dist -type f -name "*.css" -exec chmod 644 {} \;
+          find ./dist -type f -name "*.html" -exec chmod 644 {} \;
           
-          # Ensure proper file extensions
-          find ./dist -name "*.js" -exec sh -c 'echo "application/javascript" > "${1%.js}.js.mime"' _ {} \;
-          find ./dist -name "*.css" -exec sh -c 'echo "text/css" > "${1%.css}.css.mime"' _ {} \;
+          echo "Checking build output..."
+          ls -la ./dist/
+          echo "Assets directory:"
+          ls -la ./dist/assets/ || echo "No assets directory found"
 
-      - name: Create web.config for IIS
+      - name: Create enhanced web.config for IIS
         run: |
           cat > ./dist/web.config << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <configuration>
               <system.webServer>
                   <staticContent>
-                      <mimeMap fileExtension=".js" mimeType="application/javascript" />
-                      <mimeMap fileExtension=".mjs" mimeType="application/javascript" />
-                      <mimeMap fileExtension=".css" mimeType="text/css" />
-                      <mimeMap fileExtension=".json" mimeType="application/json" />
+                      <clear />
+                      <mimeMap fileExtension=".js" mimeType="application/javascript; charset=utf-8" />
+                      <mimeMap fileExtension=".mjs" mimeType="application/javascript; charset=utf-8" />
+                      <mimeMap fileExtension=".css" mimeType="text/css; charset=utf-8" />
+                      <mimeMap fileExtension=".json" mimeType="application/json; charset=utf-8" />
+                      <mimeMap fileExtension=".html" mimeType="text/html; charset=utf-8" />
                       <mimeMap fileExtension=".woff" mimeType="font/woff" />
                       <mimeMap fileExtension=".woff2" mimeType="font/woff2" />
+                      <mimeMap fileExtension=".ttf" mimeType="font/ttf" />
+                      <mimeMap fileExtension=".eot" mimeType="application/vnd.ms-fontobject" />
+                      <mimeMap fileExtension=".svg" mimeType="image/svg+xml; charset=utf-8" />
+                      <mimeMap fileExtension=".png" mimeType="image/png" />
+                      <mimeMap fileExtension=".jpg" mimeType="image/jpeg" />
+                      <mimeMap fileExtension=".jpeg" mimeType="image/jpeg" />
+                      <mimeMap fileExtension=".gif" mimeType="image/gif" />
+                      <mimeMap fileExtension=".ico" mimeType="image/x-icon" />
                   </staticContent>
+                  <httpHeaders>
+                      <add name="X-Content-Type-Options" value="nosniff" />
+                      <add name="X-Frame-Options" value="SAMEORIGIN" />
+                      <add name="X-XSS-Protection" value="1; mode=block" />
+                  </httpHeaders>
                   <rewrite>
                       <rules>
                           <rule name="SPA Routes" stopProcessing="true">
@@ -76,23 +94,104 @@ jobs:
                               <conditions logicalGrouping="MatchAll">
                                   <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
                                   <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+                                  <add input="{REQUEST_URI}" pattern="^/(api|assets)" negate="true" />
                               </conditions>
                               <action type="Rewrite" url="/index.html" />
                           </rule>
                       </rules>
                   </rewrite>
+                  <httpErrors errorMode="Custom">
+                      <remove statusCode="404" subStatusCode="-1" />
+                      <error statusCode="404" prefixLanguageFilePath="" path="/index.html" responseMode="ExecuteURL" />
+                  </httpErrors>
+                  <defaultDocument>
+                      <files>
+                          <clear />
+                          <add value="index.html" />
+                      </files>
+                  </defaultDocument>
               </system.webServer>
           </configuration>
           EOF
 
-      - name: List build files (debug)
+      - name: Create enhanced .htaccess for Apache
         run: |
-          echo "Build directory contents:"
-          ls -la ./dist/
-          echo "Assets directory contents:"
-          ls -la ./dist/assets/ || echo "No assets directory found"
-          echo "Checking for main files:"
-          find ./dist -name "*.js" -o -name "*.css" | head -10
+          cat > ./dist/.htaccess << 'EOF'
+          # Enhanced Apache configuration for OCTA NETWORK
+          
+          # Enable rewrite engine
+          RewriteEngine On
+          
+          # Handle client-side routing (SPA)
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteCond %{REQUEST_URI} !^/(api|assets)/
+          RewriteRule . /index.html [L]
+          
+          # Set proper MIME types
+          <IfModule mod_mime.c>
+              AddType application/javascript .js
+              AddType application/javascript .mjs
+              AddType text/css .css
+              AddType text/html .html
+              AddType application/json .json
+              AddType font/woff .woff
+              AddType font/woff2 .woff2
+              AddType font/ttf .ttf
+              AddType application/vnd.ms-fontobject .eot
+              AddType image/svg+xml .svg
+          </IfModule>
+          
+          # Security headers
+          <IfModule mod_headers.c>
+              Header always set X-Content-Type-Options nosniff
+              Header always set X-Frame-Options SAMEORIGIN
+              Header always set X-XSS-Protection "1; mode=block"
+              
+              # Set proper Content-Type for JavaScript files
+              <FilesMatch "\.(js|mjs)$">
+                  Header set Content-Type "application/javascript; charset=utf-8"
+              </FilesMatch>
+              
+              <FilesMatch "\.css$">
+                  Header set Content-Type "text/css; charset=utf-8"
+              </FilesMatch>
+          </IfModule>
+          
+          # Enable compression
+          <IfModule mod_deflate.c>
+              AddOutputFilterByType DEFLATE text/plain
+              AddOutputFilterByType DEFLATE text/html
+              AddOutputFilterByType DEFLATE text/xml
+              AddOutputFilterByType DEFLATE text/css
+              AddOutputFilterByType DEFLATE application/xml
+              AddOutputFilterByType DEFLATE application/xhtml+xml
+              AddOutputFilterByType DEFLATE application/rss+xml
+              AddOutputFilterByType DEFLATE application/javascript
+              AddOutputFilterByType DEFLATE application/x-javascript
+          </IfModule>
+          
+          # Cache static assets
+          <IfModule mod_expires.c>
+              ExpiresActive on
+              ExpiresByType text/css "access plus 1 year"
+              ExpiresByType application/javascript "access plus 1 year"
+              ExpiresByType image/png "access plus 1 year"
+              ExpiresByType image/jpg "access plus 1 year"
+              ExpiresByType image/jpeg "access plus 1 year"
+              ExpiresByType image/gif "access plus 1 year"
+              ExpiresByType image/svg+xml "access plus 1 year"
+          </IfModule>
+          EOF
+
+      - name: Verify build output
+        run: |
+          echo "=== Build verification ==="
+          echo "Main files:"
+          ls -la ./dist/index.html ./dist/.htaccess ./dist/web.config ./dist/.nojekyll 2>/dev/null || echo "Some files missing"
+          echo "Assets:"
+          find ./dist/assets -name "*.js" -o -name "*.css" | head -5 2>/dev/null || echo "No assets found"
+          echo "Total files: $(find ./dist -type f | wc -l)"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

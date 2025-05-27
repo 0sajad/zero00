@@ -4,24 +4,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OCTA GRAM - منصة مراقبة الشبكات الذكية</title>
+    <title>OCTA NETWORK - منصة مراقبة الشبكات الذكية</title>
     <meta name="description" content="منصة متطورة لمراقبة الشبكات والتحليل الذكي مع الدعم متعدد اللغات" />
-    <meta name="author" content="OCTA GRAM Team" />
+    <meta name="author" content="OCTA NETWORK Team" />
 
-    <meta property="og:title" content="OCTA GRAM - منصة مراقبة الشبكات الذكية" />
+    <meta property="og:title" content="OCTA NETWORK - منصة مراقبة الشبكات الذكية" />
     <meta property="og:description" content="منصة متطورة لمراقبة الشبكات والتحليل الذكي مع الدعم متعدد اللغات" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
+    
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@octagram_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="./favicon.ico" />
     
     <!-- Preload critical resources -->
-    <link rel="preload" href="./src/main.tsx" as="script" type="module" />
+    <link rel="modulepreload" href="./src/main.tsx" />
     
     <style>
-      /* Loading screen styles */
+      /* Critical CSS for loading and error screens */
       .loading-screen {
         position: fixed;
         top: 0;
@@ -71,6 +71,16 @@
         padding: 20px;
         z-index: 9999;
       }
+      .error-screen h2 {
+        color: #ef4444;
+        margin-bottom: 16px;
+        font-size: 24px;
+      }
+      .error-screen p {
+        color: #9ca3af;
+        margin-bottom: 24px;
+        font-size: 16px;
+      }
       .error-screen button {
         margin-top: 20px;
         padding: 12px 24px;
@@ -92,7 +102,7 @@
   <body>
     <div id="loading" class="loading-screen">
       <div class="loading-spinner"></div>
-      <div class="loading-text">جاري تحميل OCTA GRAM...</div>
+      <div class="loading-text">جاري تحميل OCTA NETWORK...</div>
     </div>
     
     <div id="error" class="error-screen">
@@ -105,57 +115,72 @@
     
     <div id="root"></div>
     
-    <!-- Critical: Lovable script with proper MIME type handling -->
-    <script type="module" defer>
+    <!-- Enhanced script loading with better error handling -->
+    <script type="module">
       // Enhanced error handling for module loading
       let hasLoaded = false;
+      let loadingTimeout;
       
       // Function to handle script loading errors
       const handleScriptError = (error) => {
         console.error('Script loading error:', error);
         if (!hasLoaded) {
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('error').style.display = 'flex';
+          const loading = document.getElementById('loading');
+          const errorScreen = document.getElementById('error');
+          if (loading) loading.style.display = 'none';
+          if (errorScreen) errorScreen.style.display = 'flex';
         }
       };
       
-      window.addEventListener('error', handleScriptError);
-      window.addEventListener('unhandledrejection', (e) => {
-        console.error('Unhandled promise rejection:', e);
-        handleScriptError(e);
+      // Enhanced error listeners
+      window.addEventListener('error', (event) => {
+        console.error('Global error:', event);
+        if (event.filename && event.filename.includes('.js')) {
+          handleScriptError(event.error);
+        }
+      });
+      
+      window.addEventListener('unhandledrejection', (event) => {
+        console.error('Unhandled promise rejection:', event.reason);
+        if (event.reason && event.reason.toString().includes('Loading')) {
+          handleScriptError(event.reason);
+        }
       });
       
       // Timeout fallback with better error handling
-      const loadingTimeout = setTimeout(function() {
-        if (!hasLoaded && document.getElementById('loading').style.display !== 'none') {
+      loadingTimeout = setTimeout(function() {
+        if (!hasLoaded) {
           console.warn('Loading timeout - showing error screen');
           handleScriptError(new Error('Loading timeout'));
         }
-      }, 20000);
+      }, 30000); // Increased timeout to 30 seconds
       
       // Enhanced hide loading function
       window.hideLoading = function() {
         hasLoaded = true;
-        clearTimeout(loadingTimeout);
+        if (loadingTimeout) clearTimeout(loadingTimeout);
         const loadingElement = document.getElementById('loading');
         if (loadingElement) {
           loadingElement.style.display = 'none';
         }
       };
       
-      window.showError = function() {
-        document.getElementById('error').style.display = 'flex';
+      window.showError = function(message) {
+        const errorElement = document.getElementById('error');
+        const errorText = errorElement?.querySelector('p');
+        if (errorText && message) {
+          errorText.textContent = message;
+        }
+        if (errorElement) errorElement.style.display = 'flex';
         window.hideLoading();
       };
       
       // Module loading success indicator
-      window.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded, initializing application...');
-      });
+      console.log('Enhanced script loader initialized');
     </script>
     
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <!-- Essential scripts with proper loading -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module" defer></script>
-    <script type="module" src="./src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx" defer></script>
   </body>
 </html>

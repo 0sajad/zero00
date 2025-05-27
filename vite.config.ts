@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => ({
     outDir: "dist",
     assetsDir: "assets",
     sourcemap: false,
+    target: 'esnext',
+    minify: 'esbuild',
+    assetsInlineLimit: 0,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -40,10 +43,7 @@ export default defineConfig(({ mode }) => ({
           return `assets/[name]-[hash][extname]`;
         }
       }
-    },
-    target: 'esnext',
-    minify: 'esbuild',
-    assetsInlineLimit: 0
+    }
   },
   plugins: [
     react(),
