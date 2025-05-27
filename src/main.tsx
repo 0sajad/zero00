@@ -70,7 +70,7 @@ const renderApp = async () => {
     // Hide loading screen after successful render
     setTimeout(() => {
       hideLoading();
-    }, 1000);
+    }, 500);
     
   } catch (error) {
     console.error('Error rendering React application:', error);
@@ -85,14 +85,14 @@ const initializeApp = () => {
   // Add error listeners
   window.addEventListener('error', (event) => {
     console.error('Global error:', event.error);
-    if (event.error?.message?.includes('Loading chunk')) {
+    if (event.error?.message?.includes('Loading chunk') || event.error?.message?.includes('Loading CSS chunk')) {
       showError('خطأ في تحميل الموارد. يرجى إعادة تحديث الصفحة.');
     }
   });
 
   window.addEventListener('unhandledrejection', (event) => {
     console.error('Unhandled promise rejection:', event.reason);
-    if (event.reason?.message?.includes('Loading')) {
+    if (event.reason?.message?.includes('Loading') || event.reason?.message?.includes('fetch')) {
       showError('خطأ في التحميل. يرجى المحاولة مرة أخرى.');
     }
   });

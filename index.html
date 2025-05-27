@@ -15,7 +15,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="./favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
     
     <!-- Preload critical resources -->
     <link rel="modulepreload" href="./src/main.tsx" />
@@ -135,7 +135,7 @@
       // Enhanced error listeners
       window.addEventListener('error', (event) => {
         console.error('Global error:', event);
-        if (event.filename && event.filename.includes('.js')) {
+        if (event.filename && (event.filename.includes('.js') || event.filename.includes('.tsx'))) {
           handleScriptError(event.error);
         }
       });
@@ -153,7 +153,7 @@
           console.warn('Loading timeout - showing error screen');
           handleScriptError(new Error('Loading timeout'));
         }
-      }, 30000); // Increased timeout to 30 seconds
+      }, 15000); // Reduced timeout to 15 seconds
       
       // Enhanced hide loading function
       window.hideLoading = function() {

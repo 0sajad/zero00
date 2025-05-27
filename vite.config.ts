@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => ({
     target: 'esnext'
   },
   optimizeDeps: {
-    include: ['react', 'react-dom']
+    include: ['react', 'react-dom'],
+    exclude: []
   }
 }));

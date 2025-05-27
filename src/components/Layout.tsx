@@ -2,7 +2,6 @@
 import React from 'react';
 import UserSessionManager from './UserSessionManager';
 import MainLayout from './MainLayout';
-import DashboardLayout from './DashboardLayout';
 
 const Layout = () => {
   return (
