@@ -32,14 +32,22 @@ const initializeApp = async () => {
   } catch (error) {
     console.error('❌ خطأ في تهيئة التطبيق:', error);
     
-    // استخدام الدالة العامة لعرض الخطأ إذا كانت متاحة
-    if (typeof window !== 'undefined' && window.showError) {
-      window.showError('حدث خطأ في تحميل التطبيق. يرجى إعادة تحديث الصفحة.');
-    } else {
-      // عرض رسالة خطأ بديلة
-      const errorElement = document.getElementById('error');
-      if (errorElement) {
-        errorElement.style.display = 'flex';
+    // معالجة آمنة للأخطاء
+    try {
+      if (typeof window !== 'undefined' && typeof window.showError === 'function') {
+        window.showError('حدث خطأ في تحميل التطبيق. يرجى إعادة تحديث الصفحة.');
+      } else {
+        // عرض رسالة خطأ بديلة
+        const errorElement = document.getElementById('error');
+        if (errorElement) {
+          errorElement.style.display = 'flex';
+        }
+      }
+    } catch (displayError) {
+      console.error('❌ خطأ في عرض رسالة الخطأ:', displayError);
+      // إظهار تنبيه بسيط كبديل أخير
+      if (typeof alert === 'function') {
+        alert('حدث خطأ في تحميل التطبيق. يرجى إعادة تحديث الصفحة.');
       }
     }
   }

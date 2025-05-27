@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "./", // مسار نسبي للتوافق مع جميع الدومينات
+  base: "./",
   server: {
     host: "::",
     port: 8080,
@@ -18,11 +18,12 @@ export default defineConfig(({ mode }) => ({
     outDir: "dist",
     assetsDir: "assets",
     sourcemap: false,
-    target: 'esnext',
+    target: 'es2015',
     minify: 'esbuild',
     assetsInlineLimit: 4096,
     rollupOptions: {
       output: {
+        format: 'es',
         manualChunks: {
           vendor: ['react', 'react-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
@@ -60,7 +61,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   esbuild: {
-    target: 'esnext'
+    target: 'es2015'
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
