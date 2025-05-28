@@ -1,0 +1,84 @@
+
+{
+  "name": "OCTA NETWORK - منصة مراقبة الشبكات الذكية العالمية",
+  "short_name": "OCTA NETWORK",
+  "description": "أقوى منصة عالمية لمراقبة الشبكات والأمن السيبراني مع الذكاء الاصطناعي والتكيف التلقائي",
+  "version": "4.0.0",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "scope": "/",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["business", "productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'%3E%3Crect width='1280' height='720' fill='%23667eea'/%3E%3Ctext x='640' y='360' text-anchor='middle' dominant-baseline='middle' fill='white' font-size='80' font-family='Arial'%3EOCTA NETWORK%3C/text%3E%3C/svg%3E",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23667eea' rx='20'/%3E%3Ctext x='96' y='120' text-anchor='middle' dominant-baseline='middle' fill='white' font-size='120'%3E🌐%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23667eea' rx='50'/%3E%3Ctext x='256' y='320' text-anchor='middle' dominant-baseline='middle' fill='white' font-size='320'%3E🌐%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "لوحة التحكم",
+      "short_name": "Dashboard",
+      "description": "الوصول السريع إلى لوحة التحكم الرئيسية",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ctext y='.9em' font-size='80'%3E📊%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "أدوات الشبكة",
+      "short_name": "Tools",
+      "description": "الوصول إلى أدوات مراقبة الشبكة",
+      "url": "/tools",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ctext y='.9em' font-size='80'%3E🔧%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "مركز الأمان",
+      "short_name": "Security",
+      "description": "مراقبة الأمان والحماية",
+      "url": "/security",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ctext y='.9em' font-size='80'%3E🛡️%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}

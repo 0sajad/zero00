@@ -6,79 +6,281 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OCTA NETWORK - منصة مراقبة الشبكات الذكية العالمية</title>
     <meta name="description" content="أقوى منصة عالمية لمراقبة الشبكات والأمن السيبراني مع الذكاء الاصطناعي والتكيف التلقائي" />
+    <meta name="keywords" content="network monitoring, cybersecurity, AI, network tools, مراقبة الشبكات, الأمن السيبراني" />
+    <meta name="author" content="OCTA NETWORK Team" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="/" />
+    <meta property="og:title" content="OCTA NETWORK - منصة مراقبة الشبكات الذكية العالمية" />
+    <meta property="og:description" content="أقوى منصة عالمية لمراقبة الشبكات والأمن السيبراني مع الذكاء الاصطناعي" />
+    <meta property="og:image" content="/assets/og-image.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="/" />
+    <meta property="twitter:title" content="OCTA NETWORK - منصة مراقبة الشبكات الذكية العالمية" />
+    <meta property="twitter:description" content="أقوى منصة عالمية لمراقبة الشبكات والأمن السيبراني مع الذكاء الاصطناعي" />
+    <meta property="twitter:image" content="/assets/og-image.png" />
     
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌐%3C/text%3E%3C/svg%3E" />
+    <link rel="canonical" href="/" />
     
+    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Progressive Web App -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="OCTA NETWORK">
+    
     <script>
-      // Enhanced Smart Domain Detection & Configuration
+      // Enhanced Universal Domain & Global Compatibility System
       (function() {
-        const SmartDomainManager = {
+        'use strict';
+        
+        const GlobalCompatibilityEngine = {
+          config: {
+            version: '4.0.0',
+            buildDate: new Date().toISOString(),
+            supportedDomains: ['*'],
+            features: {
+              universalRouting: true,
+              adaptiveLoading: true,
+              errorRecovery: true,
+              performanceOptimization: true,
+              globalCompatibility: true,
+              smartCaching: true
+            }
+          },
+
           init() {
-            console.log('🚀 OCTA NETWORK - تهيئة ذكية للمجال');
+            console.log('🚀 OCTA NETWORK - نظام التوافق العالمي المحسن');
+            console.log('🌍 الإصدار:', this.config.version);
             
+            const environment = this.detectEnvironment();
+            const domainConfig = this.configureDomain(environment);
+            
+            // تكوين عالمي للتطبيق
+            window.__OCTA_GLOBAL_CONFIG__ = {
+              ...this.config,
+              environment,
+              domain: domainConfig,
+              isProduction: environment.type !== 'local',
+              basePath: domainConfig.basePath,
+              apiUrl: domainConfig.apiUrl || '/api',
+              assetsUrl: domainConfig.assetsUrl || '/assets',
+              timestamp: Date.now()
+            };
+            
+            this.setupGlobalErrorHandling();
+            this.optimizePerformance();
+            this.setupServiceWorker();
+            
+            console.log('⚙️ تكوين OCTA العالمي:', window.__OCTA_GLOBAL_CONFIG__);
+            return window.__OCTA_GLOBAL_CONFIG__;
+          },
+
+          detectEnvironment() {
             const hostname = window.location.hostname;
             const pathname = window.location.pathname;
+            const protocol = window.location.protocol;
             
-            // Smart domain detection
-            const domainTypes = {
-              githubPages: hostname.includes('github.io'),
-              netlify: hostname.includes('netlify.app'),
-              vercel: hostname.includes('vercel.app'),
-              custom: !hostname.includes('localhost') && !hostname.includes('127.0.0.1'),
-              local: hostname.includes('localhost') || hostname.includes('127.0.0.1')
+            const patterns = {
+              github: /\.github\.io$/,
+              netlify: /\.netlify\.app$/,
+              vercel: /\.vercel\.app$/,
+              surge: /\.surge\.sh$/,
+              firebase: /\.firebaseapp\.com$/,
+              local: /^(localhost|127\.0\.0\.1|0\.0\.0\.0|::1)$/,
+              custom: /^(?!localhost|127\.0\.0\.1|.*\.github\.io|.*\.netlify\.app|.*\.vercel\.app|.*\.surge\.sh|.*\.firebaseapp\.com).*$/
             };
             
+            let type = 'custom';
+            Object.keys(patterns).forEach(key => {
+              if (patterns[key].test(hostname)) {
+                type = key;
+              }
+            });
+            
+            return {
+              type,
+              hostname,
+              pathname,
+              protocol,
+              port: window.location.port,
+              isSecure: protocol === 'https:',
+              userAgent: navigator.userAgent,
+              language: navigator.language,
+              platform: navigator.platform
+            };
+          },
+
+          configureDomain(environment) {
             let basePath = '/';
             let repoName = '';
+            let apiUrl = '/api';
+            let assetsUrl = '/assets';
             
-            if (domainTypes.githubPages) {
-              const pathSegments = pathname.split('/').filter(Boolean);
-              if (pathSegments.length > 0) {
-                repoName = pathSegments[0];
-                basePath = `/${repoName}/`;
-              }
-              console.log('🎯 GitHub Pages detected - Repository:', repoName);
+            // تكوين خاص بكل نوع من المضيفين
+            switch (environment.type) {
+              case 'github':
+                const pathSegments = environment.pathname.split('/').filter(Boolean);
+                if (pathSegments.length > 0) {
+                  repoName = pathSegments[0];
+                  basePath = `/${repoName}/`;
+                  apiUrl = `/${repoName}/api`;
+                  assetsUrl = `/${repoName}/assets`;
+                }
+                break;
+                
+              case 'netlify':
+              case 'vercel':
+              case 'surge':
+              case 'firebase':
+                basePath = '/';
+                break;
+                
+              case 'local':
+                basePath = '/';
+                break;
+                
+              default:
+                basePath = '/';
             }
             
-            // Set global configuration
-            window.__OCTA_CONFIG__ = {
-              domainType: Object.keys(domainTypes).find(key => domainTypes[key]) || 'custom',
+            return {
+              type: environment.type,
               basePath,
               repoName,
-              hostname,
-              isProduction: !domainTypes.local,
-              features: {
-                smartRouting: true,
-                adaptiveLoading: true,
-                errorRecovery: true,
-                universalCompatibility: true
-              }
+              apiUrl,
+              assetsUrl,
+              fullUrl: `${environment.protocol}//${environment.hostname}${environment.port ? ':' + environment.port : ''}${basePath}`
             };
-            
-            console.log('⚙️ تكوين OCTA:', window.__OCTA_CONFIG__);
-            return window.__OCTA_CONFIG__;
           },
-          
-          handleErrors() {
-            window.addEventListener('error', (event) => {
-              console.error('🚨 خطأ عام:', event.error);
-            });
 
-            window.addEventListener('unhandledrejection', (event) => {
-              console.error('🚨 Promise مرفوض:', event.reason);
+          setupGlobalErrorHandling() {
+            const errorHandler = (event) => {
+              console.error('🚨 خطأ عالمي:', {
+                message: event.error?.message || event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                stack: event.error?.stack,
+                timestamp: new Date().toISOString()
+              });
+              
+              // تجنب إظهار الأخطاء للمستخدم النهائي
               event.preventDefault();
+              return true;
+            };
+
+            const rejectionHandler = (event) => {
+              console.error('🚨 Promise مرفوض:', {
+                reason: event.reason,
+                promise: event.promise,
+                timestamp: new Date().toISOString()
+              });
+              
+              event.preventDefault();
+              return true;
+            };
+
+            window.addEventListener('error', errorHandler);
+            window.addEventListener('unhandledrejection', rejectionHandler);
+            
+            // إزالة معالجات الأخطاء عند إغلاق الصفحة
+            window.addEventListener('beforeunload', () => {
+              window.removeEventListener('error', errorHandler);
+              window.removeEventListener('unhandledrejection', rejectionHandler);
             });
+          },
+
+          optimizePerformance() {
+            // تحسين الأداء
+            if ('requestIdleCallback' in window) {
+              requestIdleCallback(() => {
+                this.preloadCriticalResources();
+                this.setupLazyLoading();
+              });
+            } else {
+              setTimeout(() => {
+                this.preloadCriticalResources();
+                this.setupLazyLoading();
+              }, 100);
+            }
+          },
+
+          preloadCriticalResources() {
+            const criticalResources = [
+              '/src/main.tsx',
+              '/src/App.tsx',
+              '/src/index.css'
+            ];
+            
+            criticalResources.forEach(resource => {
+              const link = document.createElement('link');
+              link.rel = 'preload';
+              link.href = resource;
+              link.as = resource.endsWith('.css') ? 'style' : 'script';
+              document.head.appendChild(link);
+            });
+          },
+
+          setupLazyLoading() {
+            // تحميل كسول للصور والمحتوى
+            if ('IntersectionObserver' in window) {
+              const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                      img.src = img.dataset.src;
+                      img.removeAttribute('data-src');
+                      observer.unobserve(img);
+                    }
+                  }
+                });
+              });
+              
+              document.querySelectorAll('img[data-src]').forEach(img => {
+                observer.observe(img);
+              });
+            }
+          },
+
+          setupServiceWorker() {
+            if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+              navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                  console.log('✅ Service Worker مسجل بنجاح');
+                })
+                .catch(error => {
+                  console.log('ℹ️ Service Worker غير متاح (طبيعي في التطوير)');
+                });
+            }
           }
         };
-        
-        // Initialize smart domain management
-        SmartDomainManager.init();
-        SmartDomainManager.handleErrors();
-        
+
+        // تهيئة النظام العالمي
+        try {
+          GlobalCompatibilityEngine.init();
+        } catch (error) {
+          console.error('❌ خطأ في تهيئة النظام العالمي:', error);
+          // إنشاء تكوين افتراضي في حالة الخطأ
+          window.__OCTA_GLOBAL_CONFIG__ = {
+            version: '4.0.0',
+            environment: { type: 'fallback' },
+            domain: { basePath: '/' },
+            isProduction: true,
+            features: { universalRouting: true }
+          };
+        }
       })();
     </script>
     
@@ -88,15 +290,26 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         display: flex; align-items: center; justify-content: center;
         font-family: 'Tajawal', sans-serif; direction: rtl;
+        transition: opacity 0.5s ease;
       }
       
       .loading-content {
-        text-align: center; color: white;
+        text-align: center; color: white; animation: fadeInUp 0.8s ease;
       }
       
       .loading-logo {
         font-size: 80px; margin-bottom: 20px;
         animation: pulse 2s infinite;
+      }
+      
+      .loading-progress {
+        width: 300px; height: 4px; background: rgba(255,255,255,0.3); 
+        border-radius: 2px; overflow: hidden; margin: 0 auto;
+      }
+      
+      .loading-bar {
+        width: 100%; height: 100%; background: white; 
+        border-radius: 2px; animation: loading 2s ease-in-out infinite;
       }
       
       @keyframes pulse {
@@ -109,6 +322,26 @@
         50% { transform: translateX(0%); }
         100% { transform: translateX(100%); }
       }
+      
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      /* تحسينات الأداء */
+      * {
+        box-sizing: border-box;
+      }
+      
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
     </style>
   </head>
   <body>
@@ -117,66 +350,88 @@
         <div class="loading-logo">🌐</div>
         <h1 style="font-size: 2.5rem; margin-bottom: 10px; font-weight: 800;">OCTA NETWORK</h1>
         <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px;">منصة مراقبة الشبكات الذكية العالمية</p>
-        <div style="width: 300px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden;">
-          <div style="width: 100%; height: 100%; background: white; border-radius: 2px; animation: loading 2s ease-in-out infinite;"></div>
+        <div class="loading-progress">
+          <div class="loading-bar"></div>
         </div>
       </div>
     </div>
     
     <div id="root"></div>
     
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
     
     <script>
-      // Enhanced error handling and fallback loading
-      window.addEventListener('load', () => {
-        const loadingEl = document.getElementById('loading');
-        if (loadingEl) {
-          setTimeout(() => {
+      // نظام تحميل ذكي محسن
+      (function() {
+        'use strict';
+        
+        let loadingTimeout;
+        let errorCount = 0;
+        const maxErrors = 3;
+        
+        const hideLoading = () => {
+          const loadingEl = document.getElementById('loading');
+          if (loadingEl) {
             loadingEl.style.opacity = '0';
-            loadingEl.style.transition = 'opacity 0.5s ease';
             setTimeout(() => loadingEl.remove(), 500);
-          }, 1000);
-        }
+          }
+        };
         
-        // Log successful load
-        console.log('📊 تم تحميل الصفحة بنجاح في:', performance.now() + 'ms');
-      });
-      
-      // Enhanced error recovery
-      window.addEventListener('error', (event) => {
-        console.error('🚨 خطأ في التحميل:', event);
+        const showErrorInterface = (error) => {
+          const rootEl = document.getElementById('root') || document.body;
+          rootEl.innerHTML = `
+            <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: 'Tajawal', sans-serif; direction: rtl;">
+              <div style="text-align: center; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); max-width: 600px; margin: 20px;">
+                <div style="font-size: 80px; margin-bottom: 30px;">🌐</div>
+                <h1 style="color: #667eea; margin-bottom: 20px; font-size: 2.5rem; font-weight: 800;">OCTA NETWORK</h1>
+                <h2 style="color: #764ba2; margin-bottom: 20px; font-size: 1.5rem;">نظام الذكاء العالمي</h2>
+                <p style="color: #6b7280; margin-bottom: 30px; line-height: 1.8;">
+                  جاري تحضير النظام...
+                </p>
+                <button onclick="window.location.reload()" 
+                        style="padding: 15px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: all 0.3s ease;">
+                  🔄 إعادة التحميل
+                </button>
+              </div>
+            </div>
+          `;
+          hideLoading();
+        };
         
-        // If main script fails to load, try alternative loading
-        if (event.filename && event.filename.includes('main.tsx')) {
-          console.log('🔄 محاولة تحميل بديلة...');
+        // مراقبة تحميل الصفحة
+        window.addEventListener('load', () => {
+          clearTimeout(loadingTimeout);
+          setTimeout(hideLoading, 1000);
+          console.log('✅ تم تحميل OCTA NETWORK بنجاح');
+        });
+        
+        // مهلة زمنية للتحميل
+        loadingTimeout = setTimeout(() => {
+          console.log('⏰ انتهت مهلة التحميل، إخفاء شاشة التحميل');
+          hideLoading();
+        }, 10000);
+        
+        // معالجة الأخطاء
+        window.addEventListener('error', (event) => {
+          errorCount++;
+          console.error(`🚨 خطأ في التحميل (${errorCount}/${maxErrors}):`, event);
           
+          if (errorCount >= maxErrors) {
+            clearTimeout(loadingTimeout);
+            showErrorInterface(event.error);
+          }
+        });
+        
+        // إخفاء التحميل عند DOMContentLoaded كضمان إضافي
+        document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => {
-            const script = document.createElement('script');
-            script.type = 'module';
-            script.src = '/src/main.tsx';
-            script.onerror = () => {
-              console.log('🆘 فشل التحميل البديل، عرض واجهة الطوارئ...');
-              document.getElementById('root').innerHTML = `
-                <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: 'Tajawal', sans-serif; direction: rtl;">
-                  <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); max-width: 500px; margin: 20px;">
-                    <div style="font-size: 80px; margin-bottom: 20px;">🌐</div>
-                    <h1 style="color: #667eea; margin-bottom: 15px; font-size: 2.5rem; font-weight: 800;">OCTA NETWORK</h1>
-                    <p style="color: #6b7280; margin-bottom: 25px; line-height: 1.6;">جاري تحضير النظام الذكي...</p>
-                    <button onclick="window.location.reload()" 
-                            style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold;">
-                      🔄 إعادة المحاولة
-                    </button>
-                  </div>
-                </div>
-              `;
-              document.getElementById('loading')?.remove();
-            };
-            document.head.appendChild(script);
-          }, 1000);
-        }
-      });
+            if (document.getElementById('loading')) {
+              console.log('📄 DOM محمل، إخفاء شاشة التحميل');
+              hideLoading();
+            }
+          }, 2000);
+        });
+      })();
     </script>
   </body>
 </html>
