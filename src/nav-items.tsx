@@ -1,11 +1,12 @@
 
-import { HomeIcon, Settings, Shield, Activity, Globe, Zap, Network, Eye, Wrench } from "lucide-react";
+import { HomeIcon, Settings, Shield, Activity, Globe, Zap, Network, Eye, Wrench, Lock } from "lucide-react";
 import Index from "./pages/Index.tsx";
 import Dashboard from "./components/Dashboard.tsx";
 import CompactDashboard from "./components/CompactDashboard.tsx";
 import SmartDashboard from "./components/SmartDashboard.tsx";
 import AdvancedNetworkMonitor from "./components/AdvancedNetworkMonitor.tsx";
 import SuperAdvancedTools from "./components/SuperAdvancedTools.tsx";
+import AdvancedSecuritySystem from "./components/AdvancedSecuritySystem.tsx";
 
 /**
  * Central navigation configuration for OCTA NETWORK
@@ -47,5 +48,11 @@ export const navItems = [
     to: "/advanced-tools",
     icon: <Wrench className="h-4 w-4" />,
     page: <SuperAdvancedTools />,
+  },
+  {
+    title: "نظام الأمان المتقدم",
+    to: "/security-system",
+    icon: <Lock className="h-4 w-4" />,
+    page: <AdvancedSecuritySystem />,
   },
 ];

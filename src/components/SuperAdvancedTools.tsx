@@ -110,7 +110,12 @@ const SuperAdvancedTools = () => {
       timestamp: new Date()
     };
 
-    setActiveTools(prev => new Map(prev.set(toolId, newResult)));
+    setActiveTools(prev => {
+      const updatedMap = new Map(prev);
+      updatedMap.set(toolId, newResult);
+      return updatedMap;
+    });
+    
     await audioSystem.playSound('scan');
 
     toast({
@@ -138,7 +143,11 @@ const SuperAdvancedTools = () => {
         });
       }
 
-      setActiveTools(prev => new Map(prev.set(toolId, updatedResult)));
+      setActiveTools(prev => {
+        const updatedMap = new Map(prev);
+        updatedMap.set(toolId, updatedResult);
+        return updatedMap;
+      });
     }
   };
 
