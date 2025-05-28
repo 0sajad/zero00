@@ -74,9 +74,9 @@ const SmartInitializer = {
             if (entry.entryType === 'navigation') {
               const navEntry = entry as PerformanceNavigationTiming;
               console.log('📊 إحصائيات التنقل:', {
-                loadTime: Math.round(navEntry.loadEventEnd - navEntry.loadEventStart),
-                domContentLoaded: Math.round(navEntry.domContentLoadedEventEnd - navEntry.domContentLoadedEventStart),
-                firstPaint: Math.round(navEntry.loadEventEnd - navEntry.fetchStart)
+                loadTime: Math.round((navEntry.loadEventEnd || 0) - (navEntry.loadEventStart || 0)),
+                domContentLoaded: Math.round((navEntry.domContentLoadedEventEnd || 0) - (navEntry.domContentLoadedEventStart || 0)),
+                firstPaint: Math.round((navEntry.loadEventEnd || 0) - (navEntry.fetchStart || 0))
               });
             }
           });

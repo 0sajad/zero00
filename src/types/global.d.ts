@@ -19,6 +19,17 @@ declare global {
       };
     };
   }
+
+  interface PerformanceNavigationTiming extends PerformanceEntry {
+    loadEventEnd?: number;
+    loadEventStart?: number;
+    domContentLoadedEventEnd?: number;
+    domContentLoadedEventStart?: number;
+    fetchStart?: number;
+    transferSize?: number;
+    encodedBodySize?: number;
+    processingStart?: number;
+  }
 }
 
 export {};
