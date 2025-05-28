@@ -1,3 +1,5 @@
+import { UniversalRouter } from './universalRouter';
+import { PerformanceMonitor } from './performanceMonitor';
 
 export class SystemValidator {
   private static testResults: Map<string, boolean> = new Map();

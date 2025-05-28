@@ -7,6 +7,8 @@ import { UniversalRouter } from './utils/universalRouter';
 import { PerformanceMonitor } from './utils/performanceMonitor';
 import { ErrorRecovery } from './utils/errorRecovery';
 import { SystemValidator } from './utils/systemValidator';
+import { DeploymentOptimizer } from './utils/deploymentOptimizer';
+import { IntelligentSystem } from './utils/intelligentSystem';
 
 // OCTA NETWORK - Universal Intelligence System
 console.log('🚀 OCTA NETWORK - نظام الذكاء العالمي الشامل');
@@ -20,10 +22,12 @@ class OctaNetworkBootstrap {
     try {
       console.log('⚙️ بدء تهيئة النظام الشامل...');
       
-      // Initialize universal systems
+      // Initialize all universal systems
       UniversalRouter.initialize();
       PerformanceMonitor.initialize();
       ErrorRecovery.initialize();
+      DeploymentOptimizer.initialize();
+      IntelligentSystem.initialize();
       
       // Validate system
       const systemValid = await SystemValidator.runComprehensiveTests();
@@ -129,19 +133,45 @@ class OctaNetworkBootstrap {
         setTimeout(() => loadingElement.remove(), 500);
       }, 1000);
     }
+
+    // Enable smart features
+    this.enableSmartFeatures();
+  }
+
+  private static enableSmartFeatures() {
+    // Smart image optimization
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+      img.loading = 'lazy';
+      img.decoding = 'async';
+    });
+
+    // Smart link prefetching
+    const links = document.querySelectorAll('a[href^="/"]');
+    links.forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        const href = link.getAttribute('href');
+        if (href) {
+          const prefetchLink = document.createElement('link');
+          prefetchLink.rel = 'prefetch';
+          prefetchLink.href = href;
+          document.head.appendChild(prefetchLink);
+        }
+      }, { once: true });
+    });
   }
 }
 
-// Auto-start system
-document.addEventListener('DOMContentLoaded', () => {
-  OctaNetworkBootstrap.initialize();
-});
+// Auto-start system with multiple triggers
+const startSystem = () => OctaNetworkBootstrap.initialize();
 
-// Fallback for immediate execution
+// Immediate execution if DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    OctaNetworkBootstrap.initialize();
-  });
+  document.addEventListener('DOMContentLoaded', startSystem);
 } else {
-  OctaNetworkBootstrap.initialize();
+  startSystem();
 }
+
+// Fallback triggers
+window.addEventListener('load', startSystem);
+setTimeout(startSystem, 100);

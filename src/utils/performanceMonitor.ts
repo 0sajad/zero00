@@ -1,4 +1,6 @@
 
+import { UniversalRouter } from './universalRouter';
+
 export class PerformanceMonitor {
   private static metrics: Map<string, number> = new Map();
   private static observer: PerformanceObserver | null = null;
