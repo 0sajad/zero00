@@ -1,68 +1,167 @@
 
-# Enhanced Netlify Headers for OCTA NETWORK - Universal Compatibility
+# OCTA NETWORK - Smart Netlify Headers for Universal Compatibility
 
 /*
-  Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob: https://cdn.gpteng.co; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https: wss: ws:; media-src 'self' https: blob:; object-src 'none'; frame-src 'self' https:
+  # Enhanced security headers
+  Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https: blob: wss: ws:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob: https://cdn.gpteng.co https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https: https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https: https://fonts.gstatic.com; connect-src 'self' https: wss: ws:; media-src 'self' https: blob:; object-src 'none'; frame-src 'self' https:; worker-src 'self' blob:; manifest-src 'self'
   X-Frame-Options: SAMEORIGIN
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  
+  # CORS headers for universal compatibility
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+  Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control
+  Access-Control-Max-Age: 86400
+  
+  # Performance headers
+  X-DNS-Prefetch-Control: on
+  X-Robots-Tag: index, follow
 
-# JavaScript and TypeScript files
+# Smart MIME types and caching for JavaScript/TypeScript
 /*.js
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
 
 /*.mjs
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
 
 /*.jsx
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
 
 /*.ts
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
 
 /*.tsx
   Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
 
-# CSS files
+# CSS files with optimal caching
 /*.css
   Content-Type: text/css; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
 
-# HTML files
+/*.scss
+  Content-Type: text/css; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.sass
+  Content-Type: text/css; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML files - no caching for SPA
 /*.html
   Content-Type: text/html; charset=utf-8
   Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
 
-# JSON files
+# JSON and data files
 /*.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=86400
 
-# SVG files
+/*.map
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=86400
+
+# Images with long-term caching
 /*.svg
   Content-Type: image/svg+xml; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
 
-# Font files
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.gif
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.avif
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.ico
+  Cache-Control: public, max-age=31536000, immutable
+
+# Font files with maximum caching
 /*.woff
   Content-Type: font/woff
   Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
 
 /*.woff2
   Content-Type: font/woff2
   Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
 
 /*.ttf
   Content-Type: font/ttf
   Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+/*.otf
+  Content-Type: font/otf
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
 
 /*.eot
   Content-Type: application/vnd.ms-fontobject
   Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# Manifest and service worker files
+/*.webmanifest
+  Content-Type: application/manifest+json; charset=utf-8
+  Cache-Control: public, max-age=86400
+
+/sw.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/workbox-*.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# API routes (if any)
+/api/*
+  Cache-Control: no-cache, no-store, must-revalidate
+  Content-Type: application/json; charset=utf-8
+
+# Assets directory
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Source maps
+/*.map
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Development and build files
+/.vite/*
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/dist/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Special redirects for SPA compatibility
+/404.html
+  Cache-Control: no-cache, no-store, must-revalidate
