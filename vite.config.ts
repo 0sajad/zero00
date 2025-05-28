@@ -38,15 +38,7 @@ export default defineConfig(({ mode, command }) => {
     },
     
     plugins: [
-      react({
-        jsxImportSource: 'react',
-        plugins: [
-          ['@swc/plugin-styled-components', {
-            displayName: !isProduction,
-            ssr: false
-          }]
-        ]
-      }),
+      react(),
       mode === 'development' && componentTagger(),
     ].filter(Boolean),
     
@@ -76,13 +68,17 @@ export default defineConfig(({ mode, command }) => {
             utils: ['clsx', 'tailwind-merge', 'class-variance-authority']
           },
           chunkFileNames: (chunkInfo) => {
-            const facadeModuleId = chunkInfo.facadeModuleId 
-              ? chunkInfo.facadeModuleId.split('/').pop().replace(/\.[^/.]+$/, "") 
-              : "chunk";
-            return `assets/${facadeModuleId}-[hash].js`;
+            const facadeModuleId = chunkInfo.facadeModuleId;
+            if (facadeModuleId) {
+              const fileName = facadeModuleId.split('/').pop()?.replace(/\.[^/.]+$/, "") || "chunk";
+              return `assets/${fileName}-[hash].js`;
+            }
+            return "assets/chunk-[hash].js";
           },
           entryFileNames: 'assets/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
+            if (!assetInfo.name) return 'assets/[name]-[hash][extname]';
+            
             const info = assetInfo.name.split('.');
             const ext = info[info.length - 1];
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
@@ -98,7 +94,6 @@ export default defineConfig(({ mode, command }) => {
           }
         },
         onwarn(warning, warn) {
-          // Suppress specific warnings
           if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
           if (warning.code === 'SOURCEMAP_ERROR') return;
           if (warning.code === 'INVALID_ANNOTATION') return;
@@ -106,7 +101,6 @@ export default defineConfig(({ mode, command }) => {
         }
       },
       
-      // Enhanced error handling
       reportCompressedSize: false,
       chunkSizeWarningLimit: 1000,
     },
@@ -138,11 +132,6 @@ export default defineConfig(({ mode, command }) => {
     
     css: {
       devSourcemap: !isProduction,
-      preprocessorOptions: {
-        scss: {
-          additionalData: `@import "@/styles/variables.scss";`
-        }
-      }
     },
     
     json: {
