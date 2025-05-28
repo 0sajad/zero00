@@ -14,38 +14,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
     
     <script>
-      // Enhanced Smart Domain Detection & Configuration
+      // Universal Domain Detection & Configuration
       (function() {
-        const SmartDomainManager = {
+        const UniversalDomainManager = {
           init() {
-            console.log('🚀 OCTA NETWORK - تهيئة ذكية للمجال');
+            console.log('🚀 OCTA NETWORK - تهيئة ذكية شاملة');
             
             const hostname = window.location.hostname;
             const pathname = window.location.pathname;
             
-            // Smart domain detection
+            // Universal domain detection
             const domainTypes = {
               githubPages: hostname.includes('github.io'),
-              netlify: hostname.includes('netlify.app'),
-              vercel: hostname.includes('vercel.app'),
-              custom: !hostname.includes('localhost') && !hostname.includes('127.0.0.1'),
-              local: hostname.includes('localhost') || hostname.includes('127.0.0.1')
+              netlify: hostname.includes('netlify.app') || hostname.includes('netlify.com'),
+              vercel: hostname.includes('vercel.app') || hostname.includes('vercel.com'),
+              surge: hostname.includes('surge.sh'),
+              firebase: hostname.includes('firebase.app') || hostname.includes('firebaseapp.com'),
+              heroku: hostname.includes('herokuapp.com'),
+              custom: !hostname.includes('localhost') && !hostname.includes('127.0.0.1') && !hostname.includes('192.168.'),
+              local: hostname.includes('localhost') || hostname.includes('127.0.0.1') || hostname.includes('192.168.') || hostname === '0.0.0.0'
             };
             
             let basePath = '/';
             let repoName = '';
             
+            // Smart path detection for GitHub Pages
             if (domainTypes.githubPages) {
               const pathSegments = pathname.split('/').filter(Boolean);
               if (pathSegments.length > 0) {
                 repoName = pathSegments[0];
                 basePath = `/${repoName}/`;
-                console.log('🎯 GitHub Pages detected - Repository:', repoName);
-                console.log('📂 Base Path:', basePath);
+                console.log('🎯 GitHub Pages - Repository:', repoName);
               }
             }
             
-            // Set global configuration
+            // Global configuration
             window.__OCTA_CONFIG__ = {
               domainType: Object.keys(domainTypes).find(key => domainTypes[key]) || 'custom',
               basePath,
@@ -53,47 +56,64 @@
               hostname,
               isProduction: !domainTypes.local,
               features: {
+                universalCompatibility: true,
                 smartRouting: true,
                 adaptiveLoading: true,
-                errorRecovery: true,
-                universalCompatibility: true
+                errorRecovery: true
               }
             };
             
-            console.log('⚙️ تكوين OCTA:', window.__OCTA_CONFIG__);
+            console.log('⚙️ OCTA Config:', window.__OCTA_CONFIG__);
             return window.__OCTA_CONFIG__;
           },
           
           handleErrors() {
             window.addEventListener('error', (event) => {
               console.error('🚨 خطأ عام:', event.error);
-              
-              // If main script fails on GitHub Pages, try with correct base path
-              if (event.filename && event.filename.includes('main.tsx')) {
-                const config = window.__OCTA_CONFIG__;
-                if (config && config.domainType === 'githubPages' && config.basePath !== '/') {
-                  console.log('🔄 محاولة تحميل بديلة مع المسار الصحيح...');
-                  const correctPath = `${config.basePath}src/main.tsx`;
-                  
-                  const script = document.createElement('script');
-                  script.type = 'module';
-                  script.src = correctPath;
-                  document.head.appendChild(script);
-                }
-              }
+              this.attemptRecovery(event);
             });
 
             window.addEventListener('unhandledrejection', (event) => {
               console.error('🚨 Promise مرفوض:', event.reason);
               event.preventDefault();
             });
+          },
+          
+          attemptRecovery(event) {
+            if (event.filename && event.filename.includes('main.tsx')) {
+              console.log('🔄 محاولة استرداد النظام...');
+              const config = window.__OCTA_CONFIG__;
+              
+              setTimeout(() => {
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.src = config && config.basePath !== '/' ? `${config.basePath}src/main.tsx` : './src/main.tsx';
+                script.onerror = () => this.showEmergencyInterface();
+                document.head.appendChild(script);
+              }, 1000);
+            }
+          },
+          
+          showEmergencyInterface() {
+            document.getElementById('root').innerHTML = `
+              <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: 'Tajawal', sans-serif; direction: rtl;">
+                <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); max-width: 500px; margin: 20px;">
+                  <div style="font-size: 80px; margin-bottom: 20px;">🌐</div>
+                  <h1 style="color: #667eea; margin-bottom: 15px; font-size: 2.5rem; font-weight: 800;">OCTA NETWORK</h1>
+                  <p style="color: #6b7280; margin-bottom: 25px; line-height: 1.6;">النظام يعمل في الوضع الآمن</p>
+                  <button onclick="window.location.reload()" 
+                          style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold;">
+                    🔄 إعادة المحاولة
+                  </button>
+                </div>
+              </div>
+            `;
           }
         };
         
-        // Initialize smart domain management
-        SmartDomainManager.init();
-        SmartDomainManager.handleErrors();
-        
+        // Initialize
+        UniversalDomainManager.init();
+        UniversalDomainManager.handleErrors();
       })();
     </script>
     
@@ -131,7 +151,7 @@
       <div class="loading-content">
         <div class="loading-logo">🌐</div>
         <h1 style="font-size: 2.5rem; margin-bottom: 10px; font-weight: 800;">OCTA NETWORK</h1>
-        <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px;">منصة مراقبة الشبكات الذكية العالمية</p>
+        <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px;">منصة عالمية متوافقة مع جميع الخوادم</p>
         <div style="width: 300px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden;">
           <div style="width: 100%; height: 100%; background: white; border-radius: 2px; animation: loading 2s ease-in-out infinite;"></div>
         </div>
@@ -144,7 +164,6 @@
     <script type="module" src="./src/main.tsx"></script>
     
     <script>
-      // Enhanced error handling and fallback loading
       window.addEventListener('load', () => {
         const loadingEl = document.getElementById('loading');
         if (loadingEl) {
@@ -154,46 +173,7 @@
             setTimeout(() => loadingEl.remove(), 500);
           }, 1000);
         }
-        
-        // Log successful load
-        console.log('📊 تم تحميل الصفحة بنجاح في:', performance.now() + 'ms');
-      });
-      
-      // Enhanced error recovery
-      window.addEventListener('error', (event) => {
-        console.error('🚨 خطأ في التحميل:', event);
-        
-        // If main script fails to load, try alternative loading
-        if (event.filename && event.filename.includes('main.tsx')) {
-          console.log('🔄 محاولة تحميل بديلة...');
-          
-          setTimeout(() => {
-            const config = window.__OCTA_CONFIG__;
-            const basePath = config?.basePath || '/';
-            
-            const script = document.createElement('script');
-            script.type = 'module';
-            script.src = `${basePath}src/main.tsx`;
-            script.onerror = () => {
-              console.log('🆘 فشل التحميل البديل، عرض واجهة الطوارئ...');
-              document.getElementById('root').innerHTML = `
-                <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: 'Tajawal', sans-serif; direction: rtl;">
-                  <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); max-width: 500px; margin: 20px;">
-                    <div style="font-size: 80px; margin-bottom: 20px;">🌐</div>
-                    <h1 style="color: #667eea; margin-bottom: 15px; font-size: 2.5rem; font-weight: 800;">OCTA NETWORK</h1>
-                    <p style="color: #6b7280; margin-bottom: 25px; line-height: 1.6;">جاري تحضير النظام الذكي...</p>
-                    <button onclick="window.location.reload()" 
-                            style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold;">
-                      🔄 إعادة المحاولة
-                    </button>
-                  </div>
-                </div>
-              `;
-              document.getElementById('loading')?.remove();
-            };
-            document.head.appendChild(script);
-          }, 1000);
-        }
+        console.log('📊 تم تحميل النظام العالمي بنجاح');
       });
     </script>
   </body>

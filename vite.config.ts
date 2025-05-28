@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -15,14 +16,7 @@ export default defineConfig(({ mode, command }) => {
       const repoName = process.env.GITHUB_REPOSITORY.split('/')[1];
       return `/${repoName}/`;
     }
-    // For GitHub Pages, use repository name from URL if available
-    if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
-      const pathname = window.location.pathname;
-      const segments = pathname.split('/').filter(Boolean);
-      if (segments.length > 0) {
-        return `/${segments[0]}/`;
-      }
-    }
+    // Default for all other deployments
     return '/';
   };
   
