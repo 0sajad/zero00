@@ -1,4 +1,3 @@
-
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
@@ -10,9 +9,12 @@ import { SystemValidator } from './utils/systemValidator';
 import { DeploymentOptimizer } from './utils/deploymentOptimizer';
 import { IntelligentSystem } from './utils/intelligentSystem';
 import { ProductionValidator } from './utils/productionValidator';
+import { PerformanceOptimizer } from './utils/performanceOptimizer';
+import { AssetOptimizer } from './utils/assetOptimizer';
+import { WebVitalsMonitor } from './utils/webVitalsMonitor';
 
-// OCTA NETWORK - Universal Intelligence System
-console.log('🚀 OCTA NETWORK - نظام الذكاء العالمي الشامل');
+// OCTA NETWORK - Universal Intelligence System with Performance Optimization
+console.log('🚀 OCTA NETWORK - نظام الذكاء العالمي الشامل مع تحسين الأداء');
 
 class OctaNetworkBootstrap {
   private static isInitialized = false;
@@ -21,7 +23,12 @@ class OctaNetworkBootstrap {
     if (this.isInitialized) return;
     
     try {
-      console.log('⚙️ بدء تهيئة النظام الشامل...');
+      console.log('⚙️ بدء تهيئة النظام الشامل مع تحسينات الأداء...');
+      
+      // Initialize performance optimizers first
+      PerformanceOptimizer.initialize();
+      AssetOptimizer.initialize();
+      WebVitalsMonitor.initialize();
       
       // Initialize all universal systems
       UniversalRouter.initialize();
@@ -34,12 +41,12 @@ class OctaNetworkBootstrap {
       const systemValid = await SystemValidator.runComprehensiveTests();
       
       if (systemValid) {
-        console.log('✅ النظام جاهز للعمل على أي منصة');
+        console.log('✅ النظام محسن وجاهز للعمل على أي منصة');
         
         // Run production validation
         const productionReady = await ProductionValidator.runCompleteProductionValidation();
         if (productionReady) {
-          console.log('🎉 Production validation passed - Ready for deployment');
+          console.log('🎉 Production validation passed - Optimized and ready for deployment');
           console.log(ProductionValidator.generateProductionReport());
         }
         
@@ -64,7 +71,7 @@ class OctaNetworkBootstrap {
       throw new Error('Failed to create root element');
     }
 
-    console.log('🎨 رندر التطبيق الذكي...');
+    console.log('🎨 رندر التطبيق الذكي المحسن...');
     
     const root = createRoot(rootElement);
     
@@ -77,7 +84,7 @@ class OctaNetworkBootstrap {
     // Post-render optimizations
     this.postRenderOptimizations();
     
-    console.log('🎉 تم تحميل OCTA NETWORK بنجاح على جميع المنصات!');
+    console.log('🎉 تم تحميل OCTA NETWORK بنجاح على جميع المنصات مع تحسينات الأداء!');
   }
 
   private static validateRootElement(): HTMLElement {
@@ -146,12 +153,15 @@ class OctaNetworkBootstrap {
     // Enable smart features
     this.enableSmartFeatures();
     
-    // Final production readiness check
+    // Generate performance report
     setTimeout(() => {
-      console.log('🔍 Final production readiness verification...');
+      console.log('📊 Generating final performance report...');
+      const lighthouseReport = PerformanceOptimizer.generateLighthouseReport();
+      console.log('🎯 Lighthouse-style Report:', lighthouseReport);
+      
       ProductionValidator.runCompleteProductionValidation().then(ready => {
         if (ready) {
-          console.log('✅ PRODUCTION READY - All systems operational');
+          console.log('✅ PRODUCTION READY - All systems operational and optimized');
         }
       });
     }, 2000);
