@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/hooks/useAuth';
 import { 
   Shield,
   Globe,
@@ -19,8 +18,11 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
-const EnhancedModeSwitcher = () => {
-  const { login } = useAuth();
+interface EnhancedModeSwitcherProps {
+  onLogin: (mode: 'client' | 'developer', credentials: { name: string; key: string }) => Promise<boolean>;
+}
+
+const EnhancedModeSwitcher = ({ onLogin }: EnhancedModeSwitcherProps) => {
   const [selectedMode, setSelectedMode] = useState<'client' | 'developer' | null>(null);
   const [credentials, setCredentials] = useState({ name: '', key: '' });
   const [error, setError] = useState('');
@@ -76,7 +78,7 @@ const EnhancedModeSwitcher = () => {
     setError('');
     
     try {
-      const success = await login(selectedMode, credentials);
+      const success = await onLogin(selectedMode, credentials);
       if (!success) {
         setError('فشل في تسجيل الدخول - تحقق من البيانات');
       }
