@@ -4,43 +4,55 @@ name: Build Application
 on:
   push:
     branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '18'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Type check
-        run: npm run type-check || echo "Type check failed but continuing build"
+      - name: Set GitHub Pages environment
+        run: |
+          echo "GITHUB_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
+          echo "VITE_BASE_URL=/${{ github.event.repository.name }}/" >> $GITHUB_ENV
 
-      - name: Build
-        run: npm run build
+      - name: Build application
+        run: |
+          npm run build
         env:
           NODE_ENV: production
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: Verify build output
+      - name: Create deployment files
         run: |
-          if [ ! -d "./dist" ]; then
-            echo "Build failed - dist directory not found"
-            exit 1
-          fi
-          echo "Build successful - dist directory created"
+          # Create .nojekyll file
+          touch ./dist/.nojekyll
+          
+          # Create proper index.html with correct paths
+          sed -i 's|="/|="/${{ github.event.repository.name }}/|g' ./dist/index.html
+          sed -i 's|href="/|href="/${{ github.event.repository.name }}/|g' ./dist/index.html
+          sed -i 's|src="/|src="/${{ github.event.repository.name }}/|g' ./dist/index.html
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-files
           path: ./dist
-          retention-days: 30
+          retention-days: 1

@@ -10,8 +10,17 @@ export default defineConfig(({ mode, command }) => {
   
   console.log(`🚀 OCTA NETWORK - تكوين متقدم - النمط: ${mode}`);
   
+  // Smart base path detection for GitHub Pages
+  const getBasePath = () => {
+    if (process.env.GITHUB_REPOSITORY) {
+      const repoName = process.env.GITHUB_REPOSITORY.split('/')[1];
+      return `/${repoName}/`;
+    }
+    return '/';
+  };
+  
   return {
-    base: './',
+    base: isProduction ? getBasePath() : './',
     
     server: {
       host: "0.0.0.0",
@@ -29,7 +38,8 @@ export default defineConfig(({ mode, command }) => {
       },
       fs: {
         strict: false
-      }
+      },
+      middlewareMode: false
     },
     
     preview: {
@@ -60,14 +70,13 @@ export default defineConfig(({ mode, command }) => {
       cssCodeSplit: true,
       
       rollupOptions: {
-        external: ['@emotion/react/jsx-runtime'],
+        external: [],
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom'],
             router: ['react-router-dom'],
             ui: ['@radix-ui/react-toast', '@radix-ui/react-tabs', 'lucide-react'],
             query: ['@tanstack/react-query'],
-            i18n: ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
             charts: ['recharts'],
             utils: ['clsx', 'tailwind-merge', 'class-variance-authority']
           },
@@ -97,7 +106,6 @@ export default defineConfig(({ mode, command }) => {
           if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
           if (warning.code === 'SOURCEMAP_ERROR') return;
           if (warning.code === 'INVALID_ANNOTATION') return;
-          if (warning.code === 'UNRESOLVED_IMPORT' && warning.id?.includes('@emotion/react/jsx-runtime')) return;
           warn(warning);
         }
       },
@@ -115,13 +123,11 @@ export default defineConfig(({ mode, command }) => {
         'lucide-react',
         'clsx',
         'tailwind-merge',
-        'i18next',
-        'react-i18next',
         'recharts',
         'date-fns',
         'sonner'
       ],
-      exclude: ['@vite/client', '@vite/env', '@emotion/react/jsx-runtime']
+      exclude: ['@vite/client', '@vite/env']
     },
     
     define: {
@@ -133,11 +139,6 @@ export default defineConfig(({ mode, command }) => {
     
     css: {
       devSourcemap: !isProduction,
-      preprocessorOptions: {
-        scss: {
-          additionalData: `@import "@/styles/variables.scss";`
-        }
-      }
     },
     
     json: {
@@ -151,6 +152,10 @@ export default defineConfig(({ mode, command }) => {
       drop: isProduction ? ['console', 'debugger'] : []
     },
     
-    assetsInclude: ['**/*.mp3', '**/*.wav', '**/*.ogg', '**/*.m4a']
+    assetsInclude: ['**/*.mp3', '**/*.wav', '**/*.ogg', '**/*.m4a'],
+    
+    worker: {
+      format: 'es'
+    }
   };
 });
