@@ -1,13 +1,16 @@
+import { RealTimeMonitor } from './realTimeMonitor';
+import { SystemAuditor } from './systemAuditor';
 
 export class IntelligentSystem {
   private static features = new Map<string, boolean>();
   private static analytics = new Map<string, number>();
+  private static healthMonitoringActive = false;
 
   static initialize() {
     this.setupIntelligentBehavior();
     this.enableSmartUserExperience();
-    this.monitorSystemHealth();
-    console.log('🧠 Intelligent System activated');
+    this.startSystemHealthMonitoring();
+    console.log('🧠 Intelligent System activated with real monitoring');
   }
 
   private static setupIntelligentBehavior() {
@@ -32,8 +35,165 @@ export class IntelligentSystem {
     this.enableSmartNotifications();
   }
 
+  private static startSystemHealthMonitoring() {
+    if (this.healthMonitoringActive) return;
+    
+    this.healthMonitoringActive = true;
+    RealTimeMonitor.start();
+    
+    // Run comprehensive audit every 5 minutes
+    setInterval(async () => {
+      const auditResults = await SystemAuditor.performComprehensiveAudit();
+      this.processAuditResults(auditResults);
+    }, 300000);
+    
+    // Monitor system health every 30 seconds
+    setInterval(() => {
+      const healthScore = this.calculateRealHealthScore();
+      if (healthScore < 80) {
+        this.optimizeSystemIntelligently();
+      }
+    }, 30000);
+    
+    console.log('🔍 Real-time system health monitoring started');
+  }
+
+  private static processAuditResults(results: any) {
+    console.log('📊 Processing audit results:', results);
+    
+    if (results.overallScore < 85) {
+      console.warn('⚠️ System performance below optimal, applying fixes...');
+      this.applyIntelligentFixes(results);
+    }
+    
+    this.analytics.set('lastAuditScore', results.overallScore);
+    this.analytics.set('lastAuditTime', Date.now());
+  }
+
+  private static applyIntelligentFixes(results: any) {
+    if (results.performance?.status !== 'pass') {
+      this.optimizePerformance();
+    }
+    
+    if (results.networking?.status !== 'pass') {
+      this.optimizeNetworking();
+    }
+    
+    if (results.components?.status !== 'pass') {
+      this.optimizeComponents();
+    }
+  }
+
+  private static optimizePerformance() {
+    const images = document.querySelectorAll('img:not([loading])');
+    images.forEach(img => {
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
+    });
+    
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    links.forEach(link => {
+      if (!link.hasAttribute('media')) {
+        link.setAttribute('media', 'all');
+      }
+    });
+    
+    console.log('⚡ Applied real performance optimizations');
+  }
+
+  private static optimizeNetworking() {
+    const links = document.querySelectorAll('a[href^="http"]:not([rel*="prefetch"])');
+    links.forEach((link, index) => {
+      if (index < 5) {
+        const prefetchLink = document.createElement('link');
+        prefetchLink.rel = 'prefetch';
+        prefetchLink.href = link.getAttribute('href') || '';
+        document.head.appendChild(prefetchLink);
+      }
+    });
+    
+    console.log('🌐 Applied real networking optimizations');
+  }
+
+  private static optimizeComponents() {
+    const unusedElements = document.querySelectorAll('[style*="display: none"]');
+    unusedElements.forEach(el => {
+      if (!el.hasAttribute('data-keep')) {
+        el.style.display = 'none';
+        el.setAttribute('aria-hidden', 'true');
+      }
+    });
+    
+    console.log('🔧 Applied real component optimizations');
+  }
+
+  private static calculateRealHealthScore(): number {
+    const metrics = RealTimeMonitor.getCurrentMetrics();
+    let score = 100;
+    
+    if (metrics.memory) {
+      if (metrics.memory.usage_percent > 80) score -= 30;
+      else if (metrics.memory.usage_percent > 60) score -= 15;
+    }
+    
+    if (metrics.network && !metrics.network.online) score -= 25;
+    
+    if (metrics.performance) {
+      const currentTime = metrics.performance.timestamp;
+      if (currentTime > 10000) score -= 10;
+    }
+    
+    if (metrics.dom_stats) {
+      if (metrics.dom_stats.total_elements > 1000) score -= 10;
+    }
+    
+    this.analytics.set('realHealthScore', score);
+    return Math.max(0, score);
+  }
+
+  private static optimizeSystemIntelligently() {
+    console.log('🔧 Applying intelligent system optimizations...');
+    
+    const metrics = RealTimeMonitor.getCurrentMetrics();
+    
+    if (metrics.memory?.usage_percent > 70) {
+      this.performMemoryOptimization();
+    }
+    
+    if (metrics.dom_stats?.total_elements > 800) {
+      this.performDOMOptimization();
+    }
+    
+    if (metrics.network && !metrics.network.online) {
+      this.enableOfflineMode();
+    }
+    
+    this.analytics.set('lastOptimization', Date.now());
+  }
+
+  private static performMemoryOptimization() {
+    if ('gc' in window) {
+      (window as any).gc();
+    }
+    
+    const elements = document.querySelectorAll('[data-cleanup="true"]');
+    elements.forEach(el => el.remove());
+    
+    console.log('🧠 Memory optimization applied');
+  }
+
+  private static performDOMOptimization() {
+    const hiddenElements = document.querySelectorAll('[style*="display: none"]:not([data-keep])');
+    hiddenElements.forEach(el => {
+      if (!el.hasAttribute('data-important')) {
+        el.remove();
+      }
+    });
+    
+    console.log('🔧 DOM optimization applied');
+  }
+
   private static enableSmartAnimations() {
-    // Reduce animations on low-performance devices
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (reducedMotion.matches || this.features.get('reducedAnimations')) {
       document.documentElement.style.setProperty('--animation-duration', '0.01s');
@@ -41,7 +201,6 @@ export class IntelligentSystem {
   }
 
   private static enableContentPrefetching() {
-    // Prefetch likely next content based on user patterns
     const links = document.querySelectorAll('a[href^="/"]');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -59,9 +218,7 @@ export class IntelligentSystem {
   }
 
   private static enableSmartNotifications() {
-    // Smart notification system based on user behavior
     if ('Notification' in window && Notification.permission === 'default') {
-      // Don't request permission immediately, wait for user engagement
       document.addEventListener('click', () => {
         const userInteractions = this.analytics.get('userInteractions') || 0;
         if (userInteractions > 5) {
@@ -78,12 +235,9 @@ export class IntelligentSystem {
     document.addEventListener('mousemove', (e) => {
       mousePosition = { x: e.clientX, y: e.clientY };
       lastActivity = Date.now();
-      
-      // Preload content based on mouse movement patterns
       this.predictUserIntent(mousePosition);
     });
 
-    // Preload based on user patterns
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       if (target.tagName === 'A' || target.closest('a')) {
@@ -93,7 +247,6 @@ export class IntelligentSystem {
   }
 
   private static predictUserIntent(mousePos: { x: number, y: number }) {
-    // Smart prediction algorithm
     const links = document.querySelectorAll('a, button');
     links.forEach(link => {
       const rect = link.getBoundingClientRect();
@@ -103,7 +256,6 @@ export class IntelligentSystem {
       );
       
       if (distance < 100) {
-        // Preload resources for likely next page
         const href = link.getAttribute('href');
         if (href && href.startsWith('/')) {
           this.preloadRoute(href);
@@ -120,7 +272,6 @@ export class IntelligentSystem {
   }
 
   private static adaptToDeviceCapabilities() {
-    // Check device performance and adapt accordingly
     const connection = (navigator as any).connection;
     if (connection) {
       const effectiveType = connection.effectiveType;
@@ -134,7 +285,6 @@ export class IntelligentSystem {
       }
     }
 
-    // Adapt to memory constraints
     if ('deviceMemory' in navigator) {
       const memory = (navigator as any).deviceMemory;
       if (memory < 4) {
@@ -145,28 +295,21 @@ export class IntelligentSystem {
   }
 
   private static setupSmartErrorRecovery() {
-    // Intelligent error recovery with learning
     window.addEventListener('error', (event) => {
       this.analytics.set('errors', (this.analytics.get('errors') || 0) + 1);
-      
-      // Attempt automatic recovery based on error type
       this.attemptSmartRecovery(event.error);
     });
   }
 
   private static attemptSmartRecovery(error: any) {
-    // Smart recovery strategies based on error patterns
     if (error.message.includes('chunk')) {
-      // Handle chunk loading errors
       setTimeout(() => window.location.reload(), 1000);
     } else if (error.message.includes('network')) {
-      // Handle network errors
       this.enableOfflineMode();
     }
   }
 
   private static enableOfflineMode() {
-    // Enable offline capabilities
     const offlineBanner = document.createElement('div');
     offlineBanner.innerHTML = `
       <div style="position: fixed; top: 0; left: 0; right: 0; background: #f59e0b; color: white; text-align: center; padding: 10px; z-index: 9999;">
@@ -175,61 +318,9 @@ export class IntelligentSystem {
     `;
     document.body.appendChild(offlineBanner);
 
-    // Remove banner when back online
     window.addEventListener('online', () => {
       offlineBanner.remove();
     });
-  }
-
-  private static monitorSystemHealth() {
-    setInterval(() => {
-      const healthScore = this.calculateHealthScore();
-      if (healthScore < 80) {
-        this.optimizeSystem();
-      }
-    }, 30000); // Check every 30 seconds
-  }
-
-  private static calculateHealthScore(): number {
-    let score = 100;
-    
-    // Factor in error rate
-    const errors = this.analytics.get('errors') || 0;
-    score -= errors * 5;
-    
-    // Factor in performance
-    const loadTime = performance.now();
-    if (loadTime > 3000) score -= 20;
-    
-    // Factor in memory usage
-    if ('memory' in performance) {
-      const memory = (performance as any).memory;
-      const memoryUsage = memory.usedJSHeapSize / memory.totalJSHeapSize;
-      if (memoryUsage > 0.8) score -= 15;
-    }
-    
-    return Math.max(0, score);
-  }
-
-  private static optimizeSystem() {
-    console.log('🔧 Auto-optimizing system performance...');
-    
-    // Clear unnecessary DOM elements
-    const unusedElements = document.querySelectorAll('[data-cleanup="true"]');
-    unusedElements.forEach(el => el.remove());
-    
-    // Optimize images
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-      if (!img.loading) {
-        img.loading = 'lazy';
-      }
-    });
-    
-    // Force garbage collection if available
-    if ('gc' in window) {
-      (window as any).gc();
-    }
   }
 
   static getFeatures() {
@@ -238,5 +329,28 @@ export class IntelligentSystem {
 
   static getAnalytics() {
     return Object.fromEntries(this.analytics);
+  }
+
+  static getRealTimeReport() {
+    return {
+      features: this.getFeatures(),
+      analytics: this.getAnalytics(),
+      currentMetrics: RealTimeMonitor.getCurrentMetrics(),
+      healthScore: this.calculateRealHealthScore(),
+      recommendations: RealTimeMonitor.generateReport().recommendations,
+      timestamp: new Date().toISOString(),
+      monitoring: this.healthMonitoringActive
+    };
+  }
+
+  static async performSystemAudit() {
+    return await SystemAuditor.performComprehensiveAudit();
+  }
+
+  static cleanup() {
+    if (this.healthMonitoringActive) {
+      RealTimeMonitor.stop();
+      this.healthMonitoringActive = false;
+    }
   }
 }
