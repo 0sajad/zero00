@@ -6,7 +6,7 @@ import { audioSystem } from '@/utils/audioSystem';
 interface AnimatedButtonProps {
   children: React.ReactNode;
   variant?: 'default' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'default' | 'lg';
   effect?: 'glow' | 'pulse-blue' | 'pulse-green' | 'pulse-red';
   onClick?: () => void;
   className?: string;
@@ -16,7 +16,7 @@ interface AnimatedButtonProps {
 const AnimatedButton = ({ 
   children, 
   variant = 'default', 
-  size = 'md', 
+  size = 'default', 
   effect = 'glow',
   onClick,
   className = '',

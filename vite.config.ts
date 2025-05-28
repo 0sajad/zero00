@@ -98,7 +98,7 @@ export default defineConfig(({ mode, command }) => {
           if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
           if (warning.code === 'SOURCEMAP_ERROR') return;
           if (warning.code === 'INVALID_ANNOTATION') return;
-          if (warning.code === 'UNRESOLVED_IMPORT' && warning.source?.includes('@emotion/react/jsx-runtime')) return;
+          if (warning.code === 'UNRESOLVED_IMPORT' && warning.id?.includes('@emotion/react/jsx-runtime')) return;
           warn(warning);
         }
       },
