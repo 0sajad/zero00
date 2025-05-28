@@ -9,6 +9,7 @@ import { ErrorRecovery } from './utils/errorRecovery';
 import { SystemValidator } from './utils/systemValidator';
 import { DeploymentOptimizer } from './utils/deploymentOptimizer';
 import { IntelligentSystem } from './utils/intelligentSystem';
+import { ProductionValidator } from './utils/productionValidator';
 
 // OCTA NETWORK - Universal Intelligence System
 console.log('🚀 OCTA NETWORK - نظام الذكاء العالمي الشامل');
@@ -34,6 +35,14 @@ class OctaNetworkBootstrap {
       
       if (systemValid) {
         console.log('✅ النظام جاهز للعمل على أي منصة');
+        
+        // Run production validation
+        const productionReady = await ProductionValidator.runCompleteProductionValidation();
+        if (productionReady) {
+          console.log('🎉 Production validation passed - Ready for deployment');
+          console.log(ProductionValidator.generateProductionReport());
+        }
+        
         await this.renderApplication();
       } else {
         console.warn('⚠️ تم اكتشاف مشاكل في النظام، جاري الإصلاح...');
@@ -136,6 +145,16 @@ class OctaNetworkBootstrap {
 
     // Enable smart features
     this.enableSmartFeatures();
+    
+    // Final production readiness check
+    setTimeout(() => {
+      console.log('🔍 Final production readiness verification...');
+      ProductionValidator.runCompleteProductionValidation().then(ready => {
+        if (ready) {
+          console.log('✅ PRODUCTION READY - All systems operational');
+        }
+      });
+    }, 2000);
   }
 
   private static enableSmartFeatures() {
