@@ -40,9 +40,7 @@ export default defineConfig(({ mode, command }) => {
     },
     
     plugins: [
-      react({
-        jsxImportSource: '@emotion/react'
-      }),
+      react(),
       mode === 'development' && componentTagger(),
     ].filter(Boolean),
     
@@ -62,6 +60,7 @@ export default defineConfig(({ mode, command }) => {
       cssCodeSplit: true,
       
       rollupOptions: {
+        external: ['@emotion/react/jsx-runtime'],
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom'],
@@ -99,6 +98,7 @@ export default defineConfig(({ mode, command }) => {
           if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
           if (warning.code === 'SOURCEMAP_ERROR') return;
           if (warning.code === 'INVALID_ANNOTATION') return;
+          if (warning.code === 'UNRESOLVED_IMPORT' && warning.source?.includes('@emotion/react/jsx-runtime')) return;
           warn(warning);
         }
       },
@@ -122,12 +122,12 @@ export default defineConfig(({ mode, command }) => {
         'date-fns',
         'sonner'
       ],
-      exclude: ['@vite/client', '@vite/env']
+      exclude: ['@vite/client', '@vite/env', '@emotion/react/jsx-runtime']
     },
     
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
-      'process.env.VITE_APP_VERSION': JSON.stringify('2.0.0'),
+      'process.env.VITE_APP_VERSION': JSON.stringify('3.0.0'),
       global: 'globalThis',
       __DEV__: !isProduction
     },

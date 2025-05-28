@@ -1,0 +1,60 @@
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { audioSystem } from '@/utils/audioSystem';
+
+interface AnimatedButtonProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  effect?: 'glow' | 'pulse-blue' | 'pulse-green' | 'pulse-red';
+  onClick?: () => void;
+  className?: string;
+  disabled?: boolean;
+}
+
+const AnimatedButton = ({ 
+  children, 
+  variant = 'default', 
+  size = 'md', 
+  effect = 'glow',
+  onClick,
+  className = '',
+  disabled = false
+}: AnimatedButtonProps) => {
+  
+  const handleClick = async () => {
+    if (!disabled) {
+      await audioSystem.playSound('click');
+      onClick?.();
+    }
+  };
+
+  const handleHover = async () => {
+    if (!disabled) {
+      await audioSystem.playSound('hover');
+    }
+  };
+
+  const effectClasses = {
+    glow: 'octa-button-glow',
+    'pulse-blue': 'octa-pulse-blue',
+    'pulse-green': 'octa-pulse-green',
+    'pulse-red': 'octa-pulse-red'
+  };
+
+  return (
+    <Button
+      variant={variant}
+      size={size}
+      onClick={handleClick}
+      onMouseEnter={handleHover}
+      disabled={disabled}
+      className={`octa-hardware-accelerated octa-smooth-animation ${effectClasses[effect]} ${className}`}
+    >
+      {children}
+    </Button>
+  );
+};
+
+export default AnimatedButton;

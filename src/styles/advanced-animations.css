@@ -1,0 +1,405 @@
+
+/* 🎨 OCTA NETWORK - Advanced Visual Effects & Animations */
+
+/* =================== INFINITY LOADING EFFECT =================== */
+.octa-infinity-container {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.octa-infinity-container svg {
+  --spin-duration: 2000ms;
+  --infinity-duration: 2000ms;
+  --hsl-base-h: 210deg;
+  --hsl-base-s: 80%;
+  --hsl-base-l: 55%;
+  animation: octa-spin var(--spin-duration) linear infinite;
+}
+
+.octa-eight {
+  --eight-length-px: 60.84563446044922px;
+  --offset: calc(var(--order) * 5px);
+  animation: octa-infinity var(--infinity-duration) linear infinite;
+  d: path("m5 5a1 1 0 0110 0c0 4-10 6-10 10a1 1 0 0010 0c0-4-10-6-10-10");
+  fill: none;
+  stroke: hsl(calc(var(--hsl-base-h) * var(--order)) var(--hsl-base-s) var(--hsl-base-l));
+  stroke-dasharray: 6px calc(var(--eight-length-px) - 6px);
+  stroke-linecap: round;
+  stroke-width: calc(1.5 - var(--order) / 8);
+}
+
+@keyframes octa-infinity {
+  0% {
+    stroke-dashoffset: calc(var(--eight-length-px) + var(--offset));
+  }
+  100% {
+    stroke-dashoffset: var(--offset);
+  }
+}
+
+@keyframes octa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =================== FLOATING SERVER ANIMATION =================== */
+.octa-server-container {
+  zoom: 0.4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.octa-float-animation {
+  animation: octa-float-bounce 3s infinite ease-in-out;
+}
+
+.octa-strobe-green {
+  animation: 
+    octa-float-bounce 3s infinite ease-in-out,
+    octa-strobe-green-effect 0.8s infinite;
+}
+
+.octa-strobe-red {
+  animation:
+    octa-float-bounce 3s infinite ease-in-out,
+    octa-strobe-red-effect 0.8s infinite;
+}
+
+@keyframes octa-float-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes octa-strobe-green-effect {
+  0%, 50%, 100% { fill: #10b981; }
+  25%, 75% { fill: #059669; }
+}
+
+@keyframes octa-strobe-red-effect {
+  0%, 50%, 100% { fill: #ef4444; }
+  25%, 75% { fill: #dc2626; }
+}
+
+/* =================== LOADING ROBOT ANIMATION =================== */
+.octa-robot-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 20px auto;
+}
+
+.octa-robot-eye {
+  width: 18px;
+  height: 6px;
+  background-color: #60a5fa;
+  border-radius: 0px 0px 15px 15px;
+  position: relative;
+  left: 8px;
+  top: 35px;
+  box-shadow: 35px 0px 0px 0px #60a5fa;
+  animation: octa-eye-glow 2s infinite alternate;
+}
+
+.octa-robot-head {
+  backface-visibility: hidden;
+  position: relative;
+  margin: -200px auto;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  border-radius: 40px;
+  box-shadow: inset -3px 2px 0px 0px rgba(96, 165, 250, 0.8);
+  animation: octa-head-float 1.5s infinite alternate ease-out;
+}
+
+.octa-robot-body {
+  position: relative;
+  margin: 80px auto;
+  width: 120px;
+  height: 100px;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  border-radius: 40px/20px;
+  box-shadow: inset -4px 2px 0px 0px rgba(96, 165, 250, 0.8);
+  animation: octa-body-float 1.5s infinite alternate ease-out;
+}
+
+.octa-robot-hands {
+  margin-top: 120px;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  border-radius: 15px;
+  box-shadow: -1px -3px 0px 0px rgba(96, 165, 250, 0.8);
+  transform: rotate(45deg);
+  top: 70%;
+  left: 18%;
+  z-index: 1;
+  animation: octa-body-float 1.5s infinite alternate ease-out;
+}
+
+.octa-loading-text {
+  position: absolute;
+  width: 8ch;
+  height: 30px;
+  text-align: left;
+  line-height: 30px;
+  margin: -8px auto;
+  font-family: 'Inter', 'Cairo', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #3b82f6;
+  left: 5%;
+  top: 8%;
+  animation: octa-text-reveal 3s infinite ease-out;
+  word-wrap: break-word;
+  display: block;
+  overflow: hidden;
+}
+
+@keyframes octa-eye-glow {
+  0% { 
+    background-color: #60a5fa;
+    box-shadow: 35px 0px 0px 0px #60a5fa, 0 0 10px #60a5fa;
+  }
+  100% { 
+    background-color: #3b82f6;
+    box-shadow: 35px 0px 0px 0px #3b82f6, 0 0 20px #3b82f6;
+  }
+}
+
+@keyframes octa-head-float {
+  0% { top: 0px; }
+  50% { top: 8px; }
+  100% { top: 0px; }
+}
+
+@keyframes octa-body-float {
+  0% { top: -4px; }
+  50% { top: 8px; }
+  100% { top: -4px; }
+}
+
+@keyframes octa-text-reveal {
+  0% { width: 8ch; }
+  20% { width: 9ch; }
+  40% { width: 10ch; }
+  60% { width: 11ch; }
+  80% { width: 12ch; }
+  100% { width: 13ch; }
+}
+
+/* =================== GHOST SERVER EFFECT =================== */
+.octa-ghost-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.octa-ghost-effect {
+  transform: translate(0px, -20px);
+  z-index: -1;
+  animation: octa-ghost-fade 3s infinite ease-in-out;
+}
+
+.octa-mini-server {
+  animation: octa-mini-bounce 3s infinite ease-in-out;
+}
+
+@keyframes octa-ghost-fade {
+  0% { opacity: 1; scale: 1; }
+  50% { opacity: 0.3; scale: 0.85; }
+  100% { opacity: 1; scale: 1; }
+}
+
+@keyframes octa-mini-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* =================== INTERACTIVE BUTTON EFFECTS =================== */
+.octa-button-glow {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.octa-button-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.octa-button-glow:hover::before {
+  left: 100%;
+}
+
+.octa-button-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+/* =================== CARD HOVER EFFECTS =================== */
+.octa-card-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.octa-card-hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.octa-card-hover:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.octa-card-hover:hover::after {
+  opacity: 1;
+}
+
+/* =================== PULSE EFFECTS =================== */
+.octa-pulse-blue {
+  animation: octa-pulse-blue-effect 2s infinite;
+}
+
+.octa-pulse-green {
+  animation: octa-pulse-green-effect 2s infinite;
+}
+
+.octa-pulse-red {
+  animation: octa-pulse-red-effect 2s infinite;
+}
+
+@keyframes octa-pulse-blue-effect {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+  50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+}
+
+@keyframes octa-pulse-green-effect {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+}
+
+@keyframes octa-pulse-red-effect {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+}
+
+/* =================== TEXT EFFECTS =================== */
+.octa-text-glow {
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: octa-gradient-shift 3s ease infinite;
+}
+
+@keyframes octa-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* =================== SCROLL ANIMATIONS =================== */
+.octa-fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: octa-fade-in-up-effect 0.6s ease forwards;
+}
+
+.octa-fade-in-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  animation: octa-fade-in-left-effect 0.6s ease forwards;
+}
+
+.octa-fade-in-right {
+  opacity: 0;
+  transform: translateX(30px);
+  animation: octa-fade-in-right-effect 0.6s ease forwards;
+}
+
+@keyframes octa-fade-in-up-effect {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes octa-fade-in-left-effect {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes octa-fade-in-right-effect {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* =================== PERFORMANCE OPTIMIZATIONS =================== */
+.octa-hardware-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.octa-smooth-animation {
+  will-change: transform, opacity;
+}
+
+/* =================== RESPONSIVE OPTIMIZATIONS =================== */
+@media (max-width: 768px) {
+  .octa-infinity-container svg {
+    --spin-duration: 3000ms;
+    --infinity-duration: 3000ms;
+  }
+  
+  .octa-server-container {
+    zoom: 0.3;
+  }
+  
+  .octa-robot-container {
+    transform: scale(0.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .octa-infinity-container svg,
+  .octa-float-animation,
+  .octa-strobe-green,
+  .octa-strobe-red,
+  .octa-robot-head,
+  .octa-robot-body,
+  .octa-robot-hands,
+  .octa-ghost-effect,
+  .octa-mini-server {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
