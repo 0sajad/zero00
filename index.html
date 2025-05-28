@@ -6,131 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OCTA NETWORK - منصة مراقبة الشبكات الذكية</title>
     <meta name="description" content="منصة متطورة لمراقبة الشبكات والتحليل الذكي مع الدعم متعدد اللغات" />
-    <meta name="author" content="OCTA NETWORK Team" />
-
-    <meta property="og:title" content="OCTA NETWORK - منصة مراقبة الشبكات الذكية" />
-    <meta property="og:description" content="منصة متطورة لمراقبة الشبكات والتحليل الذكي مع الدعم متعدد اللغات" />
-    <meta property="og:type" content="website" />
     
-    <meta name="twitter:card" content="summary_large_image" />
-    
-    <!-- Favicon fixed -->
+    <!-- Enhanced favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌐%3C/text%3E%3C/svg%3E" />
-    
-    <!-- Preload critical CSS -->
-    <link rel="preload" href="./src/styles/loading.css" as="style" />
-    <link rel="stylesheet" href="./src/styles/loading.css" />
-    
-    <!-- GPT Engineer script - Required for Lovable functionality -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
   </head>
-
   <body>
-    <div id="loading" class="loading-screen">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">جاري تحميل OCTA NETWORK...</div>
-    </div>
-    
-    <div id="error" class="error-screen">
-      <h2>خطأ في التحميل</h2>
-      <p>فشل في تحميل التطبيق الرئيسي</p>
-      <button onclick="window.location.reload()">
-        تحديث الصفحة
-      </button>
-    </div>
-    
     <div id="root"></div>
-    
-    <script type="module">
-      console.log('🚀 OCTA NETWORK - بدء التهيئة...');
-      
-      // Enhanced Loading Manager
-      class LoadingManager {
-        constructor() {
-          this.hasLoaded = false;
-          this.setupTimeout();
-          this.setupErrorHandlers();
-        }
-
-        setupTimeout() {
-          setTimeout(() => {
-            if (!this.hasLoaded) {
-              this.showError('انتهت مهلة التحميل');
-            }
-          }, 10000);
-        }
-
-        setupErrorHandlers() {
-          window.addEventListener('error', (event) => {
-            console.error('خطأ في النافذة:', event.error);
-            if (!this.hasLoaded) {
-              this.showError('حدث خطأ في تحميل التطبيق');
-            }
-          });
-        }
-
-        hideLoading() {
-          this.hasLoaded = true;
-          const loading = document.getElementById('loading');
-          const root = document.getElementById('root');
-          
-          if (loading) loading.style.display = 'none';
-          if (root) {
-            root.style.display = 'block';
-            root.classList.add('loaded');
-          }
-          
-          console.log('✅ تم إخفاء شاشة التحميل');
-        }
-
-        showError(message) {
-          const loading = document.getElementById('loading');
-          const error = document.getElementById('error');
-          const errorText = error?.querySelector('p');
-          
-          if (loading) loading.style.display = 'none';
-          if (error) {
-            error.style.display = 'flex';
-            if (errorText && message) {
-              errorText.textContent = message;
-            }
-          }
-          
-          console.error('تم عرض شاشة الخطأ:', message);
-        }
-      }
-
-      const manager = new LoadingManager();
-      window.hideLoading = () => manager.hideLoading();
-      window.showError = (msg) => manager.showError(msg);
-
-      // Load main application
-      async function initApp() {
-        try {
-          console.log('🔧 بدء تحميل التطبيق...');
-          
-          // Import main module with proper error handling
-          const mainModule = await import('./src/main.tsx');
-          
-          console.log('✅ تم تحميل التطبيق بنجاح');
-          
-          // Hide loading after successful import
-          setTimeout(() => {
-            manager.hideLoading();
-          }, 500);
-          
-        } catch (error) {
-          console.error('❌ خطأ في تحميل التطبيق:', error);
-          manager.showError('فشل في تحميل التطبيق الرئيسي');
-        }
-      }
-
-      // Start application
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initApp);
-      } else {
-        initApp();
-      }
-    </script>
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
