@@ -55,12 +55,33 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
+            // Vendor chunks for better caching
             vendor: ['react', 'react-dom'],
             router: ['react-router-dom'],
             ui: ['@radix-ui/react-toast', '@radix-ui/react-tabs', 'lucide-react'],
-            utils: ['clsx', 'tailwind-merge']
+            utils: ['clsx', 'tailwind-merge'],
+            // Performance optimization chunks
+            performance: [
+              'src/utils/performanceOptimizer',
+              'src/utils/assetOptimizer',
+              'src/utils/webVitalsMonitor'
+            ],
+            // Network tools chunk
+            networkTools: [
+              'src/components/network-tools',
+              'src/components/tools'
+            ]
           },
-          chunkFileNames: 'assets/js/[name]-[hash].js',
+          chunkFileNames: (chunkInfo) => {
+            // Generate optimized chunk names
+            if (chunkInfo.name.includes('vendor')) {
+              return 'assets/js/vendor-[hash].js';
+            }
+            if (chunkInfo.name.includes('performance')) {
+              return 'assets/js/performance-[hash].js';
+            }
+            return 'assets/js/[name]-[hash].js';
+          },
           entryFileNames: 'assets/js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
             if (!assetInfo.name) return 'assets/[name]-[hash][extname]';
@@ -75,20 +96,35 @@ export default defineConfig(({ mode }) => {
             if (/woff|woff2|ttf|eot/i.test(ext!)) {
               return 'assets/fonts/[name]-[hash][extname]';
             }
+            if (/mp3|wav|ogg|mp4|webm/i.test(ext!)) {
+              return 'assets/media/[name]-[hash][extname]';
+            }
             return 'assets/misc/[name]-[hash][extname]';
           }
         },
         
+        // External dependencies optimization
+        external: isProduction ? [] : [],
+        
+        // Tree shaking optimization
         treeshake: {
           moduleSideEffects: false,
           unknownGlobalSideEffects: false
         }
       },
       
+      // Compression and size optimizations
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000,
+      
+      // CSS code splitting
       cssCodeSplit: true,
-      assetsInlineLimit: 4096
+      
+      // Asset inlining threshold
+      assetsInlineLimit: 4096,
+      
+      // Disable source maps in production for smaller builds
+      sourcemap: isProduction ? false : 'inline'
     },
     
     optimizeDeps: {
@@ -100,23 +136,41 @@ export default defineConfig(({ mode }) => {
         'lucide-react',
         'clsx',
         'tailwind-merge'
-      ]
+      ],
+      exclude: []
     },
     
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
-      global: 'globalThis'
+      global: 'globalThis',
+      // Performance optimization flags
+      'process.env.PERFORMANCE_MODE': JSON.stringify(isProduction ? 'optimized' : 'development')
     },
     
     esbuild: {
       target: 'es2020',
       drop: isProduction ? ['console', 'debugger'] : [],
-      legalComments: isProduction ? 'none' : 'inline'
+      // Additional optimizations
+      legalComments: isProduction ? 'none' : 'inline',
+      minifyIdentifiers: isProduction,
+      minifySyntax: isProduction,
+      minifyWhitespace: isProduction
     },
     
+    // CSS optimization
     css: {
       devSourcemap: !isProduction,
-      postcss: {}
+      postcss: {
+        plugins: isProduction ? [
+          require('autoprefixer'),
+          require('cssnano')({
+            preset: ['default', {
+              discardComments: { removeAll: true },
+              normalizeWhitespace: true
+            }]
+          })
+        ] : []
+      }
     }
   };
 });
