@@ -3,20 +3,104 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
-    <title>OCTA NETWORK</title>
-    <script>
-        // GitHub Pages SPA redirect
-        const path = window.location.pathname.slice(1);
-        if (path) {
-            window.location.replace(
-                window.location.origin + '/#' + path + window.location.search
-            );
-        } else {
-            window.location.replace(window.location.origin);
+    <title>OCTA NETWORK - منصة مراقبة الشبكات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
         }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 500px;
+            margin: 20px;
+        }
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        .loading {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+    </style>
+    <script>
+        // Enhanced GitHub Pages SPA redirect with better error handling
+        (function() {
+            console.log('🔄 بدء إعادة التوجيه...');
+            
+            const path = window.location.pathname;
+            const search = window.location.search;
+            const hash = window.location.hash;
+            
+            // Check if we're on GitHub Pages
+            const isGitHubPages = window.location.hostname.includes('github.io');
+            const repoName = isGitHubPages ? window.location.pathname.split('/')[1] : '';
+            
+            if (path && path !== '/' && path !== `/${repoName}/`) {
+                const redirectPath = path.replace(`/${repoName}`, '');
+                const newUrl = window.location.origin + 
+                              (isGitHubPages ? `/${repoName}` : '') + 
+                              '/#' + redirectPath + search + hash;
+                
+                console.log('🎯 إعادة التوجيه إلى:', newUrl);
+                window.location.replace(newUrl);
+            } else {
+                // Redirect to home
+                const homeUrl = window.location.origin + (isGitHubPages ? `/${repoName}/` : '/');
+                console.log('🏠 إعادة التوجيه للرئيسية:', homeUrl);
+                setTimeout(() => {
+                    window.location.replace(homeUrl);
+                }, 2000);
+            }
+        })();
     </script>
 </head>
 <body>
-    <p>جاري إعادة التوجيه...</p>
+    <div class="container">
+        <div class="logo">🌐</div>
+        <h1>OCTA NETWORK</h1>
+        <p>جاري إعادة التوجيه إلى منصة مراقبة الشبكات...</p>
+        <a href="/" class="btn">الذهاب للرئيسية</a>
+        <div class="loading">
+            <p>إذا لم يتم التوجيه تلقائياً، انقر على الزر أعلاه</p>
+        </div>
+    </div>
 </body>
 </html>

@@ -9,14 +9,11 @@ RewriteEngine On
     Header always set X-Content-Type-Options nosniff
     Header always set X-Frame-Options SAMEORIGIN
     Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
     
-    # Critical MIME types for GitHub Pages
-    <FilesMatch "\.(js|mjs)$">
-        Header set Content-Type "text/javascript; charset=utf-8"
-    </FilesMatch>
-    
-    <FilesMatch "\.(ts|tsx|jsx)$">
-        Header set Content-Type "text/javascript; charset=utf-8"
+    # MIME types for modern web apps
+    <FilesMatch "\.(js|mjs|jsx|ts|tsx)$">
+        Header set Content-Type "application/javascript; charset=utf-8"
     </FilesMatch>
     
     <FilesMatch "\.css$">
@@ -30,29 +27,34 @@ RewriteEngine On
     <FilesMatch "\.json$">
         Header set Content-Type "application/json; charset=utf-8"
     </FilesMatch>
+    
+    <FilesMatch "\.svg$">
+        Header set Content-Type "image/svg+xml; charset=utf-8"
+    </FilesMatch>
 </IfModule>
 
-# Set proper MIME types for all files - GitHub Pages specific
+# Set proper MIME types
 <IfModule mod_mime.c>
-    AddType text/javascript .js
-    AddType text/javascript .mjs
-    AddType text/javascript .ts
-    AddType text/javascript .tsx
-    AddType text/javascript .jsx
+    AddType application/javascript .js
+    AddType application/javascript .mjs
+    AddType application/javascript .jsx
+    AddType application/javascript .ts
+    AddType application/javascript .tsx
     AddType text/css .css
     AddType text/html .html
     AddType application/json .json
+    AddType image/svg+xml .svg
     AddType font/woff .woff
     AddType font/woff2 .woff2
     AddType font/ttf .ttf
     AddType application/vnd.ms-fontobject .eot
-    AddType image/svg+xml .svg
 </IfModule>
 
-# Handle client-side routing (SPA) - GitHub Pages optimized
+# Handle client-side routing (SPA)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/(api|assets|src|favicon\.ico|manifest\.json)/
+RewriteCond %{REQUEST_URI} !^/(api|assets|src|favicon\.ico|manifest\.json|\.well-known)/
+RewriteCond %{REQUEST_URI} !\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$
 RewriteRule ^(.*)$ /index.html [L,QSA]
 
 # Enable compression
@@ -65,15 +67,17 @@ RewriteRule ^(.*)$ /index.html [L,QSA]
     AddOutputFilterByType DEFLATE application/xhtml+xml
     AddOutputFilterByType DEFLATE application/rss+xml
     AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
     AddOutputFilterByType DEFLATE application/x-javascript
     AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
 # Cache static assets
 <IfModule mod_expires.c>
     ExpiresActive on
     ExpiresByType text/css "access plus 1 year"
-    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/jpg "access plus 1 year"
     ExpiresByType image/jpeg "access plus 1 year"
@@ -81,7 +85,11 @@ RewriteRule ^(.*)$ /index.html [L,QSA]
     ExpiresByType image/svg+xml "access plus 1 year"
     ExpiresByType font/woff "access plus 1 year"
     ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
 </IfModule>
 
-# Custom 404 handling for GitHub Pages
+# Custom error pages
 ErrorDocument 404 /index.html
+ErrorDocument 403 /index.html
+ErrorDocument 500 /index.html

@@ -9,10 +9,55 @@
     
     <!-- Enhanced favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌐%3C/text%3E%3C/svg%3E" />
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- GitHub Pages Base Support -->
+    <script>
+      // GitHub Pages base path detection
+      if (window.location.hostname.includes('github.io')) {
+        const repoName = window.location.pathname.split('/')[1];
+        if (repoName && repoName !== '') {
+          document.querySelector('base')?.remove();
+          const base = document.createElement('base');
+          base.href = `/${repoName}/`;
+          document.head.appendChild(base);
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    
+    <!-- Lovable Core Script - Essential for platform features -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Main Application Entry Point -->
+    <script type="module">
+      // Enhanced module loading with error handling
+      import('./src/main.tsx').catch(error => {
+        console.error('Failed to load main module:', error);
+        
+        // Fallback loading attempt
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = './src/main.tsx';
+        script.onerror = () => {
+          // Final fallback
+          document.getElementById('root').innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial; direction: rtl;">
+              <div style="text-align: center;">
+                <h1 style="color: #dc2626;">خطأ في تحميل التطبيق</h1>
+                <p>يرجى إعادة تحديث الصفحة أو التحقق من الاتصال بالإنترنت</p>
+                <button onclick="window.location.reload()" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer;">إعادة تحديث</button>
+              </div>
+            </div>
+          `;
+        };
+        document.head.appendChild(script);
+      });
+    </script>
   </body>
 </html>
