@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import EnhancedModeSwitcher from '@/components/EnhancedModeSwitcher';
+import EnhancedModeSwitcher from '@/components/auth/EnhancedModeSwitcher';
 import { 
   Shield, 
   Zap, 
@@ -147,7 +146,7 @@ const Index = () => {
             </Badge>
           </div>
           
-          <EnhancedModeSwitcher />
+          <EnhancedModeSwitcher onLogin={async () => true} />
         </div>
       </div>
 
