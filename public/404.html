@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - OCTA NETWORK</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <title>OCTA NETWORK - الصفحة غير موجودة</title>
     <style>
         * {
             margin: 0;
@@ -14,194 +13,125 @@
         }
         
         body {
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            direction: rtl;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            direction: rtl;
         }
         
         .container {
             text-align: center;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            padding: 3rem;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
             max-width: 500px;
-            margin: 2rem;
+            margin: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .logo {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: pulse 2s infinite;
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
         
         h1 {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-weight: 900;
-            background: linear-gradient(45deg, #fff, #f0f0f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            font-weight: 500;
+            margin-bottom: 15px;
+            font-weight: 800;
         }
         
         .error-code {
-            font-size: 6rem;
+            font-size: 4rem;
             font-weight: 900;
-            margin: 1rem 0;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+            color: #fbbf24;
         }
         
         p {
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
             opacity: 0.9;
+            line-height: 1.6;
         }
         
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        .home-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             color: white;
-            text-decoration: none;
+            padding: 15px 30px;
             border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            margin: 0.5rem;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
         }
         
-        .btn:hover {
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(45deg, #764ba2, #667eea);
         }
         
-        .features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        
-        .feature {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .feature-title {
-            font-weight: 700;
-            margin-bottom: 0.25rem;
+        .path-info {
+            margin-top: 20px;
             font-size: 0.9rem;
-        }
-        
-        .feature-desc {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                margin: 1rem;
-                padding: 2rem;
-            }
-            
-            .error-code {
-                font-size: 4rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-            }
+            opacity: 0.7;
+            word-break: break-all;
         }
     </style>
+    
+    <script>
+        // Smart redirect for GitHub Pages
+        (function() {
+            const path = window.location.pathname;
+            const repoName = path.split('/')[1] || '';
+            
+            // If we're on GitHub Pages, redirect to the correct base path
+            if (window.location.hostname.includes('github.io') && repoName) {
+                const newPath = `/${repoName}/`;
+                if (path !== newPath) {
+                    window.location.href = newPath;
+                }
+            }
+        })();
+    </script>
 </head>
 <body>
     <div class="container">
-        <div class="logo">🌐</div>
+        <div class="icon">🌐</div>
         <h1>OCTA NETWORK</h1>
         <div class="error-code">404</div>
-        <h2>الصفحة غير موجودة</h2>
-        <p>عذراً، الصفحة التي تبحث عنها غير متوفرة أو تم نقلها إلى موقع آخر.</p>
-        
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">🛡️</div>
-                <div class="feature-title">الأمن السيبراني</div>
-                <div class="feature-desc">حماية متقدمة</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📊</div>
-                <div class="feature-title">التحليلات الذكية</div>
-                <div class="feature-desc">رؤى عميقة</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">⚡</div>
-                <div class="feature-title">الأداء الفائق</div>
-                <div class="feature-desc">سرعة وكفاءة</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🌍</div>
-                <div class="feature-title">التوافق العالمي</div>
-                <div class="feature-desc">يعمل في كل مكان</div>
-            </div>
-        </div>
-        
-        <a href="/" class="btn">🏠 العودة للرئيسية</a>
-        <a href="/dashboard" class="btn">📊 لوحة التحكم</a>
-        
-        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.2); opacity: 0.7; font-size: 0.9rem;">
-            <p style="margin: 0;">© 2024 OCTA NETWORK - تطوير: سجاد كاظم</p>
-            <p style="margin: 0; font-size: 0.8rem;">نظام الذكاء العالمي لمراقبة الشبكات</p>
+        <p>عذراً، الصفحة المطلوبة غير موجودة</p>
+        <p>يتم إعادة التوجيه تلقائياً...</p>
+        <a href="./" class="home-btn">
+            🏠 العودة للرئيسية
+        </a>
+        <div class="path-info" id="pathInfo">
+            المسار الحالي: <span id="currentPath"></span>
         </div>
     </div>
 
     <script>
-        // Smart redirect after 10 seconds
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 10000);
+        document.getElementById('currentPath').textContent = window.location.pathname;
         
-        // Add some interactivity
-        document.querySelector('.logo').addEventListener('click', () => {
-            const colors = ['🌐', '🚀', '⭐', '💫', '🔮'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            document.querySelector('.logo').textContent = randomColor;
-        });
+        // Auto redirect after 3 seconds
+        setTimeout(() => {
+            window.location.href = './';
+        }, 3000);
     </script>
 </body>
 </html>

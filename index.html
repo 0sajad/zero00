@@ -40,8 +40,9 @@
               if (pathSegments.length > 0) {
                 repoName = pathSegments[0];
                 basePath = `/${repoName}/`;
+                console.log('🎯 GitHub Pages detected - Repository:', repoName);
+                console.log('📂 Base Path:', basePath);
               }
-              console.log('🎯 GitHub Pages detected - Repository:', repoName);
             }
             
             // Set global configuration
@@ -66,6 +67,20 @@
           handleErrors() {
             window.addEventListener('error', (event) => {
               console.error('🚨 خطأ عام:', event.error);
+              
+              // If main script fails on GitHub Pages, try with correct base path
+              if (event.filename && event.filename.includes('main.tsx')) {
+                const config = window.__OCTA_CONFIG__;
+                if (config && config.domainType === 'githubPages' && config.basePath !== '/') {
+                  console.log('🔄 محاولة تحميل بديلة مع المسار الصحيح...');
+                  const correctPath = `${config.basePath}src/main.tsx`;
+                  
+                  const script = document.createElement('script');
+                  script.type = 'module';
+                  script.src = correctPath;
+                  document.head.appendChild(script);
+                }
+              }
             });
 
             window.addEventListener('unhandledrejection', (event) => {
@@ -126,7 +141,7 @@
     <div id="root"></div>
     
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
     
     <script>
       // Enhanced error handling and fallback loading
@@ -153,9 +168,12 @@
           console.log('🔄 محاولة تحميل بديلة...');
           
           setTimeout(() => {
+            const config = window.__OCTA_CONFIG__;
+            const basePath = config?.basePath || '/';
+            
             const script = document.createElement('script');
             script.type = 'module';
-            script.src = '/src/main.tsx';
+            script.src = `${basePath}src/main.tsx`;
             script.onerror = () => {
               console.log('🆘 فشل التحميل البديل، عرض واجهة الطوارئ...');
               document.getElementById('root').innerHTML = `
