@@ -69,8 +69,7 @@ export default defineConfig(({ mode, command }) => {
             query: ['@tanstack/react-query'],
             i18n: ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
             charts: ['recharts'],
-            utils: ['clsx', 'tailwind-merge', 'class-variance-authority'],
-            sounds: ['howler']
+            utils: ['clsx', 'tailwind-merge', 'class-variance-authority']
           },
           chunkFileNames: 'assets/js/[name]-[hash].js',
           entryFileNames: 'assets/js/[name]-[hash].js',

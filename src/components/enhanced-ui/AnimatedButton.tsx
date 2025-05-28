@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { audioSystem } from '@/utils/audioSystem';
 
 interface AnimatedButtonProps {
   children: React.ReactNode;
@@ -23,16 +22,9 @@ const AnimatedButton = ({
   disabled = false
 }: AnimatedButtonProps) => {
   
-  const handleClick = async () => {
+  const handleClick = () => {
     if (!disabled) {
-      await audioSystem.playSound('click');
       onClick?.();
-    }
-  };
-
-  const handleHover = async () => {
-    if (!disabled) {
-      await audioSystem.playSound('hover');
     }
   };
 
@@ -48,7 +40,6 @@ const AnimatedButton = ({
       variant={variant}
       size={size}
       onClick={handleClick}
-      onMouseEnter={handleHover}
       disabled={disabled}
       className={`octa-hardware-accelerated octa-smooth-animation ${effectClasses[effect]} ${className}`}
     >

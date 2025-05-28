@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { audioSystem } from '@/utils/audioSystem';
 import { useToast } from '@/hooks/use-toast';
 import HeroSection from '@/components/home/HeroSection';
 import FeaturesSection from '@/components/home/FeaturesSection';
@@ -15,8 +14,6 @@ const Index = () => {
 
   useEffect(() => {
     const initializeSystem = async () => {
-      await audioSystem.playSound('startup');
-      
       setTimeout(() => {
         setIsInitializing(false);
         toast({
