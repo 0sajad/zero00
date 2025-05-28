@@ -7,56 +7,94 @@
     <title>OCTA NETWORK - منصة مراقبة الشبكات الذكية</title>
     <meta name="description" content="منصة متطورة لمراقبة الشبكات والتحليل الذكي مع الدعم متعدد اللغات" />
     
-    <!-- Enhanced favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌐%3C/text%3E%3C/svg%3E" />
     
-    <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- GitHub Pages Base Support -->
     <script>
-      // GitHub Pages base path detection
-      if (window.location.hostname.includes('github.io')) {
-        const repoName = window.location.pathname.split('/')[1];
-        if (repoName && repoName !== '') {
-          document.querySelector('base')?.remove();
-          const base = document.createElement('base');
-          base.href = `/${repoName}/`;
-          document.head.appendChild(base);
+      // Universal domain support
+      (function() {
+        const hostname = window.location.hostname;
+        const pathname = window.location.pathname;
+        
+        // GitHub Pages detection and base setup
+        if (hostname.includes('github.io')) {
+          const pathSegments = pathname.split('/').filter(Boolean);
+          if (pathSegments.length > 0) {
+            const repoName = pathSegments[0];
+            const base = document.createElement('base');
+            base.href = `/${repoName}/`;
+            document.head.appendChild(base);
+            window.__GITHUB_PAGES__ = true;
+            window.__BASE_PATH__ = `/${repoName}/`;
+          }
+        } else {
+          window.__GITHUB_PAGES__ = false;
+          window.__BASE_PATH__ = '/';
         }
-      }
+        
+        console.log('🌐 Base path configured:', window.__BASE_PATH__);
+      })();
     </script>
   </head>
   <body>
     <div id="root"></div>
     
-    <!-- Lovable Core Script - Essential for platform features -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     
-    <!-- Main Application Entry Point -->
     <script type="module">
-      // Enhanced module loading with error handling
-      import('./src/main.tsx').catch(error => {
-        console.error('Failed to load main module:', error);
-        
-        // Fallback loading attempt
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = './src/main.tsx';
-        script.onerror = () => {
-          // Final fallback
-          document.getElementById('root').innerHTML = `
-            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial; direction: rtl;">
-              <div style="text-align: center;">
-                <h1 style="color: #dc2626;">خطأ في تحميل التطبيق</h1>
-                <p>يرجى إعادة تحديث الصفحة أو التحقق من الاتصال بالإنترنت</p>
-                <button onclick="window.location.reload()" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer;">إعادة تحديث</button>
+      // Enhanced module loading with universal compatibility
+      const loadApp = async () => {
+        try {
+          console.log('🚀 بدء تحميل OCTA NETWORK...');
+          
+          // Dynamic import with fallback handling
+          const module = await import('./src/main.tsx');
+          console.log('✅ تم تحميل التطبيق بنجاح!');
+          
+        } catch (error) {
+          console.error('❌ فشل في تحميل التطبيق:', error);
+          
+          // Fallback loading strategy
+          const script = document.createElement('script');
+          script.type = 'module';
+          script.src = './src/main.tsx';
+          
+          script.onerror = () => {
+            // Ultimate fallback UI
+            document.getElementById('root').innerHTML = `
+              <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: system-ui, -apple-system, sans-serif; direction: rtl; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div style="text-align: center; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); max-width: 500px; margin: 20px;">
+                  <div style="font-size: 60px; margin-bottom: 20px;">🌐</div>
+                  <h1 style="color: #1a202c; margin-bottom: 15px; font-size: 28px;">OCTA NETWORK</h1>
+                  <p style="color: #4a5568; margin-bottom: 25px; line-height: 1.6;">عذراً، حدث خطأ في تحميل المنصة</p>
+                  <button onclick="window.location.reload()" 
+                          style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s ease;">
+                    إعادة التحميل
+                  </button>
+                  <div style="margin-top: 20px; font-size: 12px; color: #9ca3af;">
+                    خطأ: ${error.message}
+                  </div>
+                </div>
               </div>
-            </div>
-          `;
-        };
-        document.head.appendChild(script);
+            `;
+          };
+          
+          document.head.appendChild(script);
+        }
+      };
+      
+      // Initialize app
+      loadApp();
+      
+      // Performance monitoring
+      window.addEventListener('load', () => {
+        console.log('📊 إحصائيات الأداء:', {
+          loadTime: Math.round(performance.now()),
+          domain: window.location.hostname,
+          basePath: window.__BASE_PATH__
+        });
       });
     </script>
   </body>

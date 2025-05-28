@@ -6,10 +6,13 @@
     <title>OCTA NETWORK - منصة مراقبة الشبكات</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -22,21 +25,31 @@
             background: white;
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             max-width: 500px;
             margin: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .logo {
-            font-size: 48px;
+            font-size: 60px;
             margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         h1 {
-            color: #333;
+            color: #1a202c;
             margin-bottom: 10px;
             font-size: 28px;
         }
         p {
-            color: #666;
+            color: #4a5568;
             margin-bottom: 30px;
             line-height: 1.6;
         }
@@ -49,46 +62,94 @@
             border-radius: 25px;
             transition: all 0.3s ease;
             font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
         }
         .btn:hover {
             background: #5a6fd8;
             transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
         .loading {
             margin-top: 20px;
             font-size: 14px;
-            color: #999;
+            color: #718096;
+        }
+        .status {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #4a5568;
+            font-family: monospace;
         }
     </style>
     <script>
-        // Enhanced GitHub Pages SPA redirect with better error handling
         (function() {
-            console.log('🔄 بدء إعادة التوجيه...');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'status';
+            
+            const log = (message) => {
+                console.log(message);
+                if (statusDiv) {
+                    statusDiv.innerHTML += message + '<br>';
+                }
+            };
+            
+            log('🔄 بدء إعادة التوجيه...');
+            log('📍 المجال: ' + window.location.hostname);
+            log('📂 المسار: ' + window.location.pathname);
             
             const path = window.location.pathname;
             const search = window.location.search;
             const hash = window.location.hash;
             
-            // Check if we're on GitHub Pages
+            // Enhanced GitHub Pages detection
             const isGitHubPages = window.location.hostname.includes('github.io');
-            const repoName = isGitHubPages ? window.location.pathname.split('/')[1] : '';
+            const isCustomDomain = !isGitHubPages && window.location.hostname !== 'localhost';
             
-            if (path && path !== '/' && path !== `/${repoName}/`) {
-                const redirectPath = path.replace(`/${repoName}`, '');
-                const newUrl = window.location.origin + 
-                              (isGitHubPages ? `/${repoName}` : '') + 
-                              '/#' + redirectPath + search + hash;
+            let repoName = '';
+            let newUrl = '';
+            
+            if (isGitHubPages) {
+                const pathSegments = path.split('/').filter(Boolean);
+                repoName = pathSegments[0] || '';
                 
-                console.log('🎯 إعادة التوجيه إلى:', newUrl);
-                window.location.replace(newUrl);
+                if (pathSegments.length > 1) {
+                    const redirectPath = '/' + pathSegments.slice(1).join('/');
+                    newUrl = window.location.origin + `/${repoName}/#` + redirectPath + search + hash;
+                } else {
+                    newUrl = window.location.origin + `/${repoName}/`;
+                }
+                
+                log('🎯 GitHub Pages - إعادة توجيه إلى: ' + newUrl);
             } else {
-                // Redirect to home
-                const homeUrl = window.location.origin + (isGitHubPages ? `/${repoName}/` : '/');
-                console.log('🏠 إعادة التوجيه للرئيسية:', homeUrl);
-                setTimeout(() => {
-                    window.location.replace(homeUrl);
-                }, 2000);
+                // For custom domains or other hosting
+                if (path && path !== '/') {
+                    newUrl = window.location.origin + '/#' + path + search + hash;
+                } else {
+                    newUrl = window.location.origin + '/';
+                }
+                
+                log('🌐 نطاق مخصص - إعادة توجيه إلى: ' + newUrl);
             }
+            
+            // Add status to page when it loads
+            window.addEventListener('DOMContentLoaded', () => {
+                const container = document.querySelector('.container');
+                if (container && statusDiv) {
+                    container.appendChild(statusDiv);
+                }
+            });
+            
+            // Perform redirect
+            setTimeout(() => {
+                log('✅ جاري التوجيه...');
+                window.location.replace(newUrl);
+            }, 1500);
+            
         })();
     </script>
 </head>
@@ -97,7 +158,9 @@
         <div class="logo">🌐</div>
         <h1>OCTA NETWORK</h1>
         <p>جاري إعادة التوجيه إلى منصة مراقبة الشبكات...</p>
-        <a href="/" class="btn">الذهاب للرئيسية</a>
+        <button onclick="window.location.replace(window.location.origin + (window.location.hostname.includes('github.io') ? '/' + window.location.pathname.split('/')[1] + '/' : '/'))" class="btn">
+            الذهاب للرئيسية
+        </button>
         <div class="loading">
             <p>إذا لم يتم التوجيه تلقائياً، انقر على الزر أعلاه</p>
         </div>

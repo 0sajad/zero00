@@ -5,12 +5,11 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode, command }) => {
+export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
-  const isBuild = command === 'build';
   
   return {
-    base: './', // Use relative paths for better compatibility
+    base: './',
     server: {
       host: "::",
       port: 8080,
@@ -26,7 +25,6 @@ export default defineConfig(({ mode, command }) => {
     },
     plugins: [
       react({
-        // Enhanced JSX runtime
         jsxImportSource: 'react'
       }),
       mode === 'development' && componentTagger(),
@@ -52,12 +50,8 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: 'assets/[name]-[hash].js',
           entryFileNames: 'assets/[name]-[hash].js',
           assetFileNames: 'assets/[name]-[hash].[ext]'
-        }
-      },
-      // Enhanced error handling
-      rollupOptions: {
+        },
         onwarn(warning, warn) {
-          // Suppress certain warnings
           if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
           if (warning.code === 'SOURCEMAP_ERROR') return;
           warn(warning);
@@ -76,7 +70,6 @@ export default defineConfig(({ mode, command }) => {
       ]
     },
     define: {
-      // Ensure environment variables are properly defined
       'process.env.NODE_ENV': JSON.stringify(mode),
       global: 'globalThis',
     }
