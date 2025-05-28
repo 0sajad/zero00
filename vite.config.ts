@@ -4,18 +4,17 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// Smart Vite Configuration for Universal Compatibility
+// Enhanced Vite Configuration for Universal Compatibility
 export default defineConfig(({ mode, command }) => {
   const isProduction = mode === 'production';
-  const isBuild = command === 'build';
   
-  console.log(`🔧 Vite Configuration - Mode: ${mode}, Command: ${command}`);
+  console.log(`🚀 OCTA NETWORK - تكوين متقدم - النمط: ${mode}`);
   
   return {
-    base: './', // Universal base path
+    base: './',
     
     server: {
-      host: "::",
+      host: "0.0.0.0",
       port: 8080,
       strictPort: false,
       hmr: {
@@ -24,21 +23,29 @@ export default defineConfig(({ mode, command }) => {
       },
       cors: true,
       headers: {
+        'Cache-Control': 'no-cache',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-        'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
+        'X-Content-Type-Options': 'nosniff'
+      },
+      fs: {
+        strict: false
       }
     },
     
     preview: {
-      host: "::",
+      host: "0.0.0.0",
       port: 4173,
       strictPort: false,
       cors: true
     },
     
     plugins: [
-      react(),
+      react({
+        jsxImportSource: '@emotion/react',
+        babel: {
+          plugins: ['@emotion/babel-plugin']
+        }
+      }),
       mode === 'development' && componentTagger(),
     ].filter(Boolean),
     
@@ -55,6 +62,7 @@ export default defineConfig(({ mode, command }) => {
       minify: isProduction ? 'esbuild' : false,
       target: ['es2020', 'chrome80', 'firefox78', 'safari13'],
       assetsDir: 'assets',
+      cssCodeSplit: true,
       
       rollupOptions: {
         output: {
@@ -65,17 +73,11 @@ export default defineConfig(({ mode, command }) => {
             query: ['@tanstack/react-query'],
             i18n: ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
             charts: ['recharts'],
-            utils: ['clsx', 'tailwind-merge', 'class-variance-authority']
+            utils: ['clsx', 'tailwind-merge', 'class-variance-authority'],
+            sounds: ['howler']
           },
-          chunkFileNames: (chunkInfo) => {
-            const facadeModuleId = chunkInfo.facadeModuleId;
-            if (facadeModuleId) {
-              const fileName = facadeModuleId.split('/').pop()?.replace(/\.[^/.]+$/, "") || "chunk";
-              return `assets/${fileName}-[hash].js`;
-            }
-            return "assets/chunk-[hash].js";
-          },
-          entryFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
             if (!assetInfo.name) return 'assets/[name]-[hash][extname]';
             
@@ -90,7 +92,10 @@ export default defineConfig(({ mode, command }) => {
             if (/woff2?|eot|ttf|otf/i.test(ext)) {
               return `assets/fonts/[name]-[hash][extname]`;
             }
-            return `assets/[name]-[hash][extname]`;
+            if (/mp3|wav|ogg|m4a|aac/i.test(ext)) {
+              return `assets/sounds/[name]-[hash][extname]`;
+            }
+            return `assets/misc/[name]-[hash][extname]`;
           }
         },
         onwarn(warning, warn) {
@@ -125,13 +130,18 @@ export default defineConfig(({ mode, command }) => {
     
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
-      'process.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version || '1.0.0'),
+      'process.env.VITE_APP_VERSION': JSON.stringify('2.0.0'),
       global: 'globalThis',
       __DEV__: !isProduction
     },
     
     css: {
       devSourcemap: !isProduction,
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@import "@/styles/variables.scss";`
+        }
+      }
     },
     
     json: {
@@ -141,7 +151,10 @@ export default defineConfig(({ mode, command }) => {
     
     esbuild: {
       logOverride: { 'this-is-undefined-in-esm': 'silent' },
-      target: 'es2020'
-    }
+      target: 'es2020',
+      drop: isProduction ? ['console', 'debugger'] : []
+    },
+    
+    assetsInclude: ['**/*.mp3', '**/*.wav', '**/*.ogg', '**/*.m4a']
   };
 });

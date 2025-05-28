@@ -1,8 +1,11 @@
 
-import { HomeIcon, Settings, Shield, Activity, Globe, Zap } from "lucide-react";
+import { HomeIcon, Settings, Shield, Activity, Globe, Zap, Network, Eye, Tool } from "lucide-react";
 import Index from "./pages/Index.tsx";
 import Dashboard from "./components/Dashboard.tsx";
 import CompactDashboard from "./components/CompactDashboard.tsx";
+import SmartDashboard from "./components/SmartDashboard.tsx";
+import AdvancedNetworkMonitor from "./components/AdvancedNetworkMonitor.tsx";
+import SuperAdvancedTools from "./components/SuperAdvancedTools.tsx";
 
 /**
  * Central navigation configuration for OCTA NETWORK
@@ -26,5 +29,23 @@ export const navItems = [
     to: "/compact",
     icon: <Globe className="h-4 w-4" />,
     page: <CompactDashboard />,
+  },
+  {
+    title: "النظام الذكي المتقدم",
+    to: "/smart-dashboard",
+    icon: <Zap className="h-4 w-4" />,
+    page: <SmartDashboard />,
+  },
+  {
+    title: "مراقب الشبكة المتقدم",
+    to: "/network-monitor",
+    icon: <Eye className="h-4 w-4" />,
+    page: <AdvancedNetworkMonitor />,
+  },
+  {
+    title: "الأدوات المتقدمة",
+    to: "/advanced-tools",
+    icon: <Tool className="h-4 w-4" />,
+    page: <SuperAdvancedTools />,
   },
 ];
