@@ -26,7 +26,6 @@ const EnhancedClientMode = () => {
           <CardTitle className="flex items-center text-blue-700 dark:text-blue-300">
             <Network className="h-6 w-6 mr-3" />
             مرحباً في OCTA NETWORK - وضع العميل المحسن
-            <Badge className="ml-3 bg-blue-600 text-white">Premium Client</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>

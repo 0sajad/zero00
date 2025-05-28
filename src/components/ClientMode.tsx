@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -35,7 +34,6 @@ const ClientMode = () => {
           <CardTitle className="flex items-center text-blue-700">
             <Shield className="h-6 w-6 mr-3" />
             وضع العميل - Client Mode
-            <Badge className="ml-3 bg-blue-600 text-white">PREMIUM ACCESS</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
