@@ -1,5 +1,5 @@
 
-name: Build Application
+name: Universal Build & Deploy
 
 on:
   push:
@@ -28,38 +28,55 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Set GitHub Pages environment
-        run: |
-          echo "GITHUB_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
-          echo "VITE_BASE_URL=/${{ github.event.repository.name }}/" >> $GITHUB_ENV
-
-      - name: Build application
-        run: |
-          npm run build
+      - name: Build universal application
+        run: npm run build
         env:
           NODE_ENV: production
-          GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: Create deployment files
+      - name: Create universal deployment files
         run: |
-          # Create .nojekyll file
+          # Create .nojekyll for GitHub Pages
           touch ./dist/.nojekyll
           
-          # Get repository name for proper path fixing
-          REPO_NAME="${{ github.event.repository.name }}"
+          # Create universal 404 handler
+          cp ./dist/index.html ./dist/404.html
           
-          # Fix paths in HTML files to work with GitHub Pages
-          find ./dist -name "*.html" -type f -exec sed -i "s|=\"/|=\"/$REPO_NAME/|g" {} \;
-          find ./dist -name "*.html" -type f -exec sed -i "s|href=\"/|href=\"/$REPO_NAME/|g" {} \;
-          find ./dist -name "*.html" -type f -exec sed -i "s|src=\"/|src=\"/$REPO_NAME/|g" {} \;
+          # Create _redirects for Netlify
+          echo "/*    /index.html   200" > ./dist/_redirects
           
-          # Fix CSS and JS files
-          find ./dist -name "*.css" -type f -exec sed -i "s|url(/|url(/$REPO_NAME/|g" {} \;
-          find ./dist -name "*.js" -type f -exec sed -i "s|\"\/|\"/$REPO_NAME/|g" {} \;
+          # Create vercel.json for Vercel
+          cat > ./dist/vercel.json << 'EOF'
+          {
+            "rewrites": [
+              { "source": "/(.*)", "destination": "/index.html" }
+            ]
+          }
+          EOF
+          
+          # Create web.config for IIS
+          cat > ./dist/web.config << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <configuration>
+            <system.webServer>
+              <rewrite>
+                <rules>
+                  <rule name="React Routes" stopProcessing="true">
+                    <match url=".*" />
+                    <conditions logicalGrouping="MatchAll">
+                      <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+                      <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+                    </conditions>
+                    <action type="Rewrite" url="/index.html" />
+                  </rule>
+                </rules>
+              </rewrite>
+            </system.webServer>
+          </configuration>
+          EOF
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-files
+          name: universal-build
           path: ./dist
-          retention-days: 1
+          retention-days: 30
