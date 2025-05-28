@@ -55,25 +55,21 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            // Vendor chunks for better caching
             vendor: ['react', 'react-dom'],
             router: ['react-router-dom'],
             ui: ['@radix-ui/react-toast', '@radix-ui/react-tabs', 'lucide-react'],
             utils: ['clsx', 'tailwind-merge'],
-            // Performance optimization chunks
             performance: [
               'src/utils/performanceOptimizer',
               'src/utils/assetOptimizer',
               'src/utils/webVitalsMonitor'
             ],
-            // Network tools chunk
             networkTools: [
               'src/components/network-tools',
               'src/components/tools'
             ]
           },
           chunkFileNames: (chunkInfo) => {
-            // Generate optimized chunk names
             if (chunkInfo.name.includes('vendor')) {
               return 'assets/js/vendor-[hash].js';
             }
@@ -103,28 +99,17 @@ export default defineConfig(({ mode }) => {
           }
         },
         
-        // External dependencies optimization
         external: isProduction ? [] : [],
-        
-        // Tree shaking optimization
         treeshake: {
           moduleSideEffects: false,
           unknownGlobalSideEffects: false
         }
       },
       
-      // Compression and size optimizations
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000,
-      
-      // CSS code splitting
       cssCodeSplit: true,
-      
-      // Asset inlining threshold
-      assetsInlineLimit: 4096,
-      
-      // Disable source maps in production for smaller builds
-      sourcemap: isProduction ? false : 'inline'
+      assetsInlineLimit: 4096
     },
     
     optimizeDeps: {
@@ -143,21 +128,18 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
       global: 'globalThis',
-      // Performance optimization flags
       'process.env.PERFORMANCE_MODE': JSON.stringify(isProduction ? 'optimized' : 'development')
     },
     
     esbuild: {
       target: 'es2020',
       drop: isProduction ? ['console', 'debugger'] : [],
-      // Additional optimizations
       legalComments: isProduction ? 'none' : 'inline',
       minifyIdentifiers: isProduction,
       minifySyntax: isProduction,
       minifyWhitespace: isProduction
     },
     
-    // CSS optimization
     css: {
       devSourcemap: !isProduction,
       postcss: {
