@@ -56,14 +56,17 @@ export class WebVitalsMonitor {
     if ('PerformanceObserver' in window) {
       const observer = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
-          const fid = entry.processingStart - entry.startTime;
-          this.metrics.set('FID', fid);
-          
-          if (fid > 100) {
-            console.warn('⚠️ FID is slow:', Math.round(fid), 'ms');
-            this.suggestFIDOptimizations();
-          } else {
-            console.log('✅ FID is good:', Math.round(fid), 'ms');
+          const fidEntry = entry as any;
+          if (fidEntry.processingStart && fidEntry.startTime) {
+            const fid = fidEntry.processingStart - fidEntry.startTime;
+            this.metrics.set('FID', fid);
+            
+            if (fid > 100) {
+              console.warn('⚠️ FID is slow:', Math.round(fid), 'ms');
+              this.suggestFIDOptimizations();
+            } else {
+              console.log('✅ FID is good:', Math.round(fid), 'ms');
+            }
           }
         });
       });
@@ -79,8 +82,9 @@ export class WebVitalsMonitor {
       
       const observer = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
-          if (!(entry as any).hadRecentInput) {
-            clsValue += (entry as any).value;
+          const clsEntry = entry as any;
+          if (!clsEntry.hadRecentInput) {
+            clsValue += clsEntry.value || 0;
           }
         });
         

@@ -1,3 +1,4 @@
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
@@ -12,6 +13,7 @@ import { ProductionValidator } from './utils/productionValidator';
 import { PerformanceOptimizer } from './utils/performanceOptimizer';
 import { AssetOptimizer } from './utils/assetOptimizer';
 import { WebVitalsMonitor } from './utils/webVitalsMonitor';
+import { HTTPSConfig } from './utils/httpsConfig';
 
 // OCTA NETWORK - Universal Intelligence System with Performance Optimization
 console.log('🚀 OCTA NETWORK - نظام الذكاء العالمي الشامل مع تحسين الأداء');
@@ -24,6 +26,9 @@ class OctaNetworkBootstrap {
     
     try {
       console.log('⚙️ بدء تهيئة النظام الشامل مع تحسينات الأداء...');
+      
+      // Enable HTTPS redirect first
+      HTTPSConfig.enableHTTPSRedirect();
       
       // Initialize performance optimizers first
       PerformanceOptimizer.initialize();
@@ -162,6 +167,7 @@ class OctaNetworkBootstrap {
       ProductionValidator.runCompleteProductionValidation().then(ready => {
         if (ready) {
           console.log('✅ PRODUCTION READY - All systems operational and optimized');
+          console.log('🔒 HTTPS configurations available - Use HTTPSConfig.generateHTTPSConfigurations()');
         }
       });
     }, 2000);
