@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, Globe, Server, Zap } from 'lucide-react';
+import { Shield, Globe, Server, Zap, Sparkles } from 'lucide-react';
 import ModeSelection from './ModeSelection';
 import LoginForm from './LoginForm';
 
@@ -21,13 +21,16 @@ const EnhancedModeSwitcher = ({ onLogin }: EnhancedModeSwitcherProps) => {
         <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
       </div>
       
-      <div className="w-full max-w-5xl relative z-10">
+      <div className="w-full max-w-6xl relative z-10">
         <Card className="shadow-2xl border-0 bg-white/10 backdrop-blur-xl border border-white/20">
           <CardHeader className="text-center space-y-6 pb-8">
             <div className="mx-auto w-28 h-28 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative">
               <Shield className="h-14 w-14 text-white" />
               <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-400 rounded-full border-2 border-white flex items-center justify-center">
                 <Globe className="h-4 w-4 text-white" />
+              </div>
+              <div className="absolute -bottom-2 -left-2">
+                <Sparkles className="h-6 w-6 text-yellow-300 animate-spin" />
               </div>
             </div>
             <div>
