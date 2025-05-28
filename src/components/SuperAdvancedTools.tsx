@@ -1,495 +1,384 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
 import { 
-  Zap, 
-  Shield, 
-  Scan,
-  Target,
+  Wrench,
+  Settings,
+  Zap,
+  Shield,
+  Network,
+  Globe,
+  Activity,
+  Cpu,
+  HardDrive,
+  Wifi,
+  Server,
   Database,
-  Cloud,
-  Code,
-  Bug,
-  Key,
   Lock,
   Unlock,
+  Eye,
   Search,
-  Filter,
-  Download,
-  Upload,
-  Activity,
-  BarChart3,
-  LineChart,
-  PieChart,
-  TrendingUp,
-  TrendingDown,
-  AlertTriangle,
+  Scan,
+  RefreshCw,
   CheckCircle,
   XCircle,
-  RefreshCw,
-  Settings,
-  Tool,
-  Wrench,
-  Hammer,
-  Screwdriver
+  AlertTriangle,
+  Bell,
+  Download,
+  Upload,
+  Monitor,
+  Smartphone,
+  Router,
+  Cable,
+  Radio,
+  Satellite,
+  Radar,
+  Target,
+  Crosshair,
+  Navigation,
+  Compass,
+  Map,
+  BarChart3,
+  TrendingUp,
+  PieChart,
+  LineChart
 } from 'lucide-react';
 import { audioSystem } from '@/utils/audioSystem';
 import { useToast } from '@/hooks/use-toast';
 
 interface ToolResult {
   id: string;
-  tool: string;
-  status: 'running' | 'completed' | 'failed';
+  name: string;
+  status: 'running' | 'success' | 'error' | 'idle';
   progress: number;
-  results: any;
-  timestamp: Date;
+  result?: any;
+  timestamp?: Date;
 }
 
 const SuperAdvancedTools = () => {
-  const [activeTools, setActiveTools] = useState<ToolResult[]>([]);
-  const [selectedTool, setSelectedTool] = useState<string>('');
   const { toast } = useToast();
+  const [activeTools, setActiveTools] = useState<Map<string, ToolResult>>(new Map());
+  const [globalProgress, setGlobalProgress] = useState(0);
 
-  const tools = {
-    network: [
-      {
-        id: 'port-scanner',
-        name: 'فاحص المنافذ المتقدم',
-        icon: <Target className="h-5 w-5" />,
-        description: 'فحص شامل لجميع المنافذ مع تحديد الخدمات والإصدارات',
-        category: 'network'
-      },
-      {
-        id: 'vulnerability-scanner',
-        name: 'فاحص الثغرات الأمنية',
-        icon: <Bug className="h-5 w-5" />,
-        description: 'اكتشاف الثغرات الأمنية والتوصيات للإصلاح',
-        category: 'security'
-      },
-      {
-        id: 'packet-analyzer',
-        name: 'محلل البيانات الشبكية',
-        icon: <Activity className="h-5 w-5" />,
-        description: 'تحليل مفصل لحركة البيانات وكشف الأنماط المشبوهة',
-        category: 'network'
-      },
-      {
-        id: 'bandwidth-monitor',
-        name: 'مراقب استهلاك البيانات',
-        icon: <BarChart3 className="h-5 w-5" />,
-        description: 'مراقبة استهلاك البيانات لكل جهاز ومعرفة الاختناقات',
-        category: 'monitoring'
-      }
-    ],
-    security: [
-      {
-        id: 'intrusion-detector',
-        name: 'كاشف التطفل الذكي',
-        icon: <Shield className="h-5 w-5" />,
-        description: 'كشف محاولات التطفل والهجمات في الوقت الفعلي',
-        category: 'security'
-      },
-      {
-        id: 'malware-scanner',
-        name: 'فاحص البرمجيات الخبيثة',
-        icon: <Search className="h-5 w-5" />,
-        description: 'فحص شامل للبرمجيات الخبيثة وإزالتها',
-        category: 'security'
-      },
-      {
-        id: 'firewall-manager',
-        name: 'مدير جدار الحماية',
-        icon: <Lock className="h-5 w-5" />,
-        description: 'إدارة متقدمة لقواعد جدار الحماية والحماية',
-        category: 'security'
-      },
-      {
-        id: 'encryption-tool',
-        name: 'أداة التشفير المتقدمة',
-        icon: <Key className="h-5 w-5" />,
-        description: 'تشفير وفك تشفير البيانات بخوارزميات متطورة',
-        category: 'security'
-      }
-    ],
-    performance: [
-      {
-        id: 'speed-optimizer',
-        name: 'محسن السرعة الذكي',
-        icon: <Zap className="h-5 w-5" />,
-        description: 'تحسين أداء الشبكة وزيادة سرعة الاتصال',
-        category: 'performance'
-      },
-      {
-        id: 'latency-reducer',
-        name: 'مقلل زمن الاستجابة',
-        icon: <TrendingDown className="h-5 w-5" />,
-        description: 'تقليل زمن الاستجابة وتحسين جودة الاتصال',
-        category: 'performance'
-      },
-      {
-        id: 'cache-optimizer',
-        name: 'محسن ذاكرة التخزين المؤقت',
-        icon: <Database className="h-5 w-5" />,
-        description: 'تحسين استخدام ذاكرة التخزين المؤقت للشبكة',
-        category: 'performance'
-      },
-      {
-        id: 'dns-optimizer',
-        name: 'محسن DNS الذكي',
-        icon: <Cloud className="h-5 w-5" />,
-        description: 'تحسين إعدادات DNS لأسرع أوقات استجابة',
-        category: 'performance'
-      }
-    ],
-    diagnostics: [
-      {
-        id: 'connectivity-tester',
-        name: 'فاحص الاتصالات الشامل',
-        icon: <CheckCircle className="h-5 w-5" />,
-        description: 'اختبار شامل لجودة وقوة الاتصالات',
-        category: 'diagnostics'
-      },
-      {
-        id: 'signal-analyzer',
-        name: 'محلل الإشارات المتقدم',
-        icon: <LineChart className="h-5 w-5" />,
-        description: 'تحليل قوة الإشارة والتداخلات',
-        category: 'diagnostics'
-      },
-      {
-        id: 'protocol-analyzer',
-        name: 'محلل البروتوكولات',
-        icon: <Code className="h-5 w-5" />,
-        description: 'تحليل مفصل لبروتوكولات الشبكة المستخدمة',
-        category: 'diagnostics'
-      },
-      {
-        id: 'health-checker',
-        name: 'فاحص صحة النظام',
-        icon: <Activity className="h-5 w-5" />,
-        description: 'فحص شامل لصحة النظام والأجهزة',
-        category: 'diagnostics'
-      }
-    ]
-  };
+  // مجموعات الأدوات المتقدمة
+  const networkTools = [
+    { id: 'port-scanner', name: 'فحص المنافذ المتقدم', icon: <Search className="h-5 w-5" />, category: 'network' },
+    { id: 'wifi-analyzer', name: 'محلل الشبكات اللاسلكية', icon: <Wifi className="h-5 w-5" />, category: 'wireless' },
+    { id: 'bandwidth-monitor', name: 'مراقب عرض النطاق', icon: <Activity className="h-5 w-5" />, category: 'monitoring' },
+    { id: 'latency-tester', name: 'مختبر زمن الاستجابة', icon: <Target className="h-5 w-5" />, category: 'performance' },
+    { id: 'dns-resolver', name: 'محلل DNS المتقدم', icon: <Globe className="h-5 w-5" />, category: 'network' },
+    { id: 'trace-route', name: 'تتبع المسار الذكي', icon: <Navigation className="h-5 w-5" />, category: 'diagnostic' }
+  ];
 
-  const runTool = async (toolId: string) => {
-    const tool = Object.values(tools).flat().find(t => t.id === toolId);
-    if (!tool) return;
+  const securityTools = [
+    { id: 'vulnerability-scan', name: 'فحص الثغرات الأمنية', icon: <Shield className="h-5 w-5" />, category: 'security' },
+    { id: 'firewall-analyzer', name: 'محلل جدار الحماية', icon: <Lock className="h-5 w-5" />, category: 'security' },
+    { id: 'intrusion-detection', name: 'كشف الاختراق المتقدم', icon: <Eye className="h-5 w-5" />, category: 'security' },
+    { id: 'encryption-test', name: 'اختبار التشفير', icon: <Unlock className="h-5 w-5" />, category: 'security' },
+    { id: 'packet-analyzer', name: 'محلل الحزم الشبكية', icon: <Scan className="h-5 w-5" />, category: 'security' },
+    { id: 'honeypot-monitor', name: 'مراقب الفخاخ الأمنية', icon: <Radar className="h-5 w-5" />, category: 'security' }
+  ];
 
-    const toolResult: ToolResult = {
-      id: Date.now().toString(),
-      tool: tool.name,
+  const systemTools = [
+    { id: 'system-optimizer', name: 'محسن النظام الذكي', icon: <Cpu className="h-5 w-5" />, category: 'system' },
+    { id: 'memory-analyzer', name: 'محلل الذاكرة المتقدم', icon: <HardDrive className="h-5 w-5" />, category: 'system' },
+    { id: 'process-monitor', name: 'مراقب العمليات', icon: <Monitor className="h-5 w-5" />, category: 'system' },
+    { id: 'registry-cleaner', name: 'منظف التسجيل الذكي', icon: <RefreshCw className="h-5 w-5" />, category: 'system' },
+    { id: 'startup-manager', name: 'مدير بدء التشغيل', icon: <Zap className="h-5 w-5" />, category: 'system' },
+    { id: 'service-controller', name: 'تحكم الخدمات المتقدم', icon: <Settings className="h-5 w-5" />, category: 'system' }
+  ];
+
+  const analyticsTools = [
+    { id: 'traffic-analyzer', name: 'محلل حركة البيانات', icon: <BarChart3 className="h-5 w-5" />, category: 'analytics' },
+    { id: 'performance-profiler', name: 'ملف الأداء الشامل', icon: <TrendingUp className="h-5 w-5" />, category: 'analytics' },
+    { id: 'usage-statistics', name: 'إحصائيات الاستخدام', icon: <PieChart className="h-5 w-5" />, category: 'analytics' },
+    { id: 'predictive-analysis', name: 'التحليل التنبئي الذكي', icon: <LineChart className="h-5 w-5" />, category: 'analytics' },
+    { id: 'behavioral-analysis', name: 'تحليل السلوك المتقدم', icon: <Compass className="h-5 w-5" />, category: 'analytics' },
+    { id: 'trend-predictor', name: 'متنبئ الاتجاهات', icon: <Map className="h-5 w-5" />, category: 'analytics' }
+  ];
+
+  const runTool = async (toolId: string, toolName: string) => {
+    const newResult: ToolResult = {
+      id: toolId,
+      name: toolName,
       status: 'running',
       progress: 0,
-      results: null,
       timestamp: new Date()
     };
 
-    setActiveTools(prev => [...prev, toolResult]);
+    setActiveTools(prev => new Map(prev.set(toolId, newResult)));
     await audioSystem.playSound('scan');
 
     toast({
-      title: `بدء تشغيل ${tool.name} 🚀`,
-      description: "جاري تنفيذ العملية...",
+      title: `🚀 بدء تشغيل ${toolName}`,
+      description: "جاري تحليل النظام باستخدام الذكاء الاصطناعي المتقدم",
     });
 
-    // محاكاة تقدم الأداة
-    for (let i = 0; i <= 100; i += 5) {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      setActiveTools(prev => prev.map(t => 
-        t.id === toolResult.id ? { ...t, progress: i } : t
-      ));
-    }
+    // محاكاة تشغيل الأداة مع تحديث التقدم
+    for (let progress = 0; progress <= 100; progress += Math.random() * 15) {
+      await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+      
+      const updatedResult: ToolResult = {
+        ...newResult,
+        progress: Math.min(100, progress),
+        status: progress >= 100 ? 'success' : 'running'
+      };
 
-    // محاكاة النتائج
-    const mockResults = generateMockResults(toolId);
+      if (progress >= 100) {
+        updatedResult.result = generateToolResult(toolId);
+        await audioSystem.playSound('taskComplete');
+        
+        toast({
+          title: `✅ اكتمل ${toolName}`,
+          description: `تم الفحص بنجاح - تم اكتشاف ${Math.floor(Math.random() * 50) + 1} عنصر`,
+        });
+      }
+
+      setActiveTools(prev => new Map(prev.set(toolId, updatedResult)));
+    }
+  };
+
+  const generateToolResult = (toolId: string) => {
+    const results = {
+      'port-scanner': {
+        openPorts: Array.from({length: Math.floor(Math.random() * 10) + 5}, (_, i) => 80 + i * 100),
+        closedPorts: Array.from({length: Math.floor(Math.random() * 20) + 10}, (_, i) => 8000 + i * 10),
+        vulnerablePorts: Math.floor(Math.random() * 3)
+      },
+      'wifi-analyzer': {
+        networks: Array.from({length: Math.floor(Math.random() * 15) + 5}, (_, i) => ({
+          ssid: `Network_${i + 1}`,
+          signal: Math.floor(Math.random() * 100),
+          security: Math.random() > 0.3 ? 'WPA2' : 'Open'
+        })),
+        interferenceLevel: Math.floor(Math.random() * 50) + 10
+      },
+      'vulnerability-scan': {
+        critical: Math.floor(Math.random() * 3),
+        high: Math.floor(Math.random() * 5),
+        medium: Math.floor(Math.random() * 10),
+        low: Math.floor(Math.random() * 15),
+        securityScore: Math.floor(Math.random() * 30) + 70
+      }
+    };
+
+    return results[toolId as keyof typeof results] || { status: 'completed', items: Math.floor(Math.random() * 100) };
+  };
+
+  const renderToolCard = (tool: any, category: string) => (
+    <Card key={tool.id} className="border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 cursor-pointer">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              {tool.icon}
+            </div>
+            <div>
+              <h4 className="font-medium text-sm">{tool.name}</h4>
+              <Badge variant="outline" className="text-xs mt-1">
+                {category}
+              </Badge>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            onClick={() => runTool(tool.id, tool.name)}
+            disabled={activeTools.get(tool.id)?.status === 'running'}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            {activeTools.get(tool.id)?.status === 'running' ? (
+              <RefreshCw className="h-4 w-4 animate-spin" />
+            ) : (
+              'تشغيل'
+            )}
+          </Button>
+        </div>
+
+        {activeTools.has(tool.id) && (
+          <div className="space-y-2">
+            <Progress 
+              value={activeTools.get(tool.id)?.progress || 0} 
+              className="h-2"
+            />
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-600">
+                {activeTools.get(tool.id)?.progress?.toFixed(0)}%
+              </span>
+              <div className="flex items-center">
+                {activeTools.get(tool.id)?.status === 'success' && (
+                  <CheckCircle className="h-4 w-4 text-green-600 mr-1" />
+                )}
+                {activeTools.get(tool.id)?.status === 'error' && (
+                  <XCircle className="h-4 w-4 text-red-600 mr-1" />
+                )}
+                <span className={
+                  activeTools.get(tool.id)?.status === 'success' ? 'text-green-600' :
+                  activeTools.get(tool.id)?.status === 'error' ? 'text-red-600' :
+                  'text-blue-600'
+                }>
+                  {activeTools.get(tool.id)?.status === 'running' ? 'جاري التشغيل...' :
+                   activeTools.get(tool.id)?.status === 'success' ? 'مكتمل' :
+                   activeTools.get(tool.id)?.status === 'error' ? 'خطأ' : 'في الانتظار'}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  const runAllToolsInCategory = async (tools: any[], categoryName: string) => {
+    await audioSystem.playSound('startup');
     
-    setActiveTools(prev => prev.map(t => 
-      t.id === toolResult.id ? { 
-        ...t, 
-        status: 'completed', 
-        progress: 100, 
-        results: mockResults 
-      } : t
-    ));
-
-    await audioSystem.playSound('taskComplete');
-
     toast({
-      title: `${tool.name} مكتمل ✅`,
-      description: "تم الانتهاء من العملية بنجاح",
+      title: `🚀 تشغيل جميع أدوات ${categoryName}`,
+      description: `بدء تشغيل ${tools.length} أداة متقدمة`,
     });
-  };
 
-  const generateMockResults = (toolId: string) => {
-    switch (toolId) {
-      case 'port-scanner':
-        return {
-          openPorts: [22, 80, 443, 8080],
-          closedPorts: [21, 23, 25, 110],
-          services: {
-            22: 'SSH',
-            80: 'HTTP',
-            443: 'HTTPS',
-            8080: 'HTTP-Alt'
-          },
-          vulnerabilities: 2
-        };
-      
-      case 'vulnerability-scanner':
-        return {
-          critical: 1,
-          high: 3,
-          medium: 7,
-          low: 12,
-          details: [
-            'CVE-2023-1234: ثغرة في خدمة SSH',
-            'CVE-2023-5678: ثغرة في خادم الويب',
-            'CVE-2023-9012: ثغرة في نظام التشغيل'
-          ]
-        };
-      
-      case 'packet-analyzer':
-        return {
-          totalPackets: 1547892,
-          suspiciousActivity: 23,
-          protocols: {
-            HTTP: 45.2,
-            HTTPS: 38.7,
-            DNS: 8.9,
-            SSH: 3.2,
-            Other: 4.0
-          },
-          topTalkers: [
-            '192.168.1.100',
-            '192.168.1.101',
-            '192.168.1.102'
-          ]
-        };
-      
-      case 'bandwidth-monitor':
-        return {
-          totalUsage: '1.2 TB',
-          peakUsage: '145.7 Mbps',
-          averageUsage: '67.3 Mbps',
-          topConsumers: [
-            { device: 'كمبيوتر العمل', usage: '45.2 GB' },
-            { device: 'تلفزيون ذكي', usage: '23.8 GB' },
-            { device: 'هاتف ذكي', usage: '12.4 GB' }
-          ]
-        };
-      
-      default:
-        return {
-          status: 'completed',
-          message: 'تم تنفيذ العملية بنجاح',
-          details: 'جميع الفحوصات مكتملة'
-        };
+    for (const tool of tools) {
+      await runTool(tool.id, tool.name);
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
-  };
-
-  const clearResults = () => {
-    setActiveTools([]);
-    toast({
-      title: "تم مسح النتائج 🧹",
-      description: "تم مسح جميع نتائج الأدوات",
-    });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 p-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
-              🔧 الأدوات المتقدمة
-            </h1>
-            <p className="text-indigo-300 text-lg">
-              مجموعة شاملة من الأدوات المتطورة للشبكات والأمان والأداء
-            </p>
+      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+        <CardHeader>
+          <CardTitle className="flex items-center text-blue-700">
+            <Wrench className="h-6 w-6 mr-3" />
+            مركز الأدوات المتقدمة - OCTA NETWORK Pro Tools
+            <Badge className="ml-3 bg-blue-600 text-white">AI-Powered</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-blue-600 text-sm">
+            🎯 مجموعة شاملة من الأدوات الاحترافية المدعومة بالذكاء الاصطناعي لتحليل وتأمين ومراقبة الشبكات
           </div>
-          <div className="flex items-center space-x-4">
-            <Badge className="bg-indigo-600 text-white px-4 py-2 text-lg">
-              <Tool className="h-5 w-5 mr-2" />
-              {Object.values(tools).flat().length} أداة متاحة
-            </Badge>
-            <Button
-              onClick={clearResults}
-              variant="outline"
-              className="border-indigo-500/50 text-indigo-400 hover:bg-indigo-500/20"
+        </CardContent>
+      </Card>
+
+      {/* Tools Categories */}
+      <Tabs defaultValue="network" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 h-16">
+          <TabsTrigger value="network" className="flex flex-col items-center space-y-1 h-full">
+            <Network className="h-4 w-4" />
+            <span className="text-xs">أدوات الشبكة</span>
+          </TabsTrigger>
+          <TabsTrigger value="security" className="flex flex-col items-center space-y-1 h-full">
+            <Shield className="h-4 w-4" />
+            <span className="text-xs">أدوات الأمان</span>
+          </TabsTrigger>
+          <TabsTrigger value="system" className="flex flex-col items-center space-y-1 h-full">
+            <Cpu className="h-4 w-4" />
+            <span className="text-xs">أدوات النظام</span>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex flex-col items-center space-y-1 h-full">
+            <BarChart3 className="h-4 w-4" />
+            <span className="text-xs">أدوات التحليل</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="network" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">أدوات الشبكة المتقدمة</h3>
+            <Button 
+              onClick={() => runAllToolsInCategory(networkTools, 'الشبكة')}
+              className="bg-green-600 hover:bg-green-700"
             >
-              <RefreshCw className="h-5 w-5 mr-2" />
-              مسح النتائج
+              <Zap className="h-4 w-4 mr-2" />
+              تشغيل جميع الأدوات
             </Button>
           </div>
-        </div>
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {networkTools.map(tool => renderToolCard(tool, 'شبكة'))}
+          </div>
+        </TabsContent>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* الأدوات */}
-        <div className="lg:col-span-2">
-          <Tabs defaultValue="network" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
-              <TabsTrigger value="network" className="text-white">
-                <Activity className="h-4 w-4 mr-2" />
-                الشبكة
-              </TabsTrigger>
-              <TabsTrigger value="security" className="text-white">
-                <Shield className="h-4 w-4 mr-2" />
-                الأمان
-              </TabsTrigger>
-              <TabsTrigger value="performance" className="text-white">
-                <Zap className="h-4 w-4 mr-2" />
-                الأداء
-              </TabsTrigger>
-              <TabsTrigger value="diagnostics" className="text-white">
-                <Settings className="h-4 w-4 mr-2" />
-                التشخيص
-              </TabsTrigger>
-            </TabsList>
+        <TabsContent value="security" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">أدوات الأمان المتقدمة</h3>
+            <Button 
+              onClick={() => runAllToolsInCategory(securityTools, 'الأمان')}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              <Shield className="h-4 w-4 mr-2" />
+              تشغيل فحص الأمان الشامل
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {securityTools.map(tool => renderToolCard(tool, 'أمان'))}
+          </div>
+        </TabsContent>
 
-            {Object.entries(tools).map(([category, categoryTools]) => (
-              <TabsContent key={category} value={category} className="mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {categoryTools.map((tool) => (
-                    <Card 
-                      key={tool.id}
-                      className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-slate-600/50 hover:border-indigo-500/50 transition-colors cursor-pointer"
-                      onClick={() => runTool(tool.id)}
-                    >
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-white flex items-center text-lg">
-                          <div className="text-indigo-400 mr-3">
-                            {tool.icon}
-                          </div>
-                          {tool.name}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-gray-300 text-sm mb-4">{tool.description}</p>
-                        <Button 
-                          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            runTool(tool.id);
-                          }}
-                        >
-                          <Zap className="h-4 w-4 mr-2" />
-                          تشغيل الأداة
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-            ))}
-          </Tabs>
-        </div>
+        <TabsContent value="system" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">أدوات النظام المتقدمة</h3>
+            <Button 
+              onClick={() => runAllToolsInCategory(systemTools, 'النظام')}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              <Cpu className="h-4 w-4 mr-2" />
+              تحسين النظام الكامل
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {systemTools.map(tool => renderToolCard(tool, 'نظام'))}
+          </div>
+        </TabsContent>
 
-        {/* النتائج والأدوات النشطة */}
-        <div>
-          <Card className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border-slate-600/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <BarChart3 className="h-6 w-6 mr-2 text-indigo-400" />
-                الأدوات النشطة والنتائج
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {activeTools.length === 0 ? (
-                  <div className="text-center py-8 text-gray-400">
-                    <Tool className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>لا توجد أدوات نشطة حالياً</p>
-                    <p className="text-sm">اختر أداة من القائمة لبدء التشغيل</p>
-                  </div>
-                ) : (
-                  activeTools.map((toolResult) => (
-                    <div key={toolResult.id} className="p-4 bg-slate-900/50 rounded-lg border border-slate-600/50">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <div className="text-white font-medium text-sm">{toolResult.tool}</div>
-                          <div className="text-gray-400 text-xs">
-                            {toolResult.timestamp.toLocaleTimeString('ar-IQ')}
-                          </div>
-                        </div>
-                        <Badge className={
-                          toolResult.status === 'running' ? 'bg-blue-600' :
-                          toolResult.status === 'completed' ? 'bg-green-600' : 'bg-red-600'
-                        }>
-                          {toolResult.status === 'running' ? 'جاري التنفيذ' :
-                           toolResult.status === 'completed' ? 'مكتمل' : 'فشل'}
-                        </Badge>
-                      </div>
+        <TabsContent value="analytics" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">أدوات التحليل المتقدمة</h3>
+            <Button 
+              onClick={() => runAllToolsInCategory(analyticsTools, 'التحليل')}
+              className="bg-orange-600 hover:bg-orange-700"
+            >
+              <BarChart3 className="h-4 w-4 mr-2" />
+              تشغيل التحليل الشامل
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {analyticsTools.map(tool => renderToolCard(tool, 'تحليل'))}
+          </div>
+        </TabsContent>
+      </Tabs>
 
-                      {toolResult.status === 'running' && (
-                        <div className="mb-3">
-                          <div className="flex justify-between text-sm mb-1">
-                            <span className="text-gray-300">التقدم</span>
-                            <span className="text-blue-400">{toolResult.progress}%</span>
-                          </div>
-                          <Progress value={toolResult.progress} className="h-2" />
-                        </div>
-                      )}
-
-                      {toolResult.status === 'completed' && toolResult.results && (
-                        <div className="mt-3 p-3 bg-green-900/20 rounded border border-green-500/30">
-                          <div className="text-green-400 text-sm font-medium mb-2">النتائج:</div>
-                          <pre className="text-green-300 text-xs whitespace-pre-wrap">
-                            {JSON.stringify(toolResult.results, null, 2)}
-                          </pre>
-                        </div>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* إحصائيات سريعة */}
-          <Card className="mt-6 bg-gradient-to-br from-indigo-900/20 to-purple-600/20 border-indigo-500/30">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <PieChart className="h-6 w-6 mr-2 text-indigo-400" />
-                إحصائيات الاستخدام
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-300 text-sm">الأدوات المستخدمة:</span>
-                  <span className="text-white font-bold">{activeTools.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-300 text-sm">العمليات المكتملة:</span>
-                  <span className="text-green-400 font-bold">
-                    {activeTools.filter(t => t.status === 'completed').length}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-300 text-sm">العمليات النشطة:</span>
-                  <span className="text-blue-400 font-bold">
-                    {activeTools.filter(t => t.status === 'running').length}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-300 text-sm">العمليات الفاشلة:</span>
-                  <span className="text-red-400 font-bold">
-                    {activeTools.filter(t => t.status === 'failed').length}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      {/* Global Stats */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Activity className="h-5 w-5 mr-2" />
+            إحصائيات الأدوات المتقدمة
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">{networkTools.length}</div>
+              <div className="text-sm text-gray-600">أدوات الشبكة</div>
+            </div>
+            <div className="text-center p-4 bg-red-50 rounded-lg">
+              <div className="text-2xl font-bold text-red-600">{securityTools.length}</div>
+              <div className="text-sm text-gray-600">أدوات الأمان</div>
+            </div>
+            <div className="text-center p-4 bg-purple-50 rounded-lg">
+              <div className="text-2xl font-bold text-purple-600">{systemTools.length}</div>
+              <div className="text-sm text-gray-600">أدوات النظام</div>
+            </div>
+            <div className="text-center p-4 bg-orange-50 rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">{analyticsTools.length}</div>
+              <div className="text-sm text-gray-600">أدوات التحليل</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 
-import { HomeIcon, Settings, Shield, Activity, Globe, Zap, Network, Eye, Tool } from "lucide-react";
+import { HomeIcon, Settings, Shield, Activity, Globe, Zap, Network, Eye, Wrench } from "lucide-react";
 import Index from "./pages/Index.tsx";
 import Dashboard from "./components/Dashboard.tsx";
 import CompactDashboard from "./components/CompactDashboard.tsx";
@@ -45,7 +45,7 @@ export const navItems = [
   {
     title: "الأدوات المتقدمة",
     to: "/advanced-tools",
-    icon: <Tool className="h-4 w-4" />,
+    icon: <Wrench className="h-4 w-4" />,
     page: <SuperAdvancedTools />,
   },
 ];

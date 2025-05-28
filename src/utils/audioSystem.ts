@@ -1,250 +1,206 @@
 
-// نظام الصوت المتطور لـ OCTA NETWORK
-export class AdvancedAudioSystem {
+interface AudioTrack {
+  id: string;
+  name: string;
+  src: string;
+  volume: number;
+  loop: boolean;
+}
+
+interface SoundEffect {
+  id: string;
+  name: string;
+  volume: number;
+  category: 'ui' | 'notification' | 'system' | 'feedback';
+}
+
+class AdvancedAudioSystem {
   private audioContext: AudioContext | null = null;
-  private sounds: Map<string, AudioBuffer> = new Map();
-  private volume = 0.7;
-  private isEnabled = true;
+  private tracks: Map<string, HTMLAudioElement> = new Map();
+  private soundEffects: Map<string, AudioBuffer> = new Map();
+  private masterVolume: number = 0.8;
+  private isMuted: boolean = false;
+  private isInitialized: boolean = false;
 
   constructor() {
-    this.initializeAudioContext();
-    this.preloadSounds();
+    this.initializeAudioSystem();
   }
 
-  private async initializeAudioContext() {
+  private async initializeAudioSystem(): Promise<void> {
     try {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      console.log('🔊 نظام الصوت المتطور - تم التهيئة بنجاح');
+      await this.loadSoundEffects();
+      this.isInitialized = true;
+      console.log('🎵 نظام الصوت المتقدم - تم التهيئة بنجاح');
     } catch (error) {
       console.warn('⚠️ فشل في تهيئة نظام الصوت:', error);
     }
   }
 
-  private async preloadSounds() {
-    const soundLibrary = {
-      success: this.generateTone(800, 0.2, 'sine'),
-      error: this.generateTone(200, 0.5, 'sawtooth'),
-      click: this.generateTone(600, 0.1, 'square'),
-      notification: this.generateComplexTone([400, 600, 800], 0.3),
-      scan: this.generateSweepTone(200, 1200, 2),
-      speedTest: this.generatePulseTone(440, 1.5),
-      security: this.generateAlarmTone(),
-      startup: this.generateStartupChime(),
-      shutdown: this.generateShutdownChime(),
-      networkConnect: this.generateNetworkTone(true),
-      networkDisconnect: this.generateNetworkTone(false),
-      taskComplete: this.generateTaskCompleteTone(),
-      warning: this.generateWarningTone(),
-      achievement: this.generateAchievementTone(),
-      typing: this.generateTypingSound()
-    };
+  private async loadSoundEffects(): Promise<void> {
+    const soundEffects: SoundEffect[] = [
+      { id: 'startup', name: 'صوت البدء', volume: 0.6, category: 'system' },
+      { id: 'click', name: 'نقرة', volume: 0.4, category: 'ui' },
+      { id: 'hover', name: 'تمرير', volume: 0.2, category: 'ui' },
+      { id: 'notification', name: 'إشعار', volume: 0.7, category: 'notification' },
+      { id: 'success', name: 'نجاح', volume: 0.8, category: 'feedback' },
+      { id: 'error', name: 'خطأ', volume: 0.6, category: 'feedback' },
+      { id: 'scan', name: 'مسح', volume: 0.5, category: 'system' },
+      { id: 'speedTest', name: 'اختبار السرعة', volume: 0.7, category: 'system' },
+      { id: 'taskComplete', name: 'اكتمال المهمة', volume: 0.8, category: 'feedback' }
+    ];
 
-    for (const [name, audioBuffer] of Object.entries(soundLibrary)) {
-      this.sounds.set(name, await audioBuffer);
+    // محاكاة تحميل الأصوات
+    for (const effect of soundEffects) {
+      // في التطبيق الحقيقي، ستقوم بتحميل الملفات الصوتية الفعلية
+      this.soundEffects.set(effect.id, await this.createSynthesizedSound(effect));
     }
   }
 
-  private async generateTone(frequency: number, duration: number, type: OscillatorType = 'sine'): Promise<AudioBuffer> {
-    if (!this.audioContext) throw new Error('AudioContext not initialized');
-    
+  private async createSynthesizedSound(effect: SoundEffect): Promise<AudioBuffer> {
+    if (!this.audioContext) throw new Error('Audio context not initialized');
+
     const sampleRate = this.audioContext.sampleRate;
+    const duration = 0.3; // مدة الصوت بالثواني
     const frameCount = sampleRate * duration;
     const buffer = this.audioContext.createBuffer(1, frameCount, sampleRate);
     const channelData = buffer.getChannelData(0);
 
+    // إنشاء أصوات مختلفة حسب النوع
     for (let i = 0; i < frameCount; i++) {
-      const t = i / sampleRate;
+      const progress = i / frameCount;
       let sample = 0;
 
-      switch (type) {
-        case 'sine':
-          sample = Math.sin(2 * Math.PI * frequency * t);
+      switch (effect.category) {
+        case 'ui':
+          // نغمة قصيرة وناعمة
+          sample = Math.sin(2 * Math.PI * 800 * progress) * (1 - progress) * 0.3;
           break;
-        case 'square':
-          sample = Math.sign(Math.sin(2 * Math.PI * frequency * t));
+        case 'notification':
+          // نغمة متعددة التردد
+          sample = (Math.sin(2 * Math.PI * 600 * progress) + Math.sin(2 * Math.PI * 900 * progress)) * (1 - progress) * 0.4;
           break;
-        case 'sawtooth':
-          sample = 2 * (frequency * t - Math.floor(frequency * t + 0.5));
+        case 'system':
+          // نغمة تقنية
+          sample = Math.sin(2 * Math.PI * 440 * progress) * Math.sin(10 * Math.PI * progress) * (1 - progress) * 0.5;
           break;
-        case 'triangle':
-          sample = 2 * Math.abs(2 * (frequency * t - Math.floor(frequency * t + 0.5))) - 1;
+        case 'feedback':
+          // نغمة واضحة
+          sample = Math.sin(2 * Math.PI * 523 * progress) * (1 - Math.pow(progress, 2)) * 0.6;
           break;
       }
 
-      // Apply envelope
-      const envelope = Math.exp(-3 * t / duration);
-      channelData[i] = sample * envelope * 0.3;
+      channelData[i] = sample * effect.volume;
     }
 
     return buffer;
   }
 
-  private async generateComplexTone(frequencies: number[], duration: number): Promise<AudioBuffer> {
-    if (!this.audioContext) throw new Error('AudioContext not initialized');
-    
-    const sampleRate = this.audioContext.sampleRate;
-    const frameCount = sampleRate * duration;
-    const buffer = this.audioContext.createBuffer(1, frameCount, sampleRate);
-    const channelData = buffer.getChannelData(0);
-
-    for (let i = 0; i < frameCount; i++) {
-      const t = i / sampleRate;
-      let sample = 0;
-
-      frequencies.forEach((freq, index) => {
-        sample += Math.sin(2 * Math.PI * freq * t) / frequencies.length;
-      });
-
-      const envelope = Math.exp(-2 * t / duration);
-      channelData[i] = sample * envelope * 0.2;
-    }
-
-    return buffer;
-  }
-
-  private async generateSweepTone(startFreq: number, endFreq: number, duration: number): Promise<AudioBuffer> {
-    if (!this.audioContext) throw new Error('AudioContext not initialized');
-    
-    const sampleRate = this.audioContext.sampleRate;
-    const frameCount = sampleRate * duration;
-    const buffer = this.audioContext.createBuffer(1, frameCount, sampleRate);
-    const channelData = buffer.getChannelData(0);
-
-    for (let i = 0; i < frameCount; i++) {
-      const t = i / sampleRate;
-      const progress = t / duration;
-      const frequency = startFreq + (endFreq - startFreq) * progress;
-      
-      const sample = Math.sin(2 * Math.PI * frequency * t);
-      const envelope = Math.sin(Math.PI * progress);
-      channelData[i] = sample * envelope * 0.3;
-    }
-
-    return buffer;
-  }
-
-  private async generatePulseTone(frequency: number, duration: number): Promise<AudioBuffer> {
-    if (!this.audioContext) throw new Error('AudioContext not initialized');
-    
-    const sampleRate = this.audioContext.sampleRate;
-    const frameCount = sampleRate * duration;
-    const buffer = this.audioContext.createBuffer(1, frameCount, sampleRate);
-    const channelData = buffer.getChannelData(0);
-
-    for (let i = 0; i < frameCount; i++) {
-      const t = i / sampleRate;
-      const pulseRate = 4; // 4 Hz pulse
-      const carrier = Math.sin(2 * Math.PI * frequency * t);
-      const pulse = Math.sin(2 * Math.PI * pulseRate * t) > 0 ? 1 : 0;
-      
-      channelData[i] = carrier * pulse * 0.2;
-    }
-
-    return buffer;
-  }
-
-  private async generateAlarmTone(): Promise<AudioBuffer> {
-    return this.generateComplexTone([800, 1000, 1200], 1.0);
-  }
-
-  private async generateStartupChime(): Promise<AudioBuffer> {
-    return this.generateComplexTone([261.63, 329.63, 392.00, 523.25], 1.5);
-  }
-
-  private async generateShutdownChime(): Promise<AudioBuffer> {
-    return this.generateComplexTone([523.25, 392.00, 329.63, 261.63], 1.5);
-  }
-
-  private async generateNetworkTone(connected: boolean): Promise<AudioBuffer> {
-    if (connected) {
-      return this.generateComplexTone([440, 554.37, 659.25], 0.8);
-    } else {
-      return this.generateComplexTone([659.25, 554.37, 440], 0.8);
-    }
-  }
-
-  private async generateTaskCompleteTone(): Promise<AudioBuffer> {
-    return this.generateComplexTone([523.25, 659.25, 783.99, 1046.50], 1.2);
-  }
-
-  private async generateWarningTone(): Promise<AudioBuffer> {
-    return this.generateSweepTone(300, 600, 0.5);
-  }
-
-  private async generateAchievementTone(): Promise<AudioBuffer> {
-    return this.generateComplexTone([523.25, 659.25, 783.99, 1046.50, 1318.51], 2.0);
-  }
-
-  private async generateTypingSound(): Promise<AudioBuffer> {
-    return this.generateTone(800, 0.05, 'square');
-  }
-
-  public async playSound(soundName: string, volume?: number): Promise<void> {
-    if (!this.isEnabled || !this.audioContext) return;
-
-    const audioBuffer = this.sounds.get(soundName);
-    if (!audioBuffer) {
-      console.warn(`🔇 الصوت غير موجود: ${soundName}`);
-      return;
-    }
+  async playSound(soundId: string): Promise<void> {
+    if (!this.isInitialized || this.isMuted) return;
 
     try {
+      const buffer = this.soundEffects.get(soundId);
+      if (!buffer || !this.audioContext) return;
+
       const source = this.audioContext.createBufferSource();
       const gainNode = this.audioContext.createGain();
-      
-      source.buffer = audioBuffer;
-      gainNode.gain.value = (volume ?? this.volume) * 0.5;
-      
+
+      source.buffer = buffer;
+      gainNode.gain.value = this.masterVolume;
+
       source.connect(gainNode);
       gainNode.connect(this.audioContext.destination);
-      
-      source.start();
-      
-      console.log(`🔊 تشغيل الصوت: ${soundName}`);
+
+      source.start(0);
+      console.log(`🔊 تشغيل الصوت: ${soundId}`);
     } catch (error) {
-      console.error(`❌ خطأ في تشغيل الصوت ${soundName}:`, error);
+      console.warn(`⚠️ فشل في تشغيل الصوت ${soundId}:`, error);
     }
   }
 
-  public setVolume(volume: number): void {
-    this.volume = Math.max(0, Math.min(1, volume));
-  }
-
-  public setEnabled(enabled: boolean): void {
-    this.isEnabled = enabled;
-  }
-
-  public async playSequence(sounds: string[], interval: number = 200): Promise<void> {
-    for (let i = 0; i < sounds.length; i++) {
-      await this.playSound(sounds[i]);
-      if (i < sounds.length - 1) {
+  async playSequence(soundIds: string[], interval: number = 200): Promise<void> {
+    for (let i = 0; i < soundIds.length; i++) {
+      await this.playSound(soundIds[i]);
+      if (i < soundIds.length - 1) {
         await new Promise(resolve => setTimeout(resolve, interval));
       }
     }
   }
 
-  public async playRandomSound(soundGroup: string[]): Promise<void> {
-    const randomSound = soundGroup[Math.floor(Math.random() * soundGroup.length)];
-    await this.playSound(randomSound);
+  setMasterVolume(volume: number): void {
+    this.masterVolume = Math.max(0, Math.min(1, volume));
+    console.log(`🔊 مستوى الصوت الرئيسي: ${this.masterVolume * 100}%`);
+  }
+
+  toggleMute(): void {
+    this.isMuted = !this.isMuted;
+    console.log(`🔇 كتم الصوت: ${this.isMuted ? 'مفعل' : 'معطل'}`);
+  }
+
+  // تشغيل موسيقى خلفية
+  async playBackgroundMusic(trackId: string, loop: boolean = true): Promise<void> {
+    // سيتم تنفيذها لاحقاً مع ملفات الموسيقى الفعلية
+    console.log(`🎵 تشغيل الموسيقى الخلفية: ${trackId}`);
+  }
+
+  // إيقاف جميع الأصوات
+  stopAllSounds(): void {
+    this.tracks.forEach(audio => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+    console.log('⏹️ تم إيقاف جميع الأصوات');
+  }
+
+  // تحليل الصوت المحيط (للمايك)
+  async analyzeAmbientSound(): Promise<number> {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const source = this.audioContext!.createMediaStreamSource(stream);
+      const analyser = this.audioContext!.createAnalyser();
+      
+      source.connect(analyser);
+      analyser.fftSize = 256;
+      
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      analyser.getByteFrequencyData(dataArray);
+      
+      // حساب متوسط الصوت
+      const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+      
+      // إيقاف الدفق
+      stream.getTracks().forEach(track => track.stop());
+      
+      return average / 255; // إرجاع قيمة بين 0 و 1
+    } catch (error) {
+      console.warn('⚠️ فشل في تحليل الصوت المحيط:', error);
+      return 0;
+    }
+  }
+
+  // معلومات حالة النظام
+  getSystemStatus(): {
+    initialized: boolean;
+    muted: boolean;
+    volume: number;
+    effectsLoaded: number;
+    tracksLoaded: number;
+  } {
+    return {
+      initialized: this.isInitialized,
+      muted: this.isMuted,
+      volume: this.masterVolume,
+      effectsLoaded: this.soundEffects.size,
+      tracksLoaded: this.tracks.size
+    };
   }
 }
 
-// Global audio instance
+// إنشاء مثيل عالمي
 export const audioSystem = new AdvancedAudioSystem();
 
-// Sound helper functions
-export const playSuccessSound = () => audioSystem.playSound('success');
-export const playErrorSound = () => audioSystem.playSound('error');
-export const playClickSound = () => audioSystem.playSound('click');
-export const playNotificationSound = () => audioSystem.playSound('notification');
-export const playScanSound = () => audioSystem.playSound('scan');
-export const playSpeedTestSound = () => audioSystem.playSound('speedTest');
-export const playSecuritySound = () => audioSystem.playSound('security');
-export const playStartupSound = () => audioSystem.playSound('startup');
-export const playShutdownSound = () => audioSystem.playSound('shutdown');
-export const playNetworkConnectSound = () => audioSystem.playSound('networkConnect');
-export const playNetworkDisconnectSound = () => audioSystem.playSound('networkDisconnect');
-export const playTaskCompleteSound = () => audioSystem.playSound('taskComplete');
-export const playWarningSound = () => audioSystem.playSound('warning');
-export const playAchievementSound = () => audioSystem.playSound('achievement');
-export const playTypingSound = () => audioSystem.playSound('typing');
+// تصدير للاستخدام المباشر
+export default audioSystem;

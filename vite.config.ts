@@ -41,10 +41,7 @@ export default defineConfig(({ mode, command }) => {
     
     plugins: [
       react({
-        jsxImportSource: '@emotion/react',
-        babel: {
-          plugins: ['@emotion/babel-plugin']
-        }
+        jsxImportSource: '@emotion/react'
       }),
       mode === 'development' && componentTagger(),
     ].filter(Boolean),
